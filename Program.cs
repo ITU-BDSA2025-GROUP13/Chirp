@@ -8,7 +8,7 @@ if (args[0] == "read")
 
     for (int i = 1; i < input.Length; i++)
     {
-        var line = Regex.Split(input[i], ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");W
+        var line = Regex.Split(input[i], ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
     
         string userMessage = line[1].Replace("\"", "");
         DateTime dateFormat = DateTime.UnixEpoch.AddSeconds(long.Parse(line[2]) + 7200);
