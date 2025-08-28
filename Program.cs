@@ -21,12 +21,12 @@ if (args[0] == "read")
 }
 else if (args[0] == "cheep")
 {
-	// Get metadata and cheep
-	string user = Environment.UserName;
-	long epoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-	string message = args[1];
+    // Get metadata and cheep
+    string user = Environment.UserName;
+    long epoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+    string message = args[1];
 
-	// Format and save
-	var data = user + ',' + '"' + message + '"' + ',' + epoch + '\n';
-	File.AppendAllText(CSV, data);
+    // Format and save
+    var data = user + ',' + '"' + message + '"' + ',' + epoch + '\n';
+    File.AppendAllText(CSV, data);
 }
