@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.CommandLine;
 
 class Program
 {
@@ -6,16 +7,32 @@ class Program
 
     static int Main(string[] args)
     {
-        if (args[0] == "read")
+        RootCommand rootCommand = new("Chirp: read or post cheeps");
+
+        Option<bool> readOption = new("read")
         {
-            read();
-        }
-        else if (args[0] == "cheep")
+            Description = "Read all cheeps"
+        };
+        rootCommand.Options.Add(readOption);
+
+        Option<string> chirpOption = new("cheep")
         {
-            string message = args[1];
-            write(message);
-        }
-        return 0;
+            Description = "Post a new cheep"
+        };
+        rootCommand.Options.Add(chirpOption);
+
+        rootCommand.SetAction(parseResult =>
+        {
+            if (parseResult.Errors.Count == 0)
+            {
+                if (parseResult.GetValue(readOption)) read();
+                var message = parseResult.GetValue(chirpOption);
+                if (message is not null) write(message);
+            }
+        });
+
+        ParseResult parseResult = rootCommand.Parse(args);
+        return parseResult.Invoke();
     }
 
     /// <summary>
@@ -52,6 +69,5 @@ class Program
         // Format and save
         var data = user + ',' + '"' + message + '"' + ',' + epoch + '\n';
         File.AppendAllText(CSV, data);
-
     }
 }
