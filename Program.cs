@@ -1,32 +1,38 @@
-﻿
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-const string CSV = "assets/chirp_cli_db.csv";
-
-if (args[0] == "read")
+class Program
 {
-    var input = File.ReadAllLines(CSV);
+    const string CSV = "assets/chirp_cli_db.csv";
 
-    for (int i = 1; i < input.Length; i++)
+    static int Main(string[] args)
     {
-        var line = Regex.Split(input[i], ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        if (args[0] == "read")
+        {
+            var input = File.ReadAllLines(CSV);
 
-        string userMessage = line[1].Replace("\"", "");
-        DateTime dateFormat = DateTime.UnixEpoch.AddSeconds(long.Parse(line[2]) + 7200);
-        string dateString = dateFormat.Month.ToString("D2") + "/" + dateFormat.Day.ToString("D2") + "/" +
-                           dateFormat.Year.ToString().Substring(2, 2) + " " + dateFormat.ToString("HH:mm:ss");
+            for (int i = 1; i < input.Length; i++)
+            {
+                var line = Regex.Split(input[i], ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
-        Console.WriteLine(line[0] + " @ " + dateString + ": " + userMessage);
+                string userMessage = line[1].Replace("\"", "");
+                DateTime dateFormat = DateTime.UnixEpoch.AddSeconds(long.Parse(line[2]) + 7200);
+                string dateString = dateFormat.Month.ToString("D2") + "/" + dateFormat.Day.ToString("D2") + "/" +
+                                   dateFormat.Year.ToString().Substring(2, 2) + " " + dateFormat.ToString("HH:mm:ss");
+
+                Console.WriteLine(line[0] + " @ " + dateString + ": " + userMessage);
+            }
+        }
+        else if (args[0] == "cheep")
+        {
+            // Get metadata and cheep
+            string user = Environment.UserName;
+            long epoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            string message = args[1];
+
+            // Format and save
+            var data = user + ',' + '"' + message + '"' + ',' + epoch + '\n';
+            File.AppendAllText(CSV, data);
+        }
+        return 0;
     }
-}
-else if (args[0] == "cheep")
-{
-    // Get metadata and cheep
-    string user = Environment.UserName;
-    long epoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-    string message = args[1];
-
-    // Format and save
-    var data = user + ',' + '"' + message + '"' + ',' + epoch + '\n';
-    File.AppendAllText(CSV, data);
 }
