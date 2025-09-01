@@ -10,14 +10,14 @@ if (args[0] == "read")
     for (int i = 1; i < input.Length; i++)
     {
         var line = Regex.Split(input[i], ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-    
+
         string userMessage = line[1].Replace("\"", "");
         DateTime dateFormat = DateTime.UnixEpoch.AddSeconds(long.Parse(line[2]) + 7200);
         string dateString = dateFormat.Month.ToString("D2") + "/" + dateFormat.Day.ToString("D2") + "/" +
                            dateFormat.Year.ToString().Substring(2, 2) + " " + dateFormat.ToString("HH:mm:ss");
-    
+
         Console.WriteLine(line[0] + " @ " + dateString + ": " + userMessage);
-    }    
+    }
 }
 else if (args[0] == "cheep")
 {
