@@ -16,12 +16,7 @@ if (args[0] == "read")
 }
 else if (args[0] == "cheep")
 {
-    // Get metadata and cheep
-    string user = Environment.UserName;
-    long epoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-    string message = args[1];
-
-    // Format and save
-    var data = user + ',' + '"' + message + '"' + ',' + epoch + '\n';
-    File.AppendAllText(CSV, data);
+    // Get metadata and cheep, format and save
+    Cheep cheep = new Cheep(Environment.UserName, args[1], DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+    csvm.WriteCheep(cheep);
 }
