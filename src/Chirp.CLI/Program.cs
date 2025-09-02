@@ -1,7 +1,7 @@
 using Chirp.CLI;
 using Chirp.CLI.Models;
 
-const string CSV = "assets/chirp_cli_db.csv";
+const string CSV = "../../assets/chirp_cli_db.csv";
 
 CsvManager csvm = new CsvManager(CSV);
 
