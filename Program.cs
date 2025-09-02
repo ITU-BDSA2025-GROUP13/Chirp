@@ -1,32 +1,22 @@
-﻿
-using System.Text.RegularExpressions;
+﻿using Chirp.CLI;
+using Chirp.CLI.Models;
 
 const string CSV = "assets/chirp_cli_db.csv";
 
+CsvManager csvm = new CsvManager(CSV);
+
 if (args[0] == "read")
 {
-    var input = File.ReadAllLines(CSV);
-
-    for (int i = 1; i < input.Length; i++)
+    IEnumerable<Cheep> cheeps = csvm.GetCheeps();
+    foreach (var cheep in cheeps)
     {
-        var line = Regex.Split(input[i], ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-
-        string userMessage = line[1].Replace("\"", "");
-        DateTime dateFormat = DateTime.UnixEpoch.AddSeconds(long.Parse(line[2]) + 7200);
-        string dateString = dateFormat.Month.ToString("D2") + "/" + dateFormat.Day.ToString("D2") + "/" +
-                           dateFormat.Year.ToString().Substring(2, 2) + " " + dateFormat.ToString("HH:mm:ss");
-
-        Console.WriteLine(line[0] + " @ " + dateString + ": " + userMessage);
+        // Read record and parse into desired format. Adds 2 hours in seconds to compensate for timezones.
+        Console.WriteLine($"{cheep.Author} @ {DateTime.UnixEpoch.AddSeconds(cheep.Timestamp + 7200).ToString("MM/dd/yy HH:mm:ss").Replace("-", "/")}: {cheep.Message}");
     }
 }
 else if (args[0] == "cheep")
 {
-    // Get metadata and cheep
-    string user = Environment.UserName;
-    long epoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-    string message = args[1];
-
-    // Format and save
-    var data = user + ',' + '"' + message + '"' + ',' + epoch + '\n';
-    File.AppendAllText(CSV, data);
+    // Get metadata and cheep, format and save
+    Cheep cheep = new Cheep(Environment.UserName, args[1], DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+    csvm.WriteCheep(cheep);
 }
