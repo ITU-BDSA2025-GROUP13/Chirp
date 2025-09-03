@@ -36,13 +36,13 @@ class Program
                 if (readCount > 0)
                 {
                     var cheeps = database.Read(readCount); // TODO: error on negative count
-                    readCheeps(cheeps);
+                    UserInterface.PrintCheeps(cheeps);
                 }
 
                 if (parseResult.GetValue(readAllOption))
                 {
                     var cheeps = database.Read();
-                    readCheeps(cheeps);
+                    UserInterface.PrintCheeps(cheeps);
                 }
 
                 var message = parseResult.GetValue(chirpOption);
@@ -56,14 +56,5 @@ class Program
 
         ParseResult parseResult = rootCommand.Parse(args);
         return parseResult.Invoke();
-    }
-
-    static void readCheeps(IEnumerable<Cheep> cheeps)
-    {
-        foreach (var cheep in cheeps)
-        {
-            Console.WriteLine($"{cheep.Author} @ {DateTime.UnixEpoch.AddSeconds(cheep.Timestamp + 7200).ToString("MM/dd/yy HH:mm:ss").Replace("-", "/")}: {cheep.Message}");
-        }
-
     }
 }
