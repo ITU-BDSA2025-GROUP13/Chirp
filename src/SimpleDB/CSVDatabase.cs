@@ -15,14 +15,8 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T> {
         if (limit == null) return csvReader.GetRecords<T>();
         
         var result = new List<T>();
-        for (int i = 0; i < limit; i++) {
-            try {
-                csvReader.Read();
-                result.Add(csvReader.GetRecord<T>());
-            }
-            catch (CsvHelperException) { //End of file
-                break;
-            }
+        for (int i = 0; i < limit && csvReader.Read(); i++) {
+            result.Add(csvReader.GetRecord<T>());
         }
         return result;
     }

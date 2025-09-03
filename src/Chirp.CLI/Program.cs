@@ -1,6 +1,4 @@
-using Chirp.CLI;
 using Chirp.CLI.Models;
-using Microsoft.VisualBasic.CompilerServices;
 using SimpleDB;
 
 IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
