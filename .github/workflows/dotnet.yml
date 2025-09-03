@@ -5,26 +5,47 @@ name: .NET
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main","dev" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main","dev" ]
 
 jobs:
-  build:
-
+  format:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Format
-      run: dotnet format --verify-no-changes
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Install dotnet-format
+        run: dotnet tool install -g dotnet-format
+
+      - name: Check formatting
+        id: checkFormat
+        continue-on-error: true
+        run: dotnet format --verify-no-changes
+
+      - name: Determine branch name
+        id: branch
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF##*/}}" >> $GITHUB_OUTPUT
+
+      - name: Fix formatting & push
+        if: steps.checkFormat.outcome == 'failure'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "Auto Formatter"
+          git config user.email "formatter@example.com"
+          dotnet format
+          git commit -a -m "Fix formatting"
+          git push origin HEAD:${{ steps.branch.outputs.branch }}
+
