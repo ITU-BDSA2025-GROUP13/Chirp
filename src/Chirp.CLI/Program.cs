@@ -35,8 +35,13 @@ class Program
                 int readCount = parseResult.GetValue(readOption);
                 if (readCount > 0)
                 {
-                    var cheeps = database.Read(readCount); // TODO: error on negative count
+                    var cheeps = database.Read(readCount);
                     UserInterface.PrintCheeps(cheeps);
+                }
+                else if (readCount < 0)
+                {
+                    Console.WriteLine("Invalid argument (cannot read a negative number of cheeps)");
+                    Environment.Exit(1);
                 }
 
                 if (parseResult.GetValue(readAllOption))
