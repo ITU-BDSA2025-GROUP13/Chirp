@@ -41,6 +41,9 @@ ScaffoldingReadMe.txt
 *~
 CodeCoverage/
 
+# omnisharp config
+omnisharp.json
+
 # MSBuild Binary and Structured Log
 *.binlog
 
