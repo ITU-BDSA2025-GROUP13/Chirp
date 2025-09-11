@@ -1,3 +1,4 @@
+using Chirp.CLI;
 using Chirp.CLI.Models;
 
 static class UserInterface
@@ -6,7 +7,9 @@ static class UserInterface
     {
         foreach (var cheep in cheeps)
         {
-            Console.WriteLine($"{cheep.Author} @ {DateTime.UnixEpoch.AddSeconds(cheep.Timestamp + 7200).ToString("MM/dd/yy HH:mm:ss").Replace("-", "/")}: {cheep.Message}");
+            long uct2UnixTimeStamp = TimeConverter.UCTToUCT2(cheep.Timestamp);
+            string readableTime = TimeConverter.ToReadable(uct2UnixTimeStamp);
+            Console.WriteLine($"{cheep.Author} @ {readableTime}: {cheep.Message}");
         }
 
     }
