@@ -7,7 +7,7 @@ public class CSVDatabaseTests
 {
     private readonly CSVDatabase<Cheep> database;
     private int sampleSize = 4; //The amount of samples inside "testSample.csv" 
-    
+
     public CSVDatabaseTests()
     {
         database = new CSVDatabase<Cheep>("../../../assets/testSample.csv");
@@ -48,19 +48,19 @@ public class CSVDatabaseTests
         Assert.Equal(expectedNumberOfChirps, actual);
     }
 
-    
+
     [Fact]
     public void readUnderZero_ReturnsEmptyList()
     {
         Assert.False(database.Read(-1).Any());
     }
-    
+
     [Fact]
     public void readZero_ReturnsEmptyList()
     {
         Assert.False(database.Read(0).Any());
     }
-    
+
     #endregion
 
     #region Write
@@ -77,7 +77,7 @@ public class CSVDatabaseTests
             var placeholder = "Test" + i;
             writeDatabase.Store(new Cheep(placeholder, placeholder, unixTimestamp));
         }
-        Assert.Equal(amount, database.Read().Count()-1);
+        Assert.Equal(amount, database.Read().Count() - 1);
         File.Delete(writeTestPath);
     }
     #endregion

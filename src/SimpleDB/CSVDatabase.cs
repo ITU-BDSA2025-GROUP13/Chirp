@@ -1,29 +1,29 @@
-﻿    using System.Globalization;
-    using CsvHelper;
+﻿using System.Globalization;
+using CsvHelper;
 
-    namespace SimpleDB;
+namespace SimpleDB;
 
-    public sealed class CSVDatabase<T>(string filepath) : IDatabaseRepository<T>
+public sealed class CSVDatabase<T>(string filepath) : IDatabaseRepository<T>
+{
+    public IEnumerable<T> Read(int? limit = null)
     {
-        public IEnumerable<T> Read(int? limit = null)
+        // Not using "using" keyword, as an IEnum is returned. Can be changed at some point.
+        var csvReader = new CsvReader(new StreamReader(filepath), CultureInfo.InvariantCulture);
+
+        if (limit == null) return csvReader.GetRecords<T>();
+
+        var result = new List<T>();
+        for (int i = 0; i < limit && csvReader.Read(); i++)
         {
-            // Not using "using" keyword, as an IEnum is returned. Can be changed at some point.
-            var csvReader = new CsvReader(new StreamReader(filepath), CultureInfo.InvariantCulture);
-
-            if (limit == null) return csvReader.GetRecords<T>();
-
-            var result = new List<T>();
-            for (int i = 0; i < limit && csvReader.Read(); i++)
-            {
-                result.Add(csvReader.GetRecord<T>());
-            }
-            return result;
+            result.Add(csvReader.GetRecord<T>());
         }
-
-        public void Store(T record)
-        {
-            using var csvWriter = new CsvWriter(new StreamWriter(filepath, append: true), CultureInfo.InvariantCulture);
-            csvWriter.WriteRecord(record);
-            csvWriter.NextRecord();
-        }
+        return result;
     }
+
+    public void Store(T record)
+    {
+        using var csvWriter = new CsvWriter(new StreamWriter(filepath, append: true), CultureInfo.InvariantCulture);
+        csvWriter.WriteRecord(record);
+        csvWriter.NextRecord();
+    }
+}
