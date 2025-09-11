@@ -6,7 +6,7 @@ class Program
 {
     static int Main(string[] args)
     {
-        IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>("../../assets/chirp_cli_db.csv");
+        IDatabaseRepository<Cheep> database = CSVDatabase<Cheep>.GetInstance();
 
         RootCommand rootCommand = new("Chirp: read or post cheeps");
 
