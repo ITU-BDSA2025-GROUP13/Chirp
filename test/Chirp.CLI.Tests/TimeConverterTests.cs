@@ -9,6 +9,5 @@ public class TimeConverterTests
         string expected = "01/01/21 00:00:00";
         string actual = TimeConverter.ToReadable(unixTimestamp);
         Assert.Equal(expected, actual);
-        Console.WriteLine("YEAH");
     }
 }
