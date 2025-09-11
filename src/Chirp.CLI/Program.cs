@@ -6,7 +6,7 @@ class Program
 {
     static int Main(string[] args)
     {
-        IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
+        IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>("../../assets/chirp_cli_db.csv");
 
         RootCommand rootCommand = new("Chirp: read or post cheeps");
 
