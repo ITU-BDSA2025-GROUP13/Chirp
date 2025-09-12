@@ -7,11 +7,12 @@ public class CSVDatabaseTests
 {
     private readonly CSVDatabase<Cheep> database;
     private int sampleSize = 4; //The amount of samples inside "testSample.csv"
+    private readonly String sampleDB = "../../../assets/testSample.csv";
 
     public CSVDatabaseTests()
     {
         database = CSVDatabase<Cheep>.GetInstance();
-        database.SetPathForTest("../../../assets/testSample.csv");
+        database.SetPathForTest(sampleDB);
     }
 
     [Fact]
@@ -60,23 +61,30 @@ public class CSVDatabaseTests
     }
     #endregion
 
-    // the now singleton db makes this test fail idk the best way to go about this
-    // #region Write
-    // // NOTE: This write test depends on the read tests passing
-    // [Fact]
-    // public void store_writesToDisk()
-    // {
-    //     string writeTestPath = "../../../assets/writeTest.csv";
-    //     CSVDatabase<Cheep> writeDatabase = CSVDatabase<Cheep>.GetInstance(writeTestPath);
-    //     int amount = 3;
-    //     long unixTimestamp = 1609459200;
-    //     for (int i = 0; i < amount; i++)
-    //     {
-    //         var placeholder = "Test" + i;
-    //         writeDatabase.Store(new Cheep(placeholder, placeholder, unixTimestamp));
-    //     }
-    //     Assert.Equal(amount, database.Read().Count() - 1);
-    //     File.Delete(writeTestPath);
-    // }
-    // #endregion
+    #region Write
+    // NOTE: This write test depends on the read tests passing
+    [Fact]
+    public void store_writesToDisk()
+    {
+        // Override current db path
+        string writeTestPath = "../../../assets/writeTest.csv";
+        File.Copy(sampleDB, writeTestPath);
+        database.SetPathForTest(writeTestPath);
+
+        int origCount = database.Read().Count();
+        int amount = 3;
+        long unixTimestamp = 1609459200;
+        for (int i = 0; i < amount; i++)
+        {
+            var placeholder = "Test" + i;
+            database.Store(new Cheep(placeholder, placeholder, unixTimestamp));
+        }
+        // Check that we added 3 entries to db
+        Assert.Equal(amount, database.Read().Count() - origCount);
+        File.Delete(writeTestPath);
+
+        // Reset db path
+        database.SetPathForTest(sampleDB);
+    }
+    #endregion
 }
