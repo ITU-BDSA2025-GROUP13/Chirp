@@ -7,9 +7,9 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
     private string filepath = "../../assets/chirp_cli_db.csv";
 
-    private CSVDatabase() { }
+    private static CSVDatabase<T>? _instance;
 
-    private static CSVDatabase<T> _instance;
+    private CSVDatabase() { }
 
     public static CSVDatabase<T> GetInstance()
     {
