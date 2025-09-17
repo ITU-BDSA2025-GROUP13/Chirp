@@ -89,7 +89,7 @@ jobs:
           dotnet publish src/Chirp.CLI/Chirp.CLI.csproj \
             -c Release \
             -r ${{ matrix.rid }} \
-            -p:PublishSingleFile=true \
+            -p:PublishSingleFile=false \
             -o publish/${{ matrix.rid }}
 
       - name: Ensure executable bit (Linux/macOS only)
