@@ -46,7 +46,7 @@ app.MapGet("/cheeps/{numberOfCheeps}", (int numberOfCheeps) =>
     }
 });
 
-app.MapGet("/test/", () =>{return Results.Ok("Server is up and running!");});
-app.MapGet("/", () =>{return Results.Ok("Greetings, traveler!");});
+app.MapGet("/test/", () => { return Results.Ok("Server is up and running!"); });
+app.MapGet("/", () => { return Results.Ok("Greetings, traveler!"); });
 
 app.Run();
