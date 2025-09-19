@@ -6,12 +6,13 @@ IDatabaseRepository<Cheep> database = CSVDatabase<Cheep>.GetInstance();
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/cheeps", () =>
+app.MapPost("/cheep/{userName}/{message}", (string userName, string message) =>
 {
     try
     {
-        IEnumerable<Cheep> cheeps = database.Read();
-        return Results.Ok(cheeps);
+        var cheep = new Cheep(userName, message, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        database.Store(cheep);
+        return Results.Ok($"Posted Cheep with message: {message} from {Environment.UserName}");
     }
     catch (Exception e)
     {
@@ -19,17 +20,29 @@ app.MapGet("/cheeps", () =>
     }
 });
 
-app.MapGet("/cheep/{message}", (String message) =>
+app.MapGet("/cheeps", () =>
 {
     try
     {
-        var cheep = new Cheep(Environment.UserName, message, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-        database.Store(cheep);
-        return Results.Ok($"Posted Cheep with message: {message} from {Environment.UserName}");
+        var readValues = database.Read();
+        return Results.Ok(readValues);
     }
     catch (Exception e)
     {
-        return Results.BadRequest(e.Message);
+        return Results.Problem(e.Message);
+    }
+});
+
+app.MapGet("/cheeps/{numberOfCheeps}", (int numberOfCheeps) =>
+{
+    try
+    {
+        var readValues = database.Read(numberOfCheeps);
+        return Results.Ok(readValues);
+    }
+    catch (Exception e)
+    {
+        return Results.Problem(e.Message);
     }
 });
 
