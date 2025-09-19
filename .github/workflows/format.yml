@@ -6,8 +6,6 @@ name: .NET
 on:
   push:
     branches: ["main"]
-    tags:
-      - "v*"
   pull_request:
     branches: ["main"]
 
@@ -46,7 +44,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "Auto Formatter"
-          git config user.email "formatter@example.com"
+          git config user.email "formatter@users.noreply.github.com"
           dotnet format
           git commit -a -m "Fix formatting"
           git push origin HEAD:${{ steps.branch.outputs.branch }}
