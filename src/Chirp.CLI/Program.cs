@@ -1,7 +1,8 @@
 using System.CommandLine;
 using Chirp.CLI.Models;
 using SimpleDB;
-using System.Text.Json;
+using System.Net.Http.Json;
+
 
 public class Program
 {
@@ -40,16 +41,16 @@ public class Program
                 int readCount = parseResult.GetValue(readOption);
                 if (readCount > 0)
                 {
-                    var response = await client.GetAsync("/cheeps/" + readCount);
-                    string json = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine(json);
+                    var cheeps = await client.GetFromJsonAsync<IEnumerable<Cheep>>("/cheeps/" + readCount);
+                    if (cheeps != null)
+                        UserInterface.PrintCheeps(cheeps);
                 }
 
                 if (parseResult.GetValue(readAllOption))
                 {
-                    var response = await client.GetAsync("/cheeps");
-                    string json = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine(json);
+                    var cheeps = await client.GetFromJsonAsync<IEnumerable<Cheep>>("/cheeps");
+                    if (cheeps != null)
+                        UserInterface.PrintCheeps(cheeps);
                 }
 
                 var message = parseResult.GetValue(chirpOption);
