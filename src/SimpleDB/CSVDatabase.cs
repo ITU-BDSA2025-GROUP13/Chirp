@@ -30,10 +30,9 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 
     public IEnumerable<T> Read(int? limit = null)
     {
-        // Not using "using" keyword, as an IEnum is returned. Can be changed at some point.
-        var csvReader = new CsvReader(new StreamReader(filepath), CultureInfo.InvariantCulture);
+        using var csvReader = new CsvReader(new StreamReader(filepath), CultureInfo.InvariantCulture);
 
-        if (limit == null) return csvReader.GetRecords<T>();
+        if (limit == null) return csvReader.GetRecords<T>().ToList();
 
         var result = new List<T>();
         for (int i = 0; i < limit && csvReader.Read(); i++)
