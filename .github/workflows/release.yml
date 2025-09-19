@@ -1,0 +1,27 @@
+# Create a release when versioned tags are created
+
+name: Publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+
+    steps:
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
