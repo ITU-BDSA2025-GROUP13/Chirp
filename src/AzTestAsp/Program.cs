@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http.HttpResults;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -35,6 +37,9 @@ app.MapGet("/weatherforecast", () =>
     })
     .WithName("GetWeatherForecast")
     .WithOpenApi();
+
+app.MapGet("/awesometest", () => Results.Ok(new { msg1 = "Awesome", msg2 = "Sauce!" }));
+app.MapGet("/notawesometest", () => Results.BadRequest(new { msg1 = "Not", msg2 = "Awesome!" }));
 
 app.Run();
 
