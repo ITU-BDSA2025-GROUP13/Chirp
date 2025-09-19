@@ -1,11 +1,12 @@
 ﻿using System.Globalization;
 using CsvHelper;
+using System.IO;
 
 namespace SimpleDB;
 
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
-    private string filepath = "chirp_cli_db.csv";
+    private static string filePath = "../../assets/chirp_cli_db.csv";
 
     private static CSVDatabase<T>? _instance;
 
@@ -15,23 +16,36 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
     {
         if (_instance == null)
         {
+            // Make sure the directory exists
+            string? dir = Path.GetDirectoryName(filePath);
+            if (!string.IsNullOrEmpty(dir))
+            {
+                Directory.CreateDirectory(dir); // creates folder if needed
+            }
+
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath).Dispose();
+                using var writer = new StreamWriter(filePath);
+                writer.WriteLine("Author,Message,Timestamp");
+            }
             _instance = new CSVDatabase<T>();
         }
         return _instance;
     }
 
-    internal void SetPathForTest(string path)
+    internal static void SetPathForTest(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
             throw new ArgumentException("Path cannot be empty.", nameof(path));
 
-        filepath = path;
+        filePath = path;
     }
 
     public IEnumerable<T> Read(int? limit = null)
     {
         // Not using "using" keyword, as an IEnum is returned. Can be changed at some point.
-        var csvReader = new CsvReader(new StreamReader(filepath), CultureInfo.InvariantCulture);
+        var csvReader = new CsvReader(new StreamReader(filePath), CultureInfo.InvariantCulture);
 
         if (limit == null) return csvReader.GetRecords<T>();
 
@@ -45,7 +59,7 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 
     public void Store(T record)
     {
-        using var csvWriter = new CsvWriter(new StreamWriter(filepath, append: true), CultureInfo.InvariantCulture);
+        using var csvWriter = new CsvWriter(new StreamWriter(filePath, append: true), CultureInfo.InvariantCulture);
         csvWriter.WriteRecord(record);
         csvWriter.NextRecord();
     }
