@@ -1,0 +1,6 @@
+@AzTestAsp_HostAddress = http://localhost:5172
+
+GET {{AzTestAsp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
