@@ -5,7 +5,7 @@ namespace SimpleDB;
 
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
-    private string filepath = "../../assets/chirp_cli_db.csv";
+    private string filepath = "chirp_cli_db.csv";
 
     private static CSVDatabase<T>? _instance;
 
