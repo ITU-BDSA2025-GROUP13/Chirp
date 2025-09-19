@@ -33,4 +33,6 @@ app.MapGet("/cheep/{message}", (String message) =>
     }
 });
 
+app.MapGet("/test/", () =>{return Results.Ok("Server is up and running!");});
+
 app.Run();
