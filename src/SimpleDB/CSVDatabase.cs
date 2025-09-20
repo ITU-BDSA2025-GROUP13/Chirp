@@ -6,6 +6,7 @@ namespace SimpleDB;
 public sealed class CSVDatabase<T> : IDatabaseRepository<T>
 {
     private string filepath = "../../assets/chirp_cli_db.csv";
+    private object fileLock = new object();
 
     private static CSVDatabase<T>? _instance;
 
@@ -24,29 +25,48 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
     {
         if (string.IsNullOrWhiteSpace(path))
             throw new ArgumentException("Path cannot be empty.", nameof(path));
-
-        filepath = path;
+        lock (fileLock)
+        {
+            filepath = path;    
+        }
     }
 
     public IEnumerable<T> Read(int? limit = null)
     {
-        // Not using "using" keyword, as an IEnum is returned. Can be changed at some point.
-        var csvReader = new CsvReader(new StreamReader(filepath), CultureInfo.InvariantCulture);
-
-        if (limit == null) return csvReader.GetRecords<T>();
-
-        var result = new List<T>();
-        for (int i = 0; i < limit && csvReader.Read(); i++)
+        lock (fileLock)
         {
-            result.Add(csvReader.GetRecord<T>());
+            // Not using "using" keyword, as an IEnum is returned. Can be changed at some point.
+            var csvReader = new CsvReader(new StreamReader(new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read)), CultureInfo.InvariantCulture);
+
+            var result = new List<T>();
+            if (limit == null)
+            {
+                //Forces to list to avoid lazy read, and disposes before returning
+                result = csvReader.GetRecords<T>().ToList();
+                csvReader.Dispose(); 
+                return result;
+            }
+            
+            for (int i = 0; i < limit && csvReader.Read(); i++)
+            {
+                result.Add(csvReader.GetRecord<T>());
+            }
+            
+            csvReader.Dispose(); //Disposes everything before unlocking to ensure no IOException on multiple read/writes
+            
+            return result;  
         }
-        return result;
     }
 
     public void Store(T record)
     {
-        using var csvWriter = new CsvWriter(new StreamWriter(filepath, append: true), CultureInfo.InvariantCulture);
-        csvWriter.WriteRecord(record);
-        csvWriter.NextRecord();
+        lock (fileLock)
+        {
+            using var csvWriter = new CsvWriter(new StreamWriter(new FileStream(filepath, FileMode.Append, FileAccess.Write, FileShare.None)), CultureInfo.InvariantCulture);
+            csvWriter.WriteRecord(record);
+            csvWriter.NextRecord();
+            
+            csvWriter.Flush(); //Flushes everything before unlocking to ensure no IOException on multiple read/writes
+        }
     }
 }
