@@ -3,7 +3,7 @@ using SimpleDB;
 
 
 public class Server
-{ 
+{
     public static void Main(String[] args)
     {
         IDatabaseRepository<Cheep> database = CSVDatabase<Cheep>.GetInstance();

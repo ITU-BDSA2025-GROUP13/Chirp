@@ -27,7 +27,7 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
             throw new ArgumentException("Path cannot be empty.", nameof(path));
         lock (fileLock)
         {
-            filepath = path;    
+            filepath = path;
         }
     }
 
@@ -43,18 +43,18 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
             {
                 //Forces to list to avoid lazy read, and disposes before returning
                 result = csvReader.GetRecords<T>().ToList();
-                csvReader.Dispose(); 
+                csvReader.Dispose();
                 return result;
             }
-            
+
             for (int i = 0; i < limit && csvReader.Read(); i++)
             {
                 result.Add(csvReader.GetRecord<T>());
             }
-            
+
             csvReader.Dispose(); //Disposes everything before unlocking to ensure no IOException on multiple read/writes
-            
-            return result;  
+
+            return result;
         }
     }
 
@@ -65,7 +65,7 @@ public sealed class CSVDatabase<T> : IDatabaseRepository<T>
             using var csvWriter = new CsvWriter(new StreamWriter(new FileStream(filepath, FileMode.Append, FileAccess.Write, FileShare.None)), CultureInfo.InvariantCulture);
             csvWriter.WriteRecord(record);
             csvWriter.NextRecord();
-            
+
             csvWriter.Flush(); //Flushes everything before unlocking to ensure no IOException on multiple read/writes
         }
     }
