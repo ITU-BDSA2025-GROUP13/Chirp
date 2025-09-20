@@ -1,11 +1,17 @@
 using System.CommandLine;
 using Chirp.CLI.Models;
 using SimpleDB;
+using System.Net.Http.Json;
 
-class Program
+
+public class Program
 {
-    static int Main(string[] args)
+    static async Task<int> Main(string[] args)
     {
+        var baseURL = "http://localhost:5076";
+        using HttpClient client = new();
+        client.BaseAddress = new Uri(baseURL);
+
         IDatabaseRepository<Cheep> database = CSVDatabase<Cheep>.GetInstance();
 
         RootCommand rootCommand = new("Chirp: read or post cheeps");
@@ -28,33 +34,36 @@ class Program
         };
         rootCommand.Options.Add(chirpOption);
 
-        rootCommand.SetAction(parseResult =>
+        rootCommand.SetAction(async parseResult =>
         {
             if (parseResult.Errors.Count == 0)
             {
                 int readCount = parseResult.GetValue(readOption);
                 if (readCount > 0)
                 {
-                    var cheeps = database.Read(readCount); // TODO: error on negative count
-                    UserInterface.PrintCheeps(cheeps);
+                    var cheeps = await client.GetFromJsonAsync<IEnumerable<Cheep>>("/cheeps/" + readCount);
+                    if (cheeps != null)
+                        UserInterface.PrintCheeps(cheeps);
                 }
 
                 if (parseResult.GetValue(readAllOption))
                 {
-                    var cheeps = database.Read();
-                    UserInterface.PrintCheeps(cheeps);
+                    var cheeps = await client.GetFromJsonAsync<IEnumerable<Cheep>>("/cheeps");
+                    if (cheeps != null)
+                        UserInterface.PrintCheeps(cheeps);
                 }
 
                 var message = parseResult.GetValue(chirpOption);
                 if (message is not null)
                 {
-                    Cheep cheep = new Cheep(Environment.UserName, message, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-                    database.Store(cheep);
+                    var response = await client.PostAsync("/cheep/" + Environment.UserName + "/" + message, null);
+                    string result = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine(result);
                 }
             }
         });
 
         ParseResult parseResult = rootCommand.Parse(args);
-        return parseResult.Invoke();
+        return await parseResult.InvokeAsync();
     }
 }

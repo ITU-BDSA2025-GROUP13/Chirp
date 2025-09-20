@@ -12,7 +12,7 @@ public class CSVDatabaseTests
     public CSVDatabaseTests()
     {
         database = CSVDatabase<Cheep>.GetInstance();
-        database.SetPathForTest(sampleDB);
+        CSVDatabase<Cheep>.SetPathForTest(sampleDB);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class CSVDatabaseTests
         // Override current db path
         string writeTestPath = "../../../assets/writeTest.csv";
         File.Copy(sampleDB, writeTestPath);
-        database.SetPathForTest(writeTestPath);
+        CSVDatabase<Cheep>.SetPathForTest(writeTestPath);
 
         int origCount = database.Read().Count();
         int amount = 3;
@@ -84,7 +84,7 @@ public class CSVDatabaseTests
         File.Delete(writeTestPath);
 
         // Reset db path
-        database.SetPathForTest(sampleDB);
+        CSVDatabase<Cheep>.SetPathForTest(sampleDB);
     }
     #endregion
 }
