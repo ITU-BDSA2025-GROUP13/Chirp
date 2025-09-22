@@ -49,5 +49,5 @@ jobs:
           git config user.name "Auto Formatter"
           git config user.email "natthias@users.noreply.github.com"
           dotnet format
-          git commit -a -m "Fix formatting"
+          git commit -a -m "style: fix formatting"
           git push origin HEAD:${{ steps.branch.outputs.branch }}
