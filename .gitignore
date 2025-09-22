@@ -56,3 +56,4 @@ omnisharp.json
 TestResult.xml
 nunit-*.xml
 /.idea
+Chirp.sln.DotSettings.user
