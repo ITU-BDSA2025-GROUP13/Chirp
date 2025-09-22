@@ -2,7 +2,7 @@ using Chirp.CLI.Models;
 using SimpleDB;
 
 
-public class Server
+public class Program
 {
     public static void Main(String[] args)
     {

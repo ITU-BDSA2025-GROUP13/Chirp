@@ -11,7 +11,7 @@ public class WebServerTests
 
     public WebServerTests()
     {
-        client = new WebApplicationFactory<Server>().CreateClient();
+        client = new WebApplicationFactory<Program>().CreateClient();
     }
 
 
