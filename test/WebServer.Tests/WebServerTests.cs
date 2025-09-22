@@ -13,8 +13,8 @@ public class WebServerTests
     {
         client = new WebApplicationFactory<Server>().CreateClient();
     }
-    
-    
+
+
     [Fact]
     public async void readFromServer_ResultOK()
     {
@@ -30,7 +30,7 @@ public class WebServerTests
         var response = await task;
         Assert.True(response.IsSuccessStatusCode);
     }
-    
+
     [Fact]
     public async void writeAndRead_ResultOK()
     {
