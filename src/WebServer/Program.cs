@@ -1,6 +1,8 @@
 using Chirp.CLI.Models;
 using SimpleDB;
 
+namespace WebServer;
+
 public class Program
 {
 
