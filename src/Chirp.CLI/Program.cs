@@ -8,7 +8,7 @@ public class Program
 {
     static async Task<int> Main(string[] args)
     {
-        var baseURL = "http://localhost:5076";
+        var baseURL = "https://bdsagroup13chirpremotedb.azurewebsites.net";
         using HttpClient client = new();
         client.BaseAddress = new Uri(baseURL);
 
