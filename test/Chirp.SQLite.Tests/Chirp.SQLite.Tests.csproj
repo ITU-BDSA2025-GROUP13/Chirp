@@ -22,7 +22,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\..\src\WebServer\WebServer.csproj" />
+      <ProjectReference Include="..\..\src\Chirp.SQLite\Chirp.SQLite.csproj" />
     </ItemGroup>
 
 </Project>

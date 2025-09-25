@@ -1,5 +1,5 @@
-using Chirp.CLI.Models;
-using SimpleDB;
+//using Chirp.CLI.Models;
+//using SimpleDB;
 
 namespace WebServer;
 
@@ -8,6 +8,7 @@ public class Program
 
     public static void Main(string[] args)
     {
+        /*
 
         IDatabaseRepository<Cheep> database = CSVDatabase<Cheep>.GetInstance();
 
@@ -59,5 +60,6 @@ public class Program
         app.MapGet("/", () => { return Results.Ok("Greetings, traveler!"); });
 
         app.Run();
+        */
     }
 }
