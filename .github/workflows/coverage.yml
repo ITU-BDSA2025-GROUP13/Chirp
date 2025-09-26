@@ -1,0 +1,68 @@
+name: Code coverage
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+
+      - name: Install xmllint
+        run: sudo apt-get update && sudo apt install -y libxml2-utils
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Run tests with code coverage
+        run: dotnet test --collect:"XPlat Code Coverage"
+
+      - name: Generate HTML coverage report
+        run : |
+          dotnet tool install --global dotnet-reportgenerator-globaltool || true
+          export PATH="$PATH:$HOME/.dotnet/tools"
+          reportgenerator -reports:"**/TestResults/*/coverage.cobertura.xml" -targetdir:"CoverageReport" -reporttypes:"HtmlInline;TextSummary" -assemblyfilters:"-*Tests"
+
+      - name: Upload Coverage Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: CoverageReport
+
+      - name: Ensure code coverage threshold
+        run: |
+          treshold=80
+          reportSummary="CoverageReport/Summary.txt"
+
+          if [ ! -f "$reportSummary" ]; then
+            echo "::error::Summary not found at $reportSummary!"
+            echo "List CoverageReport dir:"
+            ls -la CoverageReport || true
+            exit 1
+          fi
+
+          #Gets summary percantage value from the summary
+          coveragePct=$(grep -oE '[0-9]+([.][0-9]+)?%' "$reportSummary" | head -n1 | tr -d '%')
+
+          if [ -z "$pct" ]; then
+            echo "::error::Couldn't parse coverage percantage from $reportSummary!"
+          fi
+
+          echo "Coverage percent: $coveragePct (treshold: ${treshold}%)"
+
+          if [ "$(echo "$coveragePct < $treshold" | bc -l)" -eq 1 ]; then
+            echo"::error::Coverage not within treshold: ${coveragePct}% < ${treshold}%"
+            exit 1
+          fi
+
+          echo "Coverage OK: ${coveragePct}% >= ${treshold}%
