@@ -1,4 +1,4 @@
-using SQLite;
+using Chirp.SQLite;
 using WebServer.Models;
 public interface ICheepService
 {
@@ -9,9 +9,10 @@ public interface ICheepService
 public class CheepService : ICheepService
 {
     IChirpFacade db = new DBFacade();
+
     // Limit the amount of Cheeps displayed at any given time. Set to 4 for testing easier purposes
     private int _limit = 4;
-    
+
     // These would normally be loaded from a database for example
     private static readonly List<CheepViewModel> _cheeps = new()
         {
@@ -31,13 +32,14 @@ public class CheepService : ICheepService
             new CheepViewModel("Rasmus5", "Hej, velkommen til kurset.", UnixTimeStampToDateTimeString(1690896358)),
             new CheepViewModel("NextPageMus", "I should be on the last page!.", UnixTimeStampToDateTimeString(1690995408))
         };
-    
+
     // Returns at most N cheeps from public timeline
     public List<CheepViewModel> GetCheeps(int pagenum)
     {
+        db.Read();
         // If collection is empty or null, return empty list.
-        if (_cheeps.Count == 0 || _cheeps == null){ return new List<CheepViewModel>(); }
-        
+        if (_cheeps.Count == 0 || _cheeps == null) { return new List<CheepViewModel>(); }
+
         // Uses list as IEnumerable to not nuke memory usage for large collections.
         try
         {
@@ -54,8 +56,8 @@ public class CheepService : ICheepService
     public List<CheepViewModel> GetCheepsFromAuthor(string author, int pagenum)
     {
         // If collection is empty or null, return empty list.
-        if (_cheeps.Count == 0 || _cheeps == null){ return new List<CheepViewModel>(); }
-     
+        if (_cheeps.Count == 0 || _cheeps == null) { return new List<CheepViewModel>(); }
+
         return _cheeps.Where(x => x.Author == author).Skip(pagenum * _limit).Take(_limit).ToList();
     }
 

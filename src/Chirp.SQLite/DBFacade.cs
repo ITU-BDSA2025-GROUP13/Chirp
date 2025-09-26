@@ -2,9 +2,9 @@ using System.Data;
 using Microsoft.Data.Sqlite;
 using System.Data.SqlClient;
 using WebServer.Models;
-namespace SQLite
+namespace Chirp.SQLite
 {
-    public class DBFacade:IChirpFacade
+    public class DBFacade : IChirpFacade
     {
         private static readonly string _sqlDBFilePath = "/tmp/chirp.db";
 
@@ -31,7 +31,7 @@ namespace SQLite
             }
         }
 
-        public IEnumerable<CheepViewModel> Read(int n = 0)
+        public void Read(int n = 0)
         {
             var results = new List<CheepViewModel>();
             var queryString = n == 0
@@ -56,12 +56,11 @@ namespace SQLite
                             record.GetString(record.GetOrdinal("message_id")),
                             record.GetInt32(record.GetOrdinal("pub_date")).ToString()
                         );
-                        results.Add(cheep);
+                        Console.WriteLine(cheep.Message);
                     }
                 }
             }
 
-            return results;
         }
 
         public IEnumerable<CheepViewModel> ReadFromAuthor(string user, int n = 0)
