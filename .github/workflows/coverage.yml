@@ -17,9 +17,6 @@ jobs:
         with:
           dotnet-version: '8.0'
 
-      - name: Install xmllint
-        run: sudo apt-get update && sudo apt install -y libxml2-utils
-
       - name: Restore dependencies
         run: dotnet restore
 
@@ -32,27 +29,37 @@ jobs:
           export PATH="$PATH:$HOME/.dotnet/tools"
           reportgenerator -reports:"**/TestResults/*/coverage.cobertura.xml" -targetdir:"CoverageReport" -reporttypes:"HtmlInline;TextSummary" -assemblyfilters:"-*Tests"
 
-      - name: Ensure code coverage threshold
-        run: |
-          threshold=0.80
-          failed=0
-          while read -r report; do
-              coverage=$(xmllint --xpath "string(//coverage/@line-rate)" "$report")
-              if [ "$(echo "$coverage < $threshold" | bc -l)" -eq 1 ]; then
-                  test_name=$(echo "$report" | tr -s '/' '\n' | awk 'NR==3 {print $1}')
-                  printf "%s failed, current coverage is %s, target coverage is %s\n" "$test_name" "$coverage" "$threshold"
-                  failed=1
-              fi
-          done <<<"$(find . -type f -name "coverage.cobertura.xml")"
-
-          if [ $failed -eq 1 ]; then
-              echo "::error::Coverage treshold violated"
-              exit 1
-          fi
-
       - name: Upload Coverage Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: CoverageReport
+
+      - name: Ensure code coverage threshold
+        run: |
+          treshold=80
+          reportSummary="CoverageReport/Summary.txt"
+
+          if [ ! -f "$reportSummary" ]; then
+            echo "::error::Summary not found at $reportSummary!"
+            echo "List CoverageReport dir:"
+            ls -la CoverageReport || true
+            exit 1
+          fi
+
+          #Gets summary percantage value from the summary
+          coveragePct=$(grep -oE '[0-9]+([.][0-9]+)?%' "$reportSummary" | head -n1 | tr -d '%' | bc -l)
+
+          if [ -z "$pct" ]; then
+            echo "::error::Couldn't parse coverage percantage from $reportSummary!"
+          fi
+
+          echo "Coverage percent: $coveragePct (treshold: ${treshold}%)"
+
+          if [ "$(echo "$coveragePct < $treshold" | bc -l)" -eq 1 ]; then
+            echo"::error::Coverage not within treshold: ${coveragePct}% < ${treshold}%"
+            exit 1
+          fi
+
+          echo "Coverage OK: ${coveragePct}% >= ${treshold}%"
