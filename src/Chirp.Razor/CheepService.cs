@@ -1,5 +1,5 @@
-public record CheepViewModel(string Author, string Message, string Timestamp);
-
+using SQLite;
+using WebServer.Models;
 public interface ICheepService
 {
     public List<CheepViewModel> GetCheeps(int pagenum = 0);
@@ -8,6 +8,7 @@ public interface ICheepService
 
 public class CheepService : ICheepService
 {
+    IChirpFacade db = new DBFacade();
     // Limit the amount of Cheeps displayed at any given time. Set to 4 for testing easier purposes
     private int _limit = 4;
     
