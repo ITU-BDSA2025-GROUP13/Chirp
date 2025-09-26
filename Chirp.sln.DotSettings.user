@@ -25,5 +25,11 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d683478c_002Dfdbb_002D4ea2_002Dafbb_002Df8ee41c6a404/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="WebServerTests #9" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::ED4A2CDE-C412-48B6-ABDE-18E0D6CE6818::net8.0::WebServerTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::9D96AB47-B975-45FB-8D5E-B61820E5EAEF::net8.0::E2ETests.writeAndRead_ResultOK&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=df78e083_002D58e3_002D4ddc_002Db7eb_002Df90d7be5fb15/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="writeAndRead_ResultOK" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::9D96AB47-B975-45FB-8D5E-B61820E5EAEF::net8.0::E2ETests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
