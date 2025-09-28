@@ -1,4 +1,4 @@
-name: Release
+name: Release (and publish)
 
 on:
   push:
@@ -17,17 +17,21 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       release_created: ${{ steps.create_release.outputs.release_created }}
     steps:
-      - name: release_please
-        id: create_release
+      - id: create_release
         uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
+
+  debug:
+    needs: release-please
+    runs-on: ubuntu-latest
+    steps:
       - name: Debug Outputs
         run: |
-          echo "Release Created: ${{ steps.create_release.outputs.release_created }}"
-          echo "Upload URL: ${{ steps.create_release.outputs.upload_url }}"
-
+          echo "Release Created: ${{ needs.release-please.outputs.release_created }}"
+          echo "Upload URL: ${{ needs.release-please.outputs.upload_url }}"
+    
   publish:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
