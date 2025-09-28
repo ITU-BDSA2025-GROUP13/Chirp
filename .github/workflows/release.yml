@@ -1,64 +1,20 @@
-# Create a release on tags starting with v
-# Upload release artefacts
-name: Release
-
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
 
 permissions:
   contents: write
+  issues: write
+  pull-requests: write # release prs
+
+name: release-please
 
 jobs:
-  release:
+  release-please:
     runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-      - name: Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
-
-  publish:
-    needs: release
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rid: [linux-x64, linux-arm64, win-x64, win-arm64, osx-x64, osx-arm64]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: googleapis/release-please-action@v4
         with:
-          dotnet-version: 8.0.x
-
-      - name: Publish for ${{ matrix.rid }}
-        run: |
-          dotnet publish src/Chirp.CLI/Chirp.CLI.csproj \
-            -c Release \
-            -r ${{ matrix.rid }} \
-            -p:PublishSingleFile=false \
-            -o publish/${{ matrix.rid }}
-
-      - name: Ensure executable bit (Linux/macOS only)
-        if: ${{ matrix.rid != 'win-x64'}}
-        run: chmod +x publish/${{ matrix.rid }}/Chirp.CLI || true
-
-      - name: Zip output
-        run: |
-          cd publish
-          zip -r chirp-${{ matrix.rid }}.zip ${{ matrix.rid }}
-
-      - name: Upload artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: publish/chirp-${{ matrix.rid }}.zip
-          asset_name: chirp-${{ github.ref_name }}-${{ matrix.rid }}.zip
-          asset_content_type: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: simple
