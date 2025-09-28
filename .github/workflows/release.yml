@@ -22,15 +22,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
-
-  debug:
-    needs: release-please
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug Outputs
-        run: |
-          echo "Release Created: ${{ needs.release-please.outputs.release_created }}"
-          echo "Upload URL: ${{ needs.release-please.outputs.upload_url }}"
     
   publish:
     needs: release-please
