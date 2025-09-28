@@ -17,7 +17,8 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       release_created: ${{ steps.create_release.outputs.release_created }}
     steps:
-      - name: create_release
+      - name: release_please
+        id: create_release
         uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
