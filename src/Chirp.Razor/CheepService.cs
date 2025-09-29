@@ -11,7 +11,7 @@ public class CheepService : ICheepService
     private static readonly IChirpFacade _db = new DBFacade();
 
     // Limit the amount of Cheeps displayed at any given time. Set to 4 for testing easier purposes
-    private int _limit = 4;
+    private int _limit = 32;
 
     // Returns at most N cheeps from public timeline
     public List<CheepViewModel> GetCheeps(int pagenum)
