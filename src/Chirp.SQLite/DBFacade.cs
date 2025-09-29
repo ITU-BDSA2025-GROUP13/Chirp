@@ -1,8 +1,7 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
-using System.Data.SqlClient;
 using Chirp.Models;
-using System.Net.WebSockets;
+
 namespace Chirp.SQLite
 {
     public class DBFacade : IChirpFacade
@@ -51,7 +50,7 @@ namespace Chirp.SQLite
             }
         }
 
-        public void Post(CheepViewModel cheep)
+        public void Create(CheepViewModel cheep)
         {
             using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
             using var command = connection.CreateCommand();
@@ -72,54 +71,39 @@ namespace Chirp.SQLite
             }
         }
 
-        public IEnumerable<CheepViewModel> Read(int n = 0)
+        public IEnumerable<CheepViewModel> Read(string? username = null, int n = 0)
         {
             var results = new List<CheepViewModel>();
-            var queryString = n == 0
-                ? @"SELECT * FROM message ORDER BY pub_date DESC"
-                : $"SELECT * FROM message ORDER BY pub_date DESC LIMIT {n}";
-
-            Console.WriteLine(queryString);
+            var queryString = @"
+                    SELECT m.*, u.username FROM message m 
+                    JOIN user u ON m.author_id = u.user_id 
+                    WHERE (@name IS NULL OR u.username = @name) 
+                    ORDER BY m.pub_date DESC 
+                    LIMIT @limit";
 
             using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
             using var command = connection.CreateCommand();
             command.CommandText = queryString;
+            command.Parameters.AddWithValue("@name", (object?)username ?? DBNull.Value);
+            command.Parameters.AddWithValue("@limit", n == 0 ? -1 : n);
+
             connection.Open();
 
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                var userId = reader.GetInt32(reader.GetOrdinal("author_id"));
-                var userName = GetUserNameFromUserID(userId) ?? throw new Exception("User not found! user_id: " + userId);
+                int unixTimeStamp = reader.GetInt32(reader.GetOrdinal("pub_date"));
+                string dateTimeString = UnixTimeStampToDateTimeString(unixTimeStamp);
                 var cheep = new CheepViewModel(
-                    userName,
+                    reader.GetString(reader.GetOrdinal("username")),
                     reader.GetString(reader.GetOrdinal("text")),
-                    reader.GetInt32(reader.GetOrdinal("pub_date")).ToString()
+                    dateTimeString
                 );
                 results.Add(cheep);
             }
             return results;
         }
 
-        public IEnumerable<CheepViewModel> ReadFromAuthor(string user, int n = 0)
-        {
-            throw new NotImplementedException();
-        }
-
-        private IEnumerable<CheepViewModel> ReadAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        private IEnumerable<CheepViewModel> ReadAllCheeps()
-        {
-            throw new NotImplementedException();
-        }
-
-        private IEnumerable<CheepViewModel> ReadCheeps(int n)
-        {
-            throw new NotImplementedException();
-        }
 
         private void ReadSingleRow(IDataRecord dataRecord)
         {
@@ -138,5 +122,30 @@ namespace Chirp.SQLite
             return result?.ToString();
         }
 
+        private static int? GetUserIDFromUserName(string username)
+        {
+            using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT user_id FROM user WHERE username = @name";
+            command.Parameters.AddWithValue("@name", username);
+
+            connection.Open();
+            var result = command.ExecuteScalar();
+
+            if (result == null || result == DBNull.Value)
+            {
+                return null;
+            }
+
+            return Convert.ToInt32(result);
+        }
+
+        private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTime = dateTime.AddSeconds(unixTimeStamp);
+            return dateTime.ToString("MM/dd/yy H:mm:ss");
+        }
     }
 }
