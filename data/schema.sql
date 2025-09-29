@@ -1,7 +1,7 @@
 drop table if exists user;
 create table user (
   user_id integer primary key autoincrement,
-  username string not null,
+  username string not null unique,
   email string not null,
   pw_hash string not null
 );
