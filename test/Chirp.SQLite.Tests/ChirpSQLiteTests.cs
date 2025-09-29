@@ -1,6 +1,7 @@
 ﻿using Chirp.Models;
 using Chirp.SQLite;
 using Microsoft.Data.Sqlite;
+using System.Linq;
 
 public class ChirpSQLiteTests
 {
@@ -8,32 +9,71 @@ public class ChirpSQLiteTests
     public void ReadAllMessageTest()
     {
         var db = CreatesDatabase();
-        IEnumerable<CheepViewModel> cheeps = db.Read();
+        List<CheepViewModel> cheeps = db.Read().ToList();
 
-        foreach (CheepViewModel cheep in cheeps)
-        {
-            Assert.Equal("hello world", cheep.Message);
-            Assert.Equal("Jacqualine Gilcoine", cheep.Author);
-        }
+        Assert.Equal("hello world", cheeps[0].Message);
+        Assert.Equal("Jacqualine Gilcoine", cheeps[0].Author);
+
+        Assert.Equal("hello pork world", cheeps[1].Message);
+        Assert.Equal("Jhon Pork", cheeps[1].Author);
+
+        Assert.Equal("I love Fortnight", cheeps[2].Message);
+        Assert.Equal("Karl Fortnight", cheeps[2].Author);
     }
 
-    // [Fact]
-    // public void ReadSomeMessageTest()
-    // {
-    //      TODO
-    // }
+    [Fact]
+    public void ReadSomeMessageTest()
+    {
+        var db = CreatesDatabase();
+        List<CheepViewModel> cheeps = db.Read(null, 1).ToList();
 
-    // [Fact]
-    // public void ReadAllUsersTest()
-    // {
-    //      TODO
-    // }
+        Assert.Equal("hello world", cheeps[0].Message);
+        Assert.Equal("Jacqualine Gilcoine", cheeps[0].Author);
 
-    // [Fact]
-    // public void ReadSomeUsersTest()
-    // {
-    //      TODO
-    // }
+        Assert.Single(cheeps);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        {
+            CheepViewModel cheep = cheeps[2];
+        });
+    }
+
+    [Fact]
+    public void ReadUserMessagesTest()
+    {
+        var db = CreatesDatabase();
+        List<CheepViewModel> cheeps = db.Read("Karl Fortnight", 0).ToList();
+
+        Assert.Equal("I love Fortnight", cheeps[0].Message);
+        Assert.Equal("Karl Fortnight", cheeps[0].Author);
+
+        Assert.Single(cheeps);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        {
+            CheepViewModel cheep = cheeps[2];
+        });
+
+    }
+
+    [Fact]
+    public void CreateMessage()
+    {
+        var db = CreatesDatabase();
+        var newCheep = new CheepViewModel("Karl Fortnight", "Mannnnnnn I Love Fortnight", "1490895677");
+        db.Create(newCheep);
+
+        List<CheepViewModel> cheeps = db.Read("Karl Fortnight", 0).ToList();
+
+        Assert.False(1 == cheeps.Count);
+
+        Assert.Equal("I love Fortnight", cheeps[0].Message);
+        Assert.Equal("Karl Fortnight", cheeps[0].Author);
+
+        Assert.Equal("Mannnnnnn I Love Fortnight", cheeps[1].Message);
+        Assert.Equal("Karl Fortnight", cheeps[1].Author);
+
+    }
 
     private IChirpFacade CreatesDatabase()
     {
@@ -61,11 +101,27 @@ public class ChirpSQLiteTests
                 );
 
                 INSERT INTO user (user_id, username, email, pw_hash)
-                VALUES (10, 'Jacqualine Gilcoine', 'Jacqualine.Gilcoine@gmail.com', 'password');
+                VALUES (@1, 'Jacqualine Gilcoine', 'Jacqualine.Gilcoine@gmail.com', 'password');
+
+                INSERT INTO user (user_id, username, email, pw_hash)
+                VALUES (@2, 'Jhon Pork', 'Jhon.Pork@gmail.com', 'porkword');
+
+                INSERT INTO user (user_id, username, email, pw_hash)
+                VALUES (@3, 'Karl Fortnight', 'Karl.Fortnight@gmail.com', 'word');
 
                 INSERT INTO message (message_id, author_id, text, pub_date)
-                VALUES (0, 10, 'hello world', 1690895677);
+                VALUES (1, @1, 'hello world', 1790895677);
+
+                INSERT INTO message (message_id, author_id, text, pub_date)
+                VALUES (2, @2, 'hello pork world', 1690895677);
+
+                INSERT INTO message (message_id, author_id, text, pub_date)
+                VALUES (3, @3, 'I love Fortnight', 1590895677);
             ";
+
+        command.Parameters.AddWithValue("@1", "Jacqualine Gilcoine".GetHashCode());
+        command.Parameters.AddWithValue("@2", "Jhon Pork".GetHashCode());
+        command.Parameters.AddWithValue("@3", "Karl Fortnight".GetHashCode());
 
         connection.Open();
         int rowsAffected = command.ExecuteNonQuery();
