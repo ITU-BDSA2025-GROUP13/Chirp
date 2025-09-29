@@ -11,7 +11,7 @@ public class CheepService : ICheepService
     private static readonly IChirpFacade _db = new DBFacade();
 
     // Limit the amount of Cheeps displayed at any given time. Set to 4 for testing easier purposes
-    private int _limit = 32;
+    private int _limit = 4;
 
     // Returns at most N cheeps from public timeline
     public List<CheepViewModel> GetCheeps(int pagenum)
@@ -49,13 +49,4 @@ public class CheepService : ICheepService
 
         return cheeps.Where(x => x.Author == author).Skip(pagenum * _limit).Take(_limit).ToList();
     }
-
-    private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
-    {
-        // Unix timestamp is seconds past epoch
-        DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds(unixTimeStamp);
-        return dateTime.ToString("MM/dd/yy H:mm:ss");
-    }
-
 }
