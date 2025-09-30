@@ -75,10 +75,10 @@ namespace Chirp.SQLite
         {
             var results = new List<CheepViewModel>();
             var queryString = @"
-                    SELECT m.*, u.username FROM message m 
-                    JOIN user u ON m.author_id = u.user_id 
-                    WHERE (@name IS NULL OR u.username = @name) 
-                    ORDER BY m.pub_date DESC 
+                    SELECT m.*, u.username FROM message m
+                    JOIN user u ON m.author_id = u.user_id
+                    WHERE (@name IS NULL OR u.username = @name)
+                    ORDER BY m.pub_date DESC
                     LIMIT @limit";
 
             using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
@@ -122,7 +122,7 @@ namespace Chirp.SQLite
             return result?.ToString();
         }
 
-        private static int? GetUserIDFromUserName(string username)
+        private int? GetUserIDFromUserName(string username)
         {
             using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
             using var command = connection.CreateCommand();
