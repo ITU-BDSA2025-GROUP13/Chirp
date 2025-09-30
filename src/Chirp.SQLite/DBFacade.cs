@@ -7,12 +7,23 @@ namespace Chirp.SQLite
 {
     public class DBFacade : IChirpFacade
     {
-        private readonly string _sqlDBFilePath = "/tmp/chirp.db";
+        private readonly string _sqlDBFilePath;
 
         public DBFacade()
         {
+            // Use CHIRPDBPATH from env if present
+            string? dbPathFromEnv = Environment.GetEnvironmentVariable("CHIRPDBPATH");
+            _sqlDBFilePath = string.IsNullOrEmpty(dbPathFromEnv) ? "/tmp/chirp.db" : dbPathFromEnv;
+
             if (!File.Exists(_sqlDBFilePath))
             {
+                string? dbDir = Path.GetDirectoryName(_sqlDBFilePath);
+                // Must check if dbDir is null or empty, else compiler warns
+                if (!string.IsNullOrEmpty(dbDir))
+                {
+                    Directory.CreateDirectory(dbDir);
+                }
+
                 File.Create(_sqlDBFilePath);
             }
             using (SqliteConnection connection = new SqliteConnection($"Data Source={_sqlDBFilePath}"))
