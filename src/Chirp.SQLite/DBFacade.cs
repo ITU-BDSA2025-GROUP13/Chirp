@@ -7,7 +7,7 @@ namespace Chirp.SQLite
 {
     public class DBFacade : IChirpFacade
     {
-        private static readonly string _sqlDBFilePath = "/tmp/chirp.db";
+        private readonly string _sqlDBFilePath = "/tmp/chirp.db";
 
         public DBFacade()
         {
@@ -110,12 +110,12 @@ namespace Chirp.SQLite
             throw new NotImplementedException();
         }
 
-        private static void ReadSingleRow(IDataRecord dataRecord)
+        private void ReadSingleRow(IDataRecord dataRecord)
         {
             Console.WriteLine(String.Format("{0}, {1}", dataRecord[0], dataRecord[1]));
         }
 
-        private static string? GetUserNameFromUserID(int userId)
+        private string? GetUserNameFromUserID(int userId)
         {
             using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
             using var command = connection.CreateCommand();
