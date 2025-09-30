@@ -9,6 +9,37 @@ namespace Chirp.SQLite
     {
         private static readonly string _sqlDBFilePath = "/tmp/chirp.db";
 
+        public DBFacade()
+        {
+            if (!File.Exists(_sqlDBFilePath))
+            {
+                File.Create(_sqlDBFilePath);
+            }
+            using (SqliteConnection connection = new SqliteConnection($"Data Source={_sqlDBFilePath}"))
+            {
+                string initilizationQuery = @"
+                CREATE TABLE IF NOT EXISTS user (
+                  user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  username STRING NOT NULL,
+                  email STRING NOT NULL,
+                  pw_hash STRING NOT NULL
+                );
+
+                CREATE TABLE IF NOT EXISTS message (
+                  message_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  author_id INTEGER NOT NULL,
+                  text STRING NOT NULL,
+                  pub_date INTEGER
+                )";
+
+                connection.Open();
+                using (SqliteCommand command = new SqliteCommand(initilizationQuery, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         public void Post(CheepViewModel cheep)
         {
             using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
