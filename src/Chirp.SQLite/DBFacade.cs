@@ -7,12 +7,23 @@ namespace Chirp.SQLite
 {
     public class DBFacade : IChirpFacade
     {
-        private static readonly string _sqlDBFilePath = "/tmp/chirp.db";
+        private readonly string _sqlDBFilePath;
 
         public DBFacade()
         {
+            // Use CHIRPDBPATH from env if present
+            string? dbPathFromEnv = Environment.GetEnvironmentVariable("CHIRPDBPATH");
+            _sqlDBFilePath = string.IsNullOrEmpty(dbPathFromEnv) ? "/tmp/chirp.db" : dbPathFromEnv;
+
             if (!File.Exists(_sqlDBFilePath))
             {
+                string? dbDir = Path.GetDirectoryName(_sqlDBFilePath);
+                // Must check if dbDir is null or empty, else compiler warns
+                if (!string.IsNullOrEmpty(dbDir))
+                {
+                    Directory.CreateDirectory(dbDir);
+                }
+
                 File.Create(_sqlDBFilePath);
             }
             using (SqliteConnection connection = new SqliteConnection($"Data Source={_sqlDBFilePath}"))
@@ -110,12 +121,12 @@ namespace Chirp.SQLite
             throw new NotImplementedException();
         }
 
-        private static void ReadSingleRow(IDataRecord dataRecord)
+        private void ReadSingleRow(IDataRecord dataRecord)
         {
             Console.WriteLine(String.Format("{0}, {1}", dataRecord[0], dataRecord[1]));
         }
 
-        private static string? GetUserNameFromUserID(int userId)
+        private string? GetUserNameFromUserID(int userId)
         {
             using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
             using var command = connection.CreateCommand();
