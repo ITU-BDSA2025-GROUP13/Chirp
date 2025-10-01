@@ -104,42 +104,6 @@ namespace Chirp.SQLite
             return results;
         }
 
-
-        private void ReadSingleRow(IDataRecord dataRecord)
-        {
-            Console.WriteLine(String.Format("{0}, {1}", dataRecord[0], dataRecord[1]));
-        }
-
-        private string? GetUserNameFromUserID(int userId)
-        {
-            using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
-            using var command = connection.CreateCommand();
-            command.CommandText = "SELECT username FROM user WHERE user_id = @id";
-            command.Parameters.AddWithValue("@id", userId);
-
-            connection.Open();
-            var result = command.ExecuteScalar();
-            return result?.ToString();
-        }
-
-        private int? GetUserIDFromUserName(string username)
-        {
-            using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
-            using var command = connection.CreateCommand();
-            command.CommandText = "SELECT user_id FROM user WHERE username = @name";
-            command.Parameters.AddWithValue("@name", username);
-
-            connection.Open();
-            var result = command.ExecuteScalar();
-
-            if (result == null || result == DBNull.Value)
-            {
-                return null;
-            }
-
-            return Convert.ToInt32(result);
-        }
-
         private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
