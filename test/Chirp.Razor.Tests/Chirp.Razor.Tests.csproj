@@ -21,9 +21,9 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <ProjectReference Include="..\..\src\WebServer\WebServer.csproj" />
+      <ProjectReference Include="..\..\src\Chirp.Razor\Chirp.Razor.csproj" />
     </ItemGroup>
 
 </Project>
