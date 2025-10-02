@@ -37,6 +37,23 @@ public class ChirpRazorTests
         }
     }
 
+    private void clearTables()
+    {
+        using (var connection = new SqliteConnection($"Data Source={_dbPath}"))
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = @"
+                DELETE FROM message;
+                DELETE FROM user;
+            ";
+
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+    }
+
+
+
     [Fact]
     public void PublicModel_OnGet_ShouldPopulateCheeps()
     {
@@ -65,5 +82,52 @@ public class ChirpRazorTests
         Assert.Single(pageModel.Cheeps);
         Assert.Equal("Karl Fortnite", pageModel.Cheeps[0].Author);
         Assert.Equal("I love Fortnite", pageModel.Cheeps[0].Message);
+    }
+
+    [Fact]
+    public void PublicModel_OnGet_ShouldBeEmptyWithNoCheeps()
+    {
+
+        clearTables();
+
+        var service = new CheepService();
+
+        var pageModel = new PublicModel(service);
+
+        var result = pageModel.OnGet(0);
+
+        Assert.Equal(new List<CheepViewModel>(), pageModel.Cheeps);
+        Assert.Empty(pageModel.Cheeps);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        {
+            string cheepMessage = pageModel.Cheeps[0].Message;
+        });
+    }
+
+    [Fact]
+    public void UserTimelineModel_OnGet_ShouldBeNullIfNoAuthor()
+    {
+        clearTables();
+
+        var service = new CheepService();
+
+        var pageModel = new UserTimelineModel(service);
+
+        var result = pageModel.OnGet("Karl Fortnite", 0);
+
+        Assert.Equal(new List<CheepViewModel>(), pageModel.Cheeps);
+
+        Assert.Empty(pageModel.Cheeps);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        {
+            string Author = pageModel.Cheeps[0].Author;
+        });
+
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        {
+            string cheepMessage = pageModel.Cheeps[0].Message;
+        });
     }
 }
