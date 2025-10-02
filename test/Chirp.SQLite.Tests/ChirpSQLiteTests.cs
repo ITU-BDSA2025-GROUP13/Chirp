@@ -25,10 +25,10 @@ public class ChirpSQLiteTests
                 VALUES (@1, 'Jacqualine Gilcoine', 'Jacqualine.Gilcoine@gmail.com', 'password');
 
                 INSERT INTO user (user_id, username, email, pw_hash)
-                VALUES (@2, 'Jhon Pork', 'Jhon.Pork@gmail.com', 'porkword');
+                VALUES (@2, 'John Pork', 'John.Pork@gmail.com', 'porkword');
 
                 INSERT INTO user (user_id, username, email, pw_hash)
-                VALUES (@3, 'Karl Fortnight', 'Karl.Fortnight@gmail.com', 'word');
+                VALUES (@3, 'Karl Fortnite', 'Karl.Fortnite@gmail.com', 'word');
 
                 INSERT INTO message (message_id, author_id, text, pub_date)
                 VALUES (1, @1, 'hello world', 1790895677);
@@ -37,12 +37,12 @@ public class ChirpSQLiteTests
                 VALUES (2, @2, 'hello pork world', 1690895677);
 
                 INSERT INTO message (message_id, author_id, text, pub_date)
-                VALUES (3, @3, 'I love Fortnight', 1590895677);
+                VALUES (3, @3, 'I love Fortnite', 1590895677);
             ";
 
             command.Parameters.AddWithValue("@1", "Jacqualine Gilcoine".GetHashCode());
-            command.Parameters.AddWithValue("@2", "Jhon Pork".GetHashCode());
-            command.Parameters.AddWithValue("@3", "Karl Fortnight".GetHashCode());
+            command.Parameters.AddWithValue("@2", "John Pork".GetHashCode());
+            command.Parameters.AddWithValue("@3", "Karl Fortnite".GetHashCode());
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -58,10 +58,10 @@ public class ChirpSQLiteTests
         Assert.Equal("Jacqualine Gilcoine", cheeps[0].Author);
 
         Assert.Equal("hello pork world", cheeps[1].Message);
-        Assert.Equal("Jhon Pork", cheeps[1].Author);
+        Assert.Equal("John Pork", cheeps[1].Author);
 
-        Assert.Equal("I love Fortnight", cheeps[2].Message);
-        Assert.Equal("Karl Fortnight", cheeps[2].Author);
+        Assert.Equal("I love Fortnite", cheeps[2].Message);
+        Assert.Equal("Karl Fortnite", cheeps[2].Author);
     }
 
     [Fact]
@@ -83,10 +83,10 @@ public class ChirpSQLiteTests
     [Fact]
     public void ReadUserMessagesTest()
     {
-        List<CheepViewModel> cheeps = _db.Read("Karl Fortnight", 0).ToList();
+        List<CheepViewModel> cheeps = _db.Read("Karl Fortnite", 0).ToList();
 
-        Assert.Equal("I love Fortnight", cheeps[0].Message);
-        Assert.Equal("Karl Fortnight", cheeps[0].Author);
+        Assert.Equal("I love Fortnite", cheeps[0].Message);
+        Assert.Equal("Karl Fortnite", cheeps[0].Author);
 
         Assert.Single(cheeps);
 
@@ -99,17 +99,17 @@ public class ChirpSQLiteTests
     [Fact]
     public void CreateMessage()
     {
-        var newCheep = new CheepViewModel("Karl Fortnight", "Mannnnnnn I Love Fortnight", "1490895677");
+        var newCheep = new CheepViewModel("Karl Fortnite", "Mannnnnnn I Love Fortnite", "1490895677");
         _db.Create(newCheep);
 
-        List<CheepViewModel> cheeps = _db.Read("Karl Fortnight", 0).ToList();
+        List<CheepViewModel> cheeps = _db.Read("Karl Fortnite", 0).ToList();
 
         Assert.False(1 == cheeps.Count);
 
-        Assert.Equal("I love Fortnight", cheeps[0].Message);
-        Assert.Equal("Karl Fortnight", cheeps[0].Author);
+        Assert.Equal("I love Fortnite", cheeps[0].Message);
+        Assert.Equal("Karl Fortnite", cheeps[0].Author);
 
-        Assert.Equal("Mannnnnnn I Love Fortnight", cheeps[1].Message);
-        Assert.Equal("Karl Fortnight", cheeps[1].Author);
+        Assert.Equal("Mannnnnnn I Love Fortnite", cheeps[1].Message);
+        Assert.Equal("Karl Fortnite", cheeps[1].Author);
     }
 }
