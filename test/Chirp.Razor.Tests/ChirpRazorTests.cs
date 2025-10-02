@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 public class ChirpRazorTests
 {
     private DBFacade _db;
-    private readonly string _dbPath = "/tmp/chirp/test.db";
+    private readonly string _dbPath = "/tmp/chirp/razorTest.db";
     private readonly WebApplicationFactory<Program> _factory;
 
     public ChirpRazorTests()
