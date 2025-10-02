@@ -1,17 +1,21 @@
 ﻿using Xunit;
 using Chirp.Razor.Pages;
+using Chirp.Razor;
 using Chirp.Models;
 using Chirp.SQLite;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Testing;
 
 public class ChirpRazorTests
 {
     private DBFacade _db;
     private readonly string _dbPath = "/tmp/chirp/test.db";
+    private readonly WebApplicationFactory<Program> _factory;
 
     public ChirpRazorTests()
     {
+
         Environment.SetEnvironmentVariable("CHIRPDBPATH", _dbPath);
         _db = new DBFacade();
 
@@ -35,6 +39,8 @@ public class ChirpRazorTests
             connection.Open();
             command.ExecuteNonQuery();
         }
+
+        _factory = new WebApplicationFactory<Program>();
     }
 
     private void clearTables()
@@ -51,8 +57,6 @@ public class ChirpRazorTests
             command.ExecuteNonQuery();
         }
     }
-
-
 
     [Fact]
     public void PublicModel_OnGet_ShouldPopulateCheeps()
@@ -83,6 +87,39 @@ public class ChirpRazorTests
         Assert.Equal("Karl Fortnite", pageModel.Cheeps[0].Author);
         Assert.Equal("I love Fortnite", pageModel.Cheeps[0].Message);
     }
+
+    [Fact]
+    public async Task PublicPage_ShouldRenderCheeps()
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/");
+        response.EnsureSuccessStatusCode();
+
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Public Timeline", html);
+        Assert.Contains("I love Fortnite", html);
+        Assert.Contains("<a href=\"/Karl Fortnite\">", html);
+
+    }
+
+    [Fact]
+    public async Task UserTimelinePage_ShouldRenderCheeps()
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/Karl Fortnite");
+        response.EnsureSuccessStatusCode();
+
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Karl Fortnite's Timeline", html);
+        Assert.Contains("I love Fortnite", html);
+        Assert.Contains("<a href=\"/Karl Fortnite\">", html);
+
+    }
+
 
     [Fact]
     public void PublicModel_OnGet_ShouldBeEmptyWithNoCheeps()
@@ -130,4 +167,41 @@ public class ChirpRazorTests
             string cheepMessage = pageModel.Cheeps[0].Message;
         });
     }
+
+    [Fact]
+    public async Task PublicPage_ShouldNotRenderCheepsIfEmpty()
+    {
+        clearTables();
+
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/");
+        response.EnsureSuccessStatusCode();
+
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Public Timeline", html);
+        Assert.DoesNotContain("I love Fortnite", html);
+        Assert.DoesNotContain("<a href=\"/Karl Fortnite\">", html);
+
+    }
+
+    [Fact]
+    public async Task UserTimelinePage_ShouldNotRenderCheepsIfEmpty()
+    {
+        clearTables();
+
+        var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/Karl Fortnite");
+        response.EnsureSuccessStatusCode();
+
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.Contains("Karl Fortnite's Timeline", html);
+        Assert.DoesNotContain("I love Fortnite", html);
+        Assert.DoesNotContain("<a href=\"/Karl Fortnite\">", html);
+
+    }
+
 }
