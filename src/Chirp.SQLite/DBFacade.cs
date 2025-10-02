@@ -10,9 +10,10 @@ namespace Chirp.SQLite
 
         public DBFacade()
         {
+            string defaultDBPath = Path.Combine(Path.GetTempPath(), "chirp.db");
             // Use CHIRPDBPATH from env if present
             string? dbPathFromEnv = Environment.GetEnvironmentVariable("CHIRPDBPATH");
-            _sqlDBFilePath = string.IsNullOrEmpty(dbPathFromEnv) ? "/tmp/chirp.db" : dbPathFromEnv;
+            _sqlDBFilePath = string.IsNullOrEmpty(dbPathFromEnv) ? defaultDBPath : dbPathFromEnv;
 
             if (!File.Exists(_sqlDBFilePath))
             {
