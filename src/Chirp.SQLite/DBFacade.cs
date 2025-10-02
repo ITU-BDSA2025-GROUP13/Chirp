@@ -40,7 +40,7 @@ namespace Chirp.SQLite
                   author_id INTEGER NOT NULL,
                   text STRING NOT NULL,
                   pub_date INTEGER
-                )";
+                );";
 
                 connection.Open();
                 using (SqliteCommand command = new SqliteCommand(initilizationQuery, connection))
