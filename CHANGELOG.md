@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.0.1](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v4.0.0...v4.0.1) (2025-10-03)
+
+
+### Bug Fixes
+
+* add semi colon to sql ([85e3514](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/85e3514cdee6c18d11da87a09b6726bced7ffaa5))
+* remove test build instructions for sqlite test ([0df1155](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/0df1155c171e1b35a6460b30b435658b5d28814b))
+* restore support for running on windows ([f0fa015](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/f0fa015fe5445403f412038d719abc4942c3268f))
+
 ## [4.0.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v3.0.1...v4.0.0) (2025-10-01)
 
 
