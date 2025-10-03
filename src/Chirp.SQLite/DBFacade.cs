@@ -88,7 +88,7 @@ namespace Chirp.SQLite
             using var command = connection.CreateCommand();
             command.CommandText = queryString;
             command.Parameters.AddWithValue("@limit", readLimit);
-            command.Parameters.AddWithValue("@offset", pagenum*readLimit);
+            command.Parameters.AddWithValue("@offset", pagenum * readLimit);
 
             connection.Open();
 
@@ -123,7 +123,7 @@ namespace Chirp.SQLite
             command.CommandText = queryString;
             command.Parameters.AddWithValue("@username", username);
             command.Parameters.AddWithValue("@limit", readLimit);
-            command.Parameters.AddWithValue("@offset", pagenum*readLimit);
+            command.Parameters.AddWithValue("@offset", pagenum * readLimit);
 
             connection.Open();
 
@@ -141,7 +141,7 @@ namespace Chirp.SQLite
             }
             return results;
         }
-        
+
         private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
