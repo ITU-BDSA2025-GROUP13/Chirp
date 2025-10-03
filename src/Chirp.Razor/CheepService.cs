@@ -9,7 +9,7 @@ public interface ICheepService
 public class CheepService : ICheepService
 {
     private static readonly IChirpFacade _db = new DBFacade();
-    
+
     /// Returns at most N cheeps from public timeline
     public List<CheepViewModel> GetCheeps(int pagenum)
     {
