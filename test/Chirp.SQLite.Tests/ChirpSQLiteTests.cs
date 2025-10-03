@@ -1,17 +1,20 @@
 ﻿using Chirp.Models;
-using Chirp.SQLite;
+using Chirp.DataBase;
+using Chirp.Repository;
 using Microsoft.Data.Sqlite;
 using System.Linq;
 
 public class ChirpSQLiteTests
 {
-    private DBFacade _db;
     private readonly string _dbPath = "/tmp/chirp/test.db";
+
+    private static ICheepRepository _cheepRepository;
 
     public ChirpSQLiteTests()
     {
         Environment.SetEnvironmentVariable("CHIRPDBPATH", _dbPath);
-        _db = new DBFacade();
+        _cheepRepository = new CheepRepository(new DB());
+
 
         // Set up db for testing
         using (var connection = new SqliteConnection($"Data Source={_dbPath}"))
@@ -52,7 +55,7 @@ public class ChirpSQLiteTests
     [Fact]
     public void ReadAllMessageTest()
     {
-        List<CheepViewModel> cheeps = _db.ReadPage().ToList();
+        List<Cheep> cheeps = _cheepRepository.ReadPage().ToList();
 
         Assert.Equal("hello world", cheeps[0].Message);
         Assert.Equal("Jacqualine Gilcoine", cheeps[0].Author);
@@ -67,7 +70,7 @@ public class ChirpSQLiteTests
     [Fact]
     public void ReadUserMessagesTest()
     {
-        List<CheepViewModel> cheeps = _db.ReadPageFromAuthor("Karl Fortnite").ToList();
+        List<Cheep> cheeps = _cheepRepository.ReadPageFromAuthor("Karl Fortnite").ToList();
 
         Assert.Equal("I love Fortnite", cheeps[0].Message);
         Assert.Equal("Karl Fortnite", cheeps[0].Author);
@@ -76,17 +79,17 @@ public class ChirpSQLiteTests
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
-            CheepViewModel cheep = cheeps[2];
+            Cheep cheep = cheeps[2];
         });
     }
 
     [Fact]
     public void CreateMessage()
     {
-        var newCheep = new CheepViewModel("Karl Fortnite", "Mannnnnnn I Love Fortnite", "1490895677");
-        _db.Create(newCheep);
+        var newCheep = new Cheep("Karl Fortnite", "Mannnnnnn I Love Fortnite", "1490895677");
+        _cheepRepository.Create(newCheep);
 
-        List<CheepViewModel> cheeps = _db.ReadPageFromAuthor("Karl Fortnite").ToList();
+        List<Cheep> cheeps = _cheepRepository.ReadPageFromAuthor("Karl Fortnite").ToList();
 
         Assert.False(1 == cheeps.Count);
 
