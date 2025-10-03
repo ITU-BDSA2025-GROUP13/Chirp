@@ -7,17 +7,27 @@ namespace Chirp.Models
         /// </summary>
         /// <param name="pagenum">Which page of cheeps is wished for (the higher the older cheeps)</param>
         /// <returns></returns>
-        IEnumerable<CheepViewModel> ReadPage(int pagenum = 0);
+        IEnumerable<Cheep> ReadPage(int pagenum = 0);
         /// <summary>
-        /// Returns a single page of cheeps from a given author
+        /// Returns a single author containing with all the cheeps related to that author
         /// </summary>
-        /// <param name="username">The author of the cheeps</param>
+        /// <param name="username">The username of the author of the cheeps</param>
         /// <param name="pagenum">Which page of cheeps is wished for (the higher the older cheeps)</param>
         /// <returns></returns>
-        IEnumerable<CheepViewModel> ReadPageFromAuthor(string username, int pagenum = 0);
+        Author? ReadPageFromAuthor(string username, int pagenum = 0);
         /// <summary>
         /// Inserts a cheep into the database
         /// </summary>
-        void Create(CheepViewModel cheep);
+        void Create(Cheep cheep);
+        
+        /// <summary>
+        /// Inserts an author into the database
+        /// </summary>
+        void InsertAuthor(Author author);
+        
+        /// <returns>An author if it exists given the username</returns>
+        Author? GetAuthorFromUsername(string username);
+        
+        
     }
 }
