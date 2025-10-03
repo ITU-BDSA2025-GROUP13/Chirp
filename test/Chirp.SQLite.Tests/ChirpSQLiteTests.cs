@@ -1,20 +1,22 @@
-﻿using Chirp.Models;
-using Chirp.SQLite;
+﻿using Chirp.Domain;
+using Chirp.Infrastructure;
 using Microsoft.Data.Sqlite;
 using System.Linq;
 
 public class ChirpSQLiteTests
 {
-    private DBFacade _db;
-    private readonly string _dbPath = "/tmp/chirp/test.db";
+    private readonly string _databasePath = "/tmp/chirp/test.db";
+
+    private CheepService _cheepService;
 
     public ChirpSQLiteTests()
     {
-        Environment.SetEnvironmentVariable("CHIRPDBPATH", _dbPath);
-        _db = new DBFacade();
+        Environment.SetEnvironmentVariable("CHIRPDBPATH", _databasePath);
+
+        _cheepService = new CheepService();
 
         // Set up db for testing
-        using (var connection = new SqliteConnection($"Data Source={_dbPath}"))
+        using (var connection = new SqliteConnection($"Data Source={_databasePath}"))
         {
             using var command = connection.CreateCommand();
             command.CommandText = @"
@@ -52,7 +54,7 @@ public class ChirpSQLiteTests
     [Fact]
     public void ReadAllMessageTest()
     {
-        List<CheepViewModel> cheeps = _db.ReadPage().ToList();
+        List<Cheep> cheeps = _cheepService.GetCheeps();
 
         Assert.Equal("hello world", cheeps[0].Message);
         Assert.Equal("Jacqualine Gilcoine", cheeps[0].Author);
@@ -67,7 +69,7 @@ public class ChirpSQLiteTests
     [Fact]
     public void ReadUserMessagesTest()
     {
-        List<CheepViewModel> cheeps = _db.ReadPageFromAuthor("Karl Fortnite").ToList();
+        List<Cheep> cheeps = _cheepService.GetCheepsFromAuthor("Karl Fortnite");
 
         Assert.Equal("I love Fortnite", cheeps[0].Message);
         Assert.Equal("Karl Fortnite", cheeps[0].Author);
@@ -76,17 +78,17 @@ public class ChirpSQLiteTests
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
-            CheepViewModel cheep = cheeps[2];
+            Cheep cheep = cheeps[2];
         });
     }
 
     [Fact]
     public void CreateMessage()
     {
-        var newCheep = new CheepViewModel("Karl Fortnite", "Mannnnnnn I Love Fortnite", "1490895677");
-        _db.Create(newCheep);
+        var newCheep = new Cheep("Karl Fortnite", "Mannnnnnn I Love Fortnite", "1490895677");
+        _cheepService.PostCheep(newCheep);
 
-        List<CheepViewModel> cheeps = _db.ReadPageFromAuthor("Karl Fortnite").ToList();
+        List<Cheep> cheeps = _cheepService.GetCheepsFromAuthor("Karl Fortnite");
 
         Assert.False(1 == cheeps.Count);
 
