@@ -1,10 +1,7 @@
-﻿using Xunit;
-using Chirp.Razor.Pages;
+﻿using Chirp.Razor.Pages;
 using Chirp.Razor;
-using Chirp.Models;
 using Chirp.SQLite;
 using Microsoft.Data.Sqlite;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 public class ChirpRazorTests
@@ -28,18 +25,15 @@ public class ChirpRazorTests
         {
             using var command = connection.CreateCommand();
             command.CommandText = @"
-                DELETE FROM message;
-                DELETE FROM user;
+                DELETE FROM cheep;
+                DELETE FROM author;
 
-                INSERT INTO user (user_id, username, email, pw_hash)
-                VALUES (@1, 'Karl Fortnite', 'Karl.Fortnite@gmail.com', 'word');
+                INSERT INTO author (author_id, username, email)
+                VALUES (1, 'Karl Fortnite', 'Karl.Fortnite@gmail.com');
 
-                INSERT INTO message (message_id, author_id, text, pub_date)
-                VALUES (1, @1, 'I love Fortnite', 1590895677);
+                INSERT INTO cheep (message_id, author_id, text, pub_date)
+                VALUES (1, 1, 'I love Fortnite', '2020-05-31 08:07:57');
             ";
-
-            command.Parameters.AddWithValue("@1", "Karl Fortnite".GetHashCode());
-
             connection.Open();
             command.ExecuteNonQuery();
         }
@@ -51,17 +45,15 @@ public class ChirpRazorTests
         {
             using var command = connection.CreateCommand();
             command.CommandText = @"
-                DELETE FROM message;
-                DELETE FROM user;
+                DELETE FROM cheep;
+                DELETE FROM author;
             ";
-
             connection.Open();
             command.ExecuteNonQuery();
         }
     }
 
-    // This tests the Razor service and its intgration with out DBFacade
-
+    // This tests the Razor service and its integration without DBFacade
     [Fact]
     public void PublicModel_OnGet_ShouldPopulateCheeps()
     {
@@ -75,7 +67,7 @@ public class ChirpRazorTests
 
         Assert.NotNull(pageModel.Cheeps);
         Assert.Single(pageModel.Cheeps);
-        Assert.Equal("I love Fortnite", pageModel.Cheeps[0].Message);
+        Assert.Equal("I love Fortnite", pageModel.Cheeps[0].Text);
 
         clearTables();
     }
@@ -93,8 +85,8 @@ public class ChirpRazorTests
 
         Assert.NotNull(pageModel.Cheeps);
         Assert.Single(pageModel.Cheeps);
-        Assert.Equal("Karl Fortnite", pageModel.Cheeps[0].Author);
-        Assert.Equal("I love Fortnite", pageModel.Cheeps[0].Message);
+        Assert.Equal("Karl Fortnite", pageModel.Cheeps[0].Author.Name);
+        Assert.Equal("I love Fortnite", pageModel.Cheeps[0].Text);
 
         clearTables();
     }
@@ -127,7 +119,6 @@ public class ChirpRazorTests
         var pageModel = new UserTimelineModel(service);
 
         pageModel.OnGet("Karl Fortnite", 0);
-
         Assert.Empty(pageModel.Cheeps);
     }
 
