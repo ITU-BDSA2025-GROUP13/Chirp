@@ -55,7 +55,7 @@ namespace Chirp.SQLite
         {
             using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
             connection.Open();
-            
+
             using var command = connection.CreateCommand();
             command.CommandText = @"
                 INSERT INTO author(username, email)
@@ -64,12 +64,12 @@ namespace Chirp.SQLite
             command.Parameters.AddWithValue("@email", author.Email);
             command.ExecuteNonQuery();
         }
-        
+
         public void Create(Cheep cheep)
         {
             using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
             connection.Open();
-            
+
             using var command = connection.CreateCommand();
             command.CommandText = @"
                 INSERT INTO cheep (author_id, text, pub_date)
@@ -78,7 +78,7 @@ namespace Chirp.SQLite
             command.Parameters.AddWithValue("@AuthorID", cheep.Author.AuthorID);
             command.Parameters.AddWithValue("@Text", cheep.Text);
             command.Parameters.AddWithValue("@PubDate", cheep.TimeStamp);
-            
+
             int rowsAffected = command.ExecuteNonQuery();
             if (rowsAffected == 0)
             {
@@ -104,17 +104,17 @@ namespace Chirp.SQLite
             command.Parameters.AddWithValue("@offset", pagenum * _readLimit);
 
             connection.Open();
-            
+
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
                 var author = new Author(
-                    reader.GetInt32(reader.GetOrdinal("author_id")), 
-              reader.GetString(reader.GetOrdinal("username")), 
+                    reader.GetInt32(reader.GetOrdinal("author_id")),
+              reader.GetString(reader.GetOrdinal("username")),
               reader.GetString(reader.GetOrdinal("email")),
              new List<Cheep>()
                 );
-                
+
                 var cheep = new Cheep(
                     reader.GetString(reader.GetOrdinal("text")),
                     reader.GetDateTime(reader.GetOrdinal("pub_date")),
@@ -129,7 +129,7 @@ namespace Chirp.SQLite
         {
             var author = GetAuthorFromUsername(username);
             if (author == null) return null;
-            
+
             var queryString = @"
                 SELECT c.text, c.pub_date
                 FROM cheep c join author a 
@@ -174,8 +174,8 @@ namespace Chirp.SQLite
             command.CommandText = queryString;
             command.Parameters.AddWithValue("@username", username);
             connection.Open();
-            
-            using var reader =  command.ExecuteReader();
+
+            using var reader = command.ExecuteReader();
             if (reader.Read())
             {
                 return new Author(
@@ -187,5 +187,5 @@ namespace Chirp.SQLite
             }
             return null;
         }
-}
+    }
 }

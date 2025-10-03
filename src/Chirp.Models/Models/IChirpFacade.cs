@@ -19,15 +19,15 @@ namespace Chirp.Models
         /// Inserts a cheep into the database
         /// </summary>
         void Create(Cheep cheep);
-        
+
         /// <summary>
         /// Inserts an author into the database
         /// </summary>
         void InsertAuthor(Author author);
-        
+
         /// <returns>An author if it exists given the username</returns>
         Author? GetAuthorFromUsername(string username);
-        
-        
+
+
     }
 }

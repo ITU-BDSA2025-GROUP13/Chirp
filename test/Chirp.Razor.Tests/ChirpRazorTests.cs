@@ -117,7 +117,7 @@ public class ChirpRazorTests
         var service = new CheepService();
 
         var pageModel = new UserTimelineModel(service);
-        
+
         pageModel.OnGet("Karl Fortnite", 0);
         Assert.Empty(pageModel.Cheeps);
     }

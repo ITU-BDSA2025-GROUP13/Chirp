@@ -68,7 +68,7 @@ public class ChirpSQLiteTests
         Assert.Equal("I love Fortnite", cheeps[0].Text);
         Assert.Equal("Karl Fortnite", cheeps[0].Author.Name);
 
-        Assert.Single(cheeps); 
+        Assert.Single(cheeps);
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
@@ -82,7 +82,7 @@ public class ChirpSQLiteTests
         var author = _db.GetAuthorFromUsername("Karl Fortnite");
         var newCheep = new Cheep("Mannnnnnn I Love Fortnite", DateTime.UtcNow, author);
         _db.Create(newCheep);
-        
+
         List<Cheep> cheeps = _db.ReadPageFromAuthor("Karl Fortnite").Cheeps.ToList();
 
         Assert.Equal(2, cheeps.Count);

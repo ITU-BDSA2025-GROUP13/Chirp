@@ -22,7 +22,7 @@ public class CheepService : ICheepService
         return _db.ReadPage(pagenum).ToList();
     }
 
-    
+
     public List<Cheep> GetCheepsFromAuthor(string username, int pagenum)
     {
         Author? author = _db.ReadPageFromAuthor(username, pagenum);
