@@ -1,4 +1,4 @@
 namespace Chirp.Domain
 {
-    public record Author(int Id, string Message, List<Cheep> Cheeps);
+    public record Author(int AuthorID, string Name, string Email, IList<Cheep> Cheeps);
 }

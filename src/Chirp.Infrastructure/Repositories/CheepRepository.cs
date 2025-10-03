@@ -1,7 +1,5 @@
-using System.Data;
 using Microsoft.Data.Sqlite;
 using Chirp.Domain;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace Chirp.Infrastructure
 {
@@ -15,17 +13,32 @@ namespace Chirp.Infrastructure
             _database = database;
         }
 
+        public void InsertAuthor(Author author)
+        {
+            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
+            connection.Open();
+
+            using var command = connection.CreateCommand();
+            command.CommandText = @"
+                INSERT INTO author(username, email)
+                VALUES (@username, @email)";
+            command.Parameters.AddWithValue("@username", author.Name);
+            command.Parameters.AddWithValue("@email", author.Email);
+            command.ExecuteNonQuery();
+        }
+
         public async Task PostAsync(Cheep cheep)
         {
             using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
             using var command = connection.CreateCommand();
+
             command.CommandText = @"
-                INSERT INTO message (author_id, text, pub_date)
+                INSERT INTO cheep (author_id, text, pub_date)
                 VALUES (@AuthorId, @Text, @PubDate)";
 
-            command.Parameters.AddWithValue("@AuthorId", cheep.Author.GetHashCode());
-            command.Parameters.AddWithValue("@Text", cheep.Message);
-            command.Parameters.AddWithValue("@PubDate", cheep.Timestamp);
+            command.Parameters.AddWithValue("@AuthorId", cheep.Author.AuthorID);
+            command.Parameters.AddWithValue("@Text", cheep.Text);
+            command.Parameters.AddWithValue("@PubDate", cheep.TimeStamp);
 
             await connection.OpenAsync();
             int rowsAffected = await command.ExecuteNonQueryAsync();
@@ -40,11 +53,12 @@ namespace Chirp.Infrastructure
         {
 
             var results = new List<Cheep>();
-            var queryString =
-                @"SELECT m.*, u.username
-                  FROM message m JOIN user u ON m.author_id = u.user_id
-                  ORDER BY m.pub_date DESC
-                  LIMIT @limit OFFSET @offset";
+            var queryString = @"
+                SELECT c.text, c.pub_date, a.author_id, a.username, a.email
+                FROM cheep c JOIN author a 
+                ON c.author_id = a.author_id
+                ORDER BY c.pub_date DESC
+                LIMIT @limit OFFSET @offset";
 
             using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
             using var command = connection.CreateCommand();
@@ -57,28 +71,36 @@ namespace Chirp.Infrastructure
             using var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
-                int unixTimeStamp = reader.GetInt32(reader.GetOrdinal("pub_date"));
-                string dateTimeString = UnixTimestampToDateTimeString(unixTimeStamp);
-                var cheep = new Cheep(
-                    reader.GetString(reader.GetOrdinal("username")),
-                    reader.GetString(reader.GetOrdinal("text")),
-                    dateTimeString
+                var author = new Author(
+                     reader.GetInt32(reader.GetOrdinal("author_id")),
+                     reader.GetString(reader.GetOrdinal("username")),
+                     reader.GetString(reader.GetOrdinal("email")),
+                     new List<Cheep>()
                 );
+
+                var cheep = new Cheep(
+                    reader.GetString(reader.GetOrdinal("text")),
+                    reader.GetDateTime(reader.GetOrdinal("pub_date")),
+                    author
+                );
+
                 results.Add(cheep);
             }
             return results;
         }
 
-        public async Task<IEnumerable<Cheep>> ReadPageFromAuthorAsync(string username, int pagenum = 0)
+        public async Task<Author?> ReadPageFromAuthorAsync(string username, int pagenum = 0)
         {
-            var results = new List<Cheep>();
+            var author = GetAuthorFromUsername(username);
+            if (author == null) return null;
 
-            var queryString =
-                @"SELECT m.*, u.username
-                  FROM message m JOIN user u on m.author_id = u.user_id
-                  WHERE u.username = @username
-                  ORDER BY m.pub_date DESC
-                  LIMIT @limit OFFSET @offset";
+            var queryString = @"
+                SELECT c.text, c.pub_date
+                FROM cheep c join author a 
+                ON c.author_id = a.author_id
+                WHERE a.username = @username
+                ORDER BY c.pub_date DESC
+                LIMIT @limit OFFSET @offset";
 
             using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
             using var command = connection.CreateCommand();
@@ -90,18 +112,44 @@ namespace Chirp.Infrastructure
             await connection.OpenAsync();
 
             using var reader = await command.ExecuteReaderAsync();
+            List<Cheep> cheeps = new List<Cheep>();
             while (await reader.ReadAsync())
             {
-                int unixTimeStamp = reader.GetInt32(reader.GetOrdinal("pub_date"));
-                string dateTimeString = UnixTimestampToDateTimeString(unixTimeStamp);
                 var cheep = new Cheep(
-                    reader.GetString(reader.GetOrdinal("username")),
                     reader.GetString(reader.GetOrdinal("text")),
-                    dateTimeString
+                    reader.GetDateTime(reader.GetOrdinal("pub_date")),
+                    author
                 );
-                results.Add(cheep);
+                cheeps.Add(cheep);
             }
-            return results;
+            return author with { Cheeps = cheeps };
+        }
+
+        public Author? GetAuthorFromUsername(string username)
+        {
+            var queryString =
+                @"SELECT author_id, username, email
+                  FROM author
+                  WHERE username = @username
+                  LIMIT 1;";
+
+            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
+            using var command = connection.CreateCommand();
+            command.CommandText = queryString;
+            command.Parameters.AddWithValue("@username", username);
+            connection.Open();
+
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                return new Author(
+                    reader.GetInt32(reader.GetOrdinal("author_id")),
+                    reader.GetString(reader.GetOrdinal("username")),
+                    reader.GetString(reader.GetOrdinal("email")),
+                    new List<Cheep>()
+                );
+            }
+            return null;
         }
 
         private static string UnixTimestampToDateTimeString(double unixTimeStamp)

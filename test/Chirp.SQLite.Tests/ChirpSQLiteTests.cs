@@ -1,7 +1,5 @@
 ﻿using Chirp.Domain;
-using Chirp.Infrastructure;
 using Microsoft.Data.Sqlite;
-using System.Linq;
 
 public class ChirpSQLiteTests
 {
@@ -20,32 +18,27 @@ public class ChirpSQLiteTests
         {
             using var command = connection.CreateCommand();
             command.CommandText = @"
-                DELETE FROM message;
-                DELETE FROM user;
+                DELETE FROM cheep;
+                DELETE FROM author;
 
-                INSERT INTO user (user_id, username, email, pw_hash)
-                VALUES (@1, 'Jacqualine Gilcoine', 'Jacqualine.Gilcoine@gmail.com', 'password');
+                INSERT INTO author (author_id, username, email)
+                VALUES (1, 'Jacqualine Gilcoine', 'Jacqualine.Gilcoine@gmail.com');
 
-                INSERT INTO user (user_id, username, email, pw_hash)
-                VALUES (@2, 'John Pork', 'John.Pork@gmail.com', 'porkword');
+                INSERT INTO author (author_id, username, email)
+                VALUES (2, 'John Pork', 'John.Pork@gmail.com');
 
-                INSERT INTO user (user_id, username, email, pw_hash)
-                VALUES (@3, 'Karl Fortnite', 'Karl.Fortnite@gmail.com', 'word');
+                INSERT INTO author (author_id, username, email)
+                VALUES (3, 'Karl Fortnite', 'Karl.Fortnite@gmail.com');
 
-                INSERT INTO message (message_id, author_id, text, pub_date)
-                VALUES (1, @1, 'hello world', 1790895677);
+                INSERT INTO cheep (message_id, author_id, text, pub_date)
+                VALUES (1, 1, 'hello world', '2026-09-30 12:34:37');
 
-                INSERT INTO message (message_id, author_id, text, pub_date)
-                VALUES (2, @2, 'hello pork world', 1690895677);
+                INSERT INTO cheep (message_id, author_id, text, pub_date)
+                VALUES (2, 2, 'hello pork world', '2023-08-01 10:21:17');
 
-                INSERT INTO message (message_id, author_id, text, pub_date)
-                VALUES (3, @3, 'I love Fortnite', 1590895677);
+                INSERT INTO cheep (message_id, author_id, text, pub_date)
+                VALUES (3, 3, 'I love Fortnite', '2020-05-31 08:07:57');
             ";
-
-            command.Parameters.AddWithValue("@1", "Jacqualine Gilcoine".GetHashCode());
-            command.Parameters.AddWithValue("@2", "John Pork".GetHashCode());
-            command.Parameters.AddWithValue("@3", "Karl Fortnite".GetHashCode());
-
             connection.Open();
             command.ExecuteNonQuery();
         }
@@ -56,14 +49,14 @@ public class ChirpSQLiteTests
     {
         List<Cheep> cheeps = _cheepService.GetCheeps();
 
-        Assert.Equal("hello world", cheeps[0].Message);
-        Assert.Equal("Jacqualine Gilcoine", cheeps[0].Author);
+        Assert.Equal("hello world", cheeps[0].Text);
+        Assert.Equal("Jacqualine Gilcoine", cheeps[0].Author.Name);
 
-        Assert.Equal("hello pork world", cheeps[1].Message);
-        Assert.Equal("John Pork", cheeps[1].Author);
+        Assert.Equal("hello pork world", cheeps[1].Text);
+        Assert.Equal("John Pork", cheeps[1].Author.Name);
 
-        Assert.Equal("I love Fortnite", cheeps[2].Message);
-        Assert.Equal("Karl Fortnite", cheeps[2].Author);
+        Assert.Equal("I love Fortnite", cheeps[2].Text);
+        Assert.Equal("Karl Fortnite", cheeps[2].Author.Name);
     }
 
     [Fact]
@@ -71,8 +64,8 @@ public class ChirpSQLiteTests
     {
         List<Cheep> cheeps = _cheepService.GetCheepsFromAuthor("Karl Fortnite");
 
-        Assert.Equal("I love Fortnite", cheeps[0].Message);
-        Assert.Equal("Karl Fortnite", cheeps[0].Author);
+        Assert.Equal("I love Fortnite", cheeps[0].Text);
+        Assert.Equal("Karl Fortnite", cheeps[0].Author.Name);
 
         Assert.Single(cheeps);
 
@@ -85,17 +78,18 @@ public class ChirpSQLiteTests
     [Fact]
     public void CreateMessage()
     {
-        var newCheep = new Cheep("Karl Fortnite", "Mannnnnnn I Love Fortnite", "1490895677");
+        Author? author = _cheepService.GetAuthorFromUsername("Karl Fortnite");
+        Assert.NotNull(author);
+        Cheep newCheep = new Cheep("Mannnnnnn I Love Fortnite", DateTime.UtcNow, author);
         _cheepService.PostCheep(newCheep);
 
         List<Cheep> cheeps = _cheepService.GetCheepsFromAuthor("Karl Fortnite");
+        Assert.Equal(2, cheeps.Count);
 
-        Assert.False(1 == cheeps.Count);
+        Assert.Equal("Mannnnnnn I Love Fortnite", cheeps[0].Text);
+        Assert.Equal(author.Name, cheeps[0].Author.Name);
 
-        Assert.Equal("I love Fortnite", cheeps[0].Message);
-        Assert.Equal("Karl Fortnite", cheeps[0].Author);
-
-        Assert.Equal("Mannnnnnn I Love Fortnite", cheeps[1].Message);
-        Assert.Equal("Karl Fortnite", cheeps[1].Author);
+        Assert.Equal("I love Fortnite", cheeps[1].Text);
+        Assert.Equal(author.Name, cheeps[1].Author.Name);
     }
 }

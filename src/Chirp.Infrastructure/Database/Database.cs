@@ -38,18 +38,17 @@ namespace Chirp.Infrastructure
             using var connection = new SqliteConnection($"Data Source={sqlDBFilePath}");
             connection.Open();
             string initilizationQuery = @"
-                CREATE TABLE IF NOT EXISTS user (
-                  user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                CREATE TABLE IF NOT EXISTS author (
+                  author_id INTEGER PRIMARY KEY AUTOINCREMENT,
                   username STRING NOT NULL,
-                  email STRING NOT NULL,
-                  pw_hash STRING NOT NULL
+                  email STRING NOT NULL
                 );
 
-                CREATE TABLE IF NOT EXISTS message (
+                CREATE TABLE IF NOT EXISTS cheep (
                   message_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  author_id INTEGER NOT NULL,
+                  author_id INTEGER NOT NULL REFERENCES author(author_id),
                   text STRING NOT NULL,
-                  pub_date INTEGER
+                  pub_date DATETIME NOT NULL
                 );";
 
             var command = new SqliteCommand(initilizationQuery, connection);
