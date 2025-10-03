@@ -52,7 +52,7 @@ public class ChirpSQLiteTests
     [Fact]
     public void ReadAllMessageTest()
     {
-        List<CheepViewModel> cheeps = _db.Read().ToList();
+        List<CheepViewModel> cheeps = _db.ReadPage().ToList();
 
         Assert.Equal("hello world", cheeps[0].Message);
         Assert.Equal("Jacqualine Gilcoine", cheeps[0].Author);
@@ -65,25 +65,9 @@ public class ChirpSQLiteTests
     }
 
     [Fact]
-    public void ReadSomeMessageTest()
-    {
-        List<CheepViewModel> cheeps = _db.Read(null, 1).ToList();
-
-        Assert.Equal("hello world", cheeps[0].Message);
-        Assert.Equal("Jacqualine Gilcoine", cheeps[0].Author);
-
-        Assert.Single(cheeps);
-
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-        {
-            CheepViewModel cheep = cheeps[2];
-        });
-    }
-
-    [Fact]
     public void ReadUserMessagesTest()
     {
-        List<CheepViewModel> cheeps = _db.Read("Karl Fortnite", 0).ToList();
+        List<CheepViewModel> cheeps = _db.ReadPageFromAuthor("Karl Fortnite").ToList();
 
         Assert.Equal("I love Fortnite", cheeps[0].Message);
         Assert.Equal("Karl Fortnite", cheeps[0].Author);
@@ -102,7 +86,7 @@ public class ChirpSQLiteTests
         var newCheep = new CheepViewModel("Karl Fortnite", "Mannnnnnn I Love Fortnite", "1490895677");
         _db.Create(newCheep);
 
-        List<CheepViewModel> cheeps = _db.Read("Karl Fortnite", 0).ToList();
+        List<CheepViewModel> cheeps = _db.ReadPageFromAuthor("Karl Fortnite").ToList();
 
         Assert.False(1 == cheeps.Count);
 

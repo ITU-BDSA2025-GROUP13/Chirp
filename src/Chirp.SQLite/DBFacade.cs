@@ -1,12 +1,14 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
 using Chirp.Models;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace Chirp.SQLite
 {
     public class DBFacade : IChirpFacade
     {
         private readonly string _sqlDBFilePath;
+        private readonly int readLimit = 32;
 
         public DBFacade()
         {
@@ -72,21 +74,21 @@ namespace Chirp.SQLite
             }
         }
 
-        public IEnumerable<CheepViewModel> Read(string? username = null, int n = 0)
+        public IEnumerable<CheepViewModel> ReadPage(int pagenum = 0)
         {
             var results = new List<CheepViewModel>();
-            var queryString = @"
-                    SELECT m.*, u.username FROM message m
-                    JOIN user u ON m.author_id = u.user_id
-                    WHERE (@name IS NULL OR u.username = @name)
-                    ORDER BY m.pub_date DESC
-                    LIMIT @limit";
+
+            var queryString =
+                @"SELECT m.*, u.username
+                  FROM message m JOIN user u ON m.author_id = u.user_id
+                  ORDER BY m.pub_date DESC
+                  LIMIT @limit OFFSET @offset";
 
             using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
             using var command = connection.CreateCommand();
             command.CommandText = queryString;
-            command.Parameters.AddWithValue("@name", (object?)username ?? DBNull.Value);
-            command.Parameters.AddWithValue("@limit", n == 0 ? -1 : n);
+            command.Parameters.AddWithValue("@limit", readLimit);
+            command.Parameters.AddWithValue("@offset", pagenum*readLimit);
 
             connection.Open();
 
@@ -105,6 +107,41 @@ namespace Chirp.SQLite
             return results;
         }
 
+        public IEnumerable<CheepViewModel> ReadPageFromAuthor(string username, int pagenum = 0)
+        {
+            var results = new List<CheepViewModel>();
+
+            var queryString =
+                @"SELECT m.*, u.username
+                  FROM message m JOIN user u on m.author_id = u.user_id
+                  WHERE u.username = @username
+                  ORDER BY m.pub_date DESC
+                  LIMIT @limit OFFSET @offset";
+
+            using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
+            using var command = connection.CreateCommand();
+            command.CommandText = queryString;
+            command.Parameters.AddWithValue("@username", username);
+            command.Parameters.AddWithValue("@limit", readLimit);
+            command.Parameters.AddWithValue("@offset", pagenum*readLimit);
+
+            connection.Open();
+
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                int unixTimeStamp = reader.GetInt32(reader.GetOrdinal("pub_date"));
+                string dateTimeString = UnixTimeStampToDateTimeString(unixTimeStamp);
+                var cheep = new CheepViewModel(
+                    reader.GetString(reader.GetOrdinal("username")),
+                    reader.GetString(reader.GetOrdinal("text")),
+                    dateTimeString
+                );
+                results.Add(cheep);
+            }
+            return results;
+        }
+        
         private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
