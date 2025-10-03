@@ -2,14 +2,15 @@
 using Chirp.Razor.Pages;
 using Chirp.Razor;
 using Chirp.Models;
-using Chirp.SQLite;
+using Chirp.DataBase;
+using Chirp.Repository;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 public class ChirpRazorTests
 {
-    private DBFacade _db;
+    private DB _db;
     private readonly string _dbPath = "/tmp/chirp/razorTest.db";
     private readonly WebApplicationFactory<Program> _factory;
 
@@ -17,7 +18,7 @@ public class ChirpRazorTests
     {
         Environment.SetEnvironmentVariable("CHIRPDBPATH", _dbPath);
 
-        _db = new DBFacade();
+        _db = new DB();
 
         _factory = new WebApplicationFactory<Program>();
     }
