@@ -15,11 +15,15 @@ public class ChirpRazorTests
 
     public ChirpRazorTests()
     {
-
         Environment.SetEnvironmentVariable("CHIRPDBPATH", _dbPath);
+
         _db = new DBFacade();
 
-        // Set up db for testing
+        _factory = new WebApplicationFactory<Program>();
+    }
+
+    private void populateTable()
+    {
         using (var connection = new SqliteConnection($"Data Source={_dbPath}"))
         {
             using var command = connection.CreateCommand();
@@ -39,8 +43,6 @@ public class ChirpRazorTests
             connection.Open();
             command.ExecuteNonQuery();
         }
-
-        _factory = new WebApplicationFactory<Program>();
     }
 
     private void clearTables()
@@ -58,42 +60,88 @@ public class ChirpRazorTests
         }
     }
 
+    // This tests the Razor service and its intgration with out DBFacade
+
     [Fact]
     public void PublicModel_OnGet_ShouldPopulateCheeps()
     {
+        populateTable();
 
         var service = new CheepService();
 
         var pageModel = new PublicModel(service);
 
-        var result = pageModel.OnGet(0);
+        pageModel.OnGet(0);
 
         Assert.NotNull(pageModel.Cheeps);
         Assert.Single(pageModel.Cheeps);
         Assert.Equal("I love Fortnite", pageModel.Cheeps[0].Message);
+
+        clearTables();
     }
 
     [Fact]
     public void UserTimelineModel_OnGet_ShouldPopulateCheepsFromAuthor()
     {
+        populateTable();
+
         var service = new CheepService();
 
         var pageModel = new UserTimelineModel(service);
 
-        var result = pageModel.OnGet("Karl Fortnite", 0);
+        pageModel.OnGet("Karl Fortnite", 0);
 
         Assert.NotNull(pageModel.Cheeps);
         Assert.Single(pageModel.Cheeps);
         Assert.Equal("Karl Fortnite", pageModel.Cheeps[0].Author);
         Assert.Equal("I love Fortnite", pageModel.Cheeps[0].Message);
+
+        clearTables();
     }
+
+    [Fact]
+    public void PublicModel_OnGet_ShouldBeEmptyWithNoCheeps()
+    {
+        populateTable();
+
+        clearTables();
+
+        var service = new CheepService();
+
+        var pageModel = new PublicModel(service);
+
+        pageModel.OnGet(0);
+
+        Assert.Empty(pageModel.Cheeps);
+    }
+
+    [Fact]
+    public void UserTimelineModel_OnGet_ShouldBeNullIfNoAuthor()
+    {
+        populateTable();
+
+        clearTables();
+
+        var service = new CheepService();
+
+        var pageModel = new UserTimelineModel(service);
+
+        pageModel.OnGet("Karl Fortnite", 0);
+
+        Assert.Empty(pageModel.Cheeps);
+    }
+
+    // This tests the Razor pages and what they display
 
     [Fact]
     public async Task PublicPage_ShouldRenderCheeps()
     {
+        populateTable();
+
         var client = _factory.CreateClient();
 
         var response = await client.GetAsync("/");
+
         response.EnsureSuccessStatusCode();
 
         var html = await response.Content.ReadAsStringAsync();
@@ -102,11 +150,14 @@ public class ChirpRazorTests
         Assert.Contains("I love Fortnite", html);
         Assert.Contains("<a href=\"/Karl Fortnite\">", html);
 
+        clearTables();
     }
 
     [Fact]
     public async Task UserTimelinePage_ShouldRenderCheeps()
     {
+        populateTable();
+
         var client = _factory.CreateClient();
 
         var response = await client.GetAsync("/Karl Fortnite");
@@ -118,64 +169,21 @@ public class ChirpRazorTests
         Assert.Contains("I love Fortnite", html);
         Assert.Contains("<a href=\"/Karl Fortnite\">", html);
 
-    }
-
-
-    [Fact]
-    public void PublicModel_OnGet_ShouldBeEmptyWithNoCheeps()
-    {
-
         clearTables();
-
-        var service = new CheepService();
-
-        var pageModel = new PublicModel(service);
-
-        var result = pageModel.OnGet(0);
-
-        Assert.Equal(new List<CheepViewModel>(), pageModel.Cheeps);
-        Assert.Empty(pageModel.Cheeps);
-
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-        {
-            string cheepMessage = pageModel.Cheeps[0].Message;
-        });
     }
 
-    [Fact]
-    public void UserTimelineModel_OnGet_ShouldBeNullIfNoAuthor()
-    {
-        clearTables();
-
-        var service = new CheepService();
-
-        var pageModel = new UserTimelineModel(service);
-
-        var result = pageModel.OnGet("Karl Fortnite", 0);
-
-        Assert.Equal(new List<CheepViewModel>(), pageModel.Cheeps);
-
-        Assert.Empty(pageModel.Cheeps);
-
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-        {
-            string Author = pageModel.Cheeps[0].Author;
-        });
-
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-        {
-            string cheepMessage = pageModel.Cheeps[0].Message;
-        });
-    }
 
     [Fact]
     public async Task PublicPage_ShouldNotRenderCheepsIfEmpty()
     {
+        populateTable();
+
         clearTables();
 
         var client = _factory.CreateClient();
 
         var response = await client.GetAsync("/");
+
         response.EnsureSuccessStatusCode();
 
         var html = await response.Content.ReadAsStringAsync();
@@ -189,11 +197,14 @@ public class ChirpRazorTests
     [Fact]
     public async Task UserTimelinePage_ShouldNotRenderCheepsIfEmpty()
     {
+        populateTable();
+
         clearTables();
 
         var client = _factory.CreateClient();
 
         var response = await client.GetAsync("/Karl Fortnite");
+
         response.EnsureSuccessStatusCode();
 
         var html = await response.Content.ReadAsStringAsync();
