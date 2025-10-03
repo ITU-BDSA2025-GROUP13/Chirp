@@ -8,7 +8,7 @@ namespace Chirp.SQLite
     public class DBFacade : IChirpFacade
     {
         private readonly string _sqlDBFilePath;
-        private readonly int readLimit = 32;
+        private readonly int _readLimit = 32;
 
         public DBFacade()
         {
@@ -87,8 +87,8 @@ namespace Chirp.SQLite
             using var connection = new SqliteConnection($"Data Source={_sqlDBFilePath}");
             using var command = connection.CreateCommand();
             command.CommandText = queryString;
-            command.Parameters.AddWithValue("@limit", readLimit);
-            command.Parameters.AddWithValue("@offset", pagenum * readLimit);
+            command.Parameters.AddWithValue("@limit", _readLimit);
+            command.Parameters.AddWithValue("@offset", pagenum * _readLimit);
 
             connection.Open();
 
@@ -122,8 +122,8 @@ namespace Chirp.SQLite
             using var command = connection.CreateCommand();
             command.CommandText = queryString;
             command.Parameters.AddWithValue("@username", username);
-            command.Parameters.AddWithValue("@limit", readLimit);
-            command.Parameters.AddWithValue("@offset", pagenum * readLimit);
+            command.Parameters.AddWithValue("@limit", _readLimit);
+            command.Parameters.AddWithValue("@offset", pagenum * _readLimit);
 
             connection.Open();
 
