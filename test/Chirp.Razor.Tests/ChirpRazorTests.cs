@@ -1,31 +1,30 @@
 ﻿using Xunit;
 using Chirp.Razor.Pages;
 using Chirp.Razor;
-using Chirp.Models;
-using Chirp.DataBase;
-using Chirp.Repository;
+using Chirp.Domain;
+using Chirp.Infrastructure;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 public class ChirpRazorTests
 {
-    private DB _db;
-    private readonly string _dbPath = "/tmp/chirp/razorTest.db";
+    private CheepController _cheepController;
+    private readonly string _databasePath = "/tmp/chirp/razorTest.db";
     private readonly WebApplicationFactory<Program> _factory;
 
     public ChirpRazorTests()
     {
-        Environment.SetEnvironmentVariable("CHIRPDBPATH", _dbPath);
+        Environment.SetEnvironmentVariable("CHIRPDBPATH", _databasePath);
 
-        _db = new DB();
+        _cheepController = new CheepController();
 
         _factory = new WebApplicationFactory<Program>();
     }
 
     private void populateTable()
     {
-        using (var connection = new SqliteConnection($"Data Source={_dbPath}"))
+        using (var connection = new SqliteConnection($"Data Source={_databasePath}"))
         {
             using var command = connection.CreateCommand();
             command.CommandText = @"
@@ -48,7 +47,7 @@ public class ChirpRazorTests
 
     private void clearTables()
     {
-        using (var connection = new SqliteConnection($"Data Source={_dbPath}"))
+        using (var connection = new SqliteConnection($"Data Source={_databasePath}"))
         {
             using var command = connection.CreateCommand();
             command.CommandText = @"

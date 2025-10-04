@@ -1,6 +1,5 @@
-using Chirp.Models;
-using Chirp.Repository;
-using Chirp.DataBase;
+using Chirp.Domain;
+using Chirp.Infrastructure;
 public interface ICheepService
 {
     public List<Cheep> GetCheeps(int pagenum = 0);
@@ -10,17 +9,17 @@ public interface ICheepService
 public class CheepService : ICheepService
 {
 
-    private static readonly ICheepRepository _cheepRepository = new CheepRepository(new DB());
+    private static readonly CheepController _cheepController = new CheepController();
 
     /// Returns at most N cheeps from public timeline
     public List<Cheep> GetCheeps(int pagenum)
     {
-        return _cheepRepository.ReadPage(pagenum).ToList();
+        return _cheepController.GetCheeps(pagenum);
     }
 
     /// Returns at most N Cheeps from author
     public List<Cheep> GetCheepsFromAuthor(string author, int pagenum)
     {
-        return _cheepRepository.ReadPageFromAuthor(author, pagenum).ToList();
+        return _cheepController.GetCheepsFromAuthor(author, pagenum);
     }
 }

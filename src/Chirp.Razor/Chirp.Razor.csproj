@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Chirp.Models\Chirp.Models.csproj" />
-    <ProjectReference Include="..\Chirp.Data\Chirp.Data.csproj" />
+    <ProjectReference Include="..\Chirp.Domain\Chirp.Domain.csproj" />
+    <ProjectReference Include="..\Chirp.Infrastructure\Chirp.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

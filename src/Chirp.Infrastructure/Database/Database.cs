@@ -1,21 +1,26 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
-using Chirp.Models;
+using Chirp.Domain;
 using Microsoft.VisualBasic.CompilerServices;
 
-namespace Chirp.DataBase
+namespace Chirp.Infrastructure
 {
-    public class DB
+    public class Database
     {
         public readonly string sqlDBFilePath;
         public readonly int readLimit = 32;
 
-        public DB()
+        private Database(string sqlDBFilePath)
+        {
+            this.sqlDBFilePath = sqlDBFilePath;
+        }
+
+        public static async Task<Database> CreateAsync()
         {
             string defaultDBPath = Path.Combine(Path.GetTempPath(), "chirp.db");
             // Use CHIRPDBPATH from env if present
             string? dbPathFromEnv = Environment.GetEnvironmentVariable("CHIRPDBPATH");
-            sqlDBFilePath = string.IsNullOrEmpty(dbPathFromEnv) ? defaultDBPath : dbPathFromEnv;
+            string sqlDBFilePath = string.IsNullOrEmpty(dbPathFromEnv) ? defaultDBPath : dbPathFromEnv;
 
             if (!File.Exists(sqlDBFilePath))
             {
@@ -28,9 +33,19 @@ namespace Chirp.DataBase
 
                 File.Create(sqlDBFilePath);
             }
-            using (SqliteConnection connection = new SqliteConnection($"Data Source={sqlDBFilePath}"))
-            {
-                string initilizationQuery = @"
+
+            await InitializeSchemaAsync(sqlDBFilePath);
+
+            return new Database(sqlDBFilePath);
+
+        }
+
+        private static async Task InitializeSchemaAsync(string sqlDBFilePath)
+        {
+
+            using var connection = new SqliteConnection($"Data Source={sqlDBFilePath}");
+            await connection.OpenAsync();
+            string initilizationQuery = @"
                 CREATE TABLE IF NOT EXISTS user (
                   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                   username STRING NOT NULL,
@@ -45,12 +60,9 @@ namespace Chirp.DataBase
                   pub_date INTEGER
                 );";
 
-                connection.Open();
-                using (SqliteCommand command = new SqliteCommand(initilizationQuery, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
-            }
+            var command = new SqliteCommand(initilizationQuery, connection);
+            await command.ExecuteReaderAsync();
         }
+
     }
 }

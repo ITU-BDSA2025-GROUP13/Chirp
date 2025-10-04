@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Chirp.Models;
+using Chirp.Domain;
 
 namespace Chirp.Razor.Pages;
 

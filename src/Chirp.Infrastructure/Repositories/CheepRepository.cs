@@ -1,23 +1,28 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
-using Chirp.Models;
-using Chirp.DataBase;
+using Chirp.Domain;
 using Microsoft.VisualBasic.CompilerServices;
 
-namespace Chirp.Repository
+namespace Chirp.Infrastructure
 {
     public class CheepRepository : ICheepRepository
     {
 
-        private DB _db;
-        public CheepRepository(DB db)
+        private Database _database;
+
+        private CheepRepository(Database database)
         {
-            _db = db;
+            _database = database;
         }
 
-        public void Create(Cheep cheep)
+        public static Task<CheepRepository> CreateAsync(Database database)
         {
-            using var connection = new SqliteConnection($"Data Source={_db.sqlDBFilePath}");
+            return Task.FromResult(new CheepRepository(database));
+        }
+
+        public async Task PostAsync(Cheep cheep)
+        {
+            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
             using var command = connection.CreateCommand();
             command.CommandText = @"
                 INSERT INTO message (author_id, text, pub_date)
@@ -27,8 +32,8 @@ namespace Chirp.Repository
             command.Parameters.AddWithValue("@Text", cheep.Message);
             command.Parameters.AddWithValue("@PubDate", cheep.Timestamp);
 
-            connection.Open();
-            int rowsAffected = command.ExecuteNonQuery();
+            await connection.OpenAsync();
+            int rowsAffected = await command.ExecuteNonQueryAsync();
 
             if (rowsAffected == 0)
             {
@@ -36,29 +41,29 @@ namespace Chirp.Repository
             }
         }
 
-        public IEnumerable<Cheep> ReadPage(int pagenum = 0)
+        public async Task<IEnumerable<Cheep>> ReadPageAsync(int pagenum = 0)
         {
-            var results = new List<Cheep>();
 
+            var results = new List<Cheep>();
             var queryString =
                 @"SELECT m.*, u.username
                   FROM message m JOIN user u ON m.author_id = u.user_id
                   ORDER BY m.pub_date DESC
                   LIMIT @limit OFFSET @offset";
 
-            using var connection = new SqliteConnection($"Data Source={_db.sqlDBFilePath}");
+            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
             using var command = connection.CreateCommand();
             command.CommandText = queryString;
-            command.Parameters.AddWithValue("@limit", _db.readLimit);
-            command.Parameters.AddWithValue("@offset", pagenum * _db.readLimit);
+            command.Parameters.AddWithValue("@limit", _database.readLimit);
+            command.Parameters.AddWithValue("@offset", pagenum * _database.readLimit);
 
-            connection.Open();
+            await connection.OpenAsync();
 
-            using var reader = command.ExecuteReader();
-            while (reader.Read())
+            using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
                 int unixTimeStamp = reader.GetInt32(reader.GetOrdinal("pub_date"));
-                string dateTimeString = UnixTimeStampToDateTimeString(unixTimeStamp);
+                string dateTimeString = UnixTimestampToDateTimeString(unixTimeStamp);
                 var cheep = new Cheep(
                     reader.GetString(reader.GetOrdinal("username")),
                     reader.GetString(reader.GetOrdinal("text")),
@@ -69,7 +74,7 @@ namespace Chirp.Repository
             return results;
         }
 
-        public IEnumerable<Cheep> ReadPageFromAuthor(string username, int pagenum = 0)
+        public async Task<IEnumerable<Cheep>> ReadPageFromAuthorAsync(string username, int pagenum = 0)
         {
             var results = new List<Cheep>();
 
@@ -80,20 +85,20 @@ namespace Chirp.Repository
                   ORDER BY m.pub_date DESC
                   LIMIT @limit OFFSET @offset";
 
-            using var connection = new SqliteConnection($"Data Source={_db.sqlDBFilePath}");
+            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
             using var command = connection.CreateCommand();
             command.CommandText = queryString;
             command.Parameters.AddWithValue("@username", username);
-            command.Parameters.AddWithValue("@limit", _db.readLimit);
-            command.Parameters.AddWithValue("@offset", pagenum * _db.readLimit);
+            command.Parameters.AddWithValue("@limit", _database.readLimit);
+            command.Parameters.AddWithValue("@offset", pagenum * _database.readLimit);
 
-            connection.Open();
+            await connection.OpenAsync();
 
-            using var reader = command.ExecuteReader();
-            while (reader.Read())
+            using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
                 int unixTimeStamp = reader.GetInt32(reader.GetOrdinal("pub_date"));
-                string dateTimeString = UnixTimeStampToDateTimeString(unixTimeStamp);
+                string dateTimeString = UnixTimestampToDateTimeString(unixTimeStamp);
                 var cheep = new Cheep(
                     reader.GetString(reader.GetOrdinal("username")),
                     reader.GetString(reader.GetOrdinal("text")),
@@ -104,9 +109,8 @@ namespace Chirp.Repository
             return results;
         }
 
-        private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
+        private static string UnixTimestampToDateTimeString(double unixTimeStamp)
         {
-            // Unix timestamp is seconds past epoch
             DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dateTime = dateTime.AddSeconds(unixTimeStamp);
             return dateTime.ToString("MM/dd/yy H:mm:ss");
