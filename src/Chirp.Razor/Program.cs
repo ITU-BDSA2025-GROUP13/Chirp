@@ -1,5 +1,6 @@
 using Chirp.Infrastructure;
 using Chirp.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Razor
 {
@@ -11,10 +12,16 @@ namespace Chirp.Razor
 
             // Add services to the container.
             builder.Services.AddRazorPages();
-            builder.Services.AddSingleton<Database>();
-            builder.Services.AddSingleton<ICheepRepository, CheepRepository>();
-            builder.Services.AddSingleton<ICheepService, CheepService>();
 
+            // Register ChirpDbContext with connection string
+            builder.Services.AddDbContext<ChirpDbContext>(options =>
+                options.UseSqlite(builder.Configuration.GetConnectionString("ChirpDb")));
+
+            // Register IChirpDbContext to resolve to ChirpDbContext
+            builder.Services.AddScoped<IChirpDbContext>(provider => provider.GetRequiredService<ChirpDbContext>());
+
+            builder.Services.AddScoped<ICheepRepository, CheepRepository>();
+            builder.Services.AddScoped<ICheepService, CheepService>();
 
             var app = builder.Build();
 
@@ -32,6 +39,15 @@ namespace Chirp.Razor
             app.UseRouting();
 
             app.MapRazorPages();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
+                if (!db.Cheeps.Any()) // Replace Cheeps with your main DbSet
+                {
+                    DbInitializer.SeedDatabase(db);
+                }
+            }
 
             app.Run();
         }
