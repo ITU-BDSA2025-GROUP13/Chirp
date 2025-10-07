@@ -1,189 +1,184 @@
-using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Chirp.Domain;
 
 namespace Chirp.Infrastructure
 {
+    /// <summary>
+    /// Repository for managing Cheep entities and their associated authors in the database.
+    /// Implements the ICheepRepository interface to provide data access operations.
+    /// </summary>
+    /// <param name="dbContext">The database context used for data access operations.</param>
     public class CheepRepository : ICheepRepository
     {
+        private readonly IChirpDbContext _dbContext;
+        private readonly int _readLimit = 32;
 
-        private Database _database;
-
-        public CheepRepository(Database database)
+        public CheepRepository(IChirpDbContext dbContext)
         {
-            _database = database;
+            _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Inserts a new author into the database as a User entity.
+        /// </summary>
+        /// <param name="author">The author to insert.</param>
         public void InsertAuthor(Author author)
         {
-            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
-            connection.Open();
-
-            using var command = connection.CreateCommand();
-            command.CommandText = @"
-                INSERT INTO author(username, email)
-                VALUES (@username, @email)";
-            command.Parameters.AddWithValue("@username", author.Name);
-            command.Parameters.AddWithValue("@email", author.Email);
-            command.ExecuteNonQuery();
+            var user = new Author
+            {
+                AuthorId = author.AuthorId,
+                Name = author.Name,
+                Email = author.Email,
+                PasswordHash = ""
+            };
+            _dbContext.Authors.Add(user);
+            _dbContext.SaveChanges();
         }
 
+        /// <summary>
+        /// Posts a new cheep (message) to the database asynchronously.
+        /// </summary>
+        /// <param name="cheep">The cheep to post.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="Exception">Thrown when the author is not found in the database.</exception>
         public async Task PostAsync(Cheep cheep)
         {
-            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
-            using var command = connection.CreateCommand();
-
-            command.CommandText = @"
-                INSERT INTO cheep (author_id, text, pub_date)
-                VALUES (@AuthorId, @Text, @PubDate)";
-
-            command.Parameters.AddWithValue("@AuthorId", cheep.Author.AuthorID);
-            command.Parameters.AddWithValue("@Text", cheep.Text);
-            command.Parameters.AddWithValue("@PubDate", cheep.TimeStamp);
-
-            await connection.OpenAsync();
-            int rowsAffected = await command.ExecuteNonQueryAsync();
-
-            if (rowsAffected == 0)
+            if (cheep.Author == null)
             {
-                throw new Exception("Insert failed — no rows affected.");
+                throw new ArgumentNullException(nameof(cheep.Author), "Cheep.Author cannot be null.");
             }
+
+            var author = await _dbContext.Authors.FirstOrDefaultAsync(u => u.AuthorId == cheep.Author.AuthorId);
+            if (author == null)
+            {
+                throw new Exception($"Author with ID '{cheep.Author.AuthorId}' not found.");
+            }
+
+            var message = new Cheep
+            {
+                CheepId = 0, // Assuming 0 for new entity, will be set by DB
+                AuthorId = author.AuthorId,
+                Author = author,
+                Text = cheep.Text,
+                TimeStamp = cheep.TimeStamp
+            };
+
+            _dbContext.Cheeps.Add(message);
+            await _dbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Retrieves a paginated list of cheeps ordered by publication date (newest first).
+        /// </summary>
+        /// <param name="pagenum">The zero-based page number to retrieve. Default is 0.</param>
+        /// <returns>A task containing an enumerable collection of cheeps for the specified page.</returns>
         public async Task<IEnumerable<Cheep>> ReadPageAsync(int pagenum = 0)
         {
+            var messages = await _dbContext.Cheeps
+                .Include(m => m.Author)
+                .OrderByDescending(m => m.TimeStamp)
+                .Skip(pagenum * _readLimit)
+                .Take(_readLimit)
+                .ToListAsync();
 
-            var results = new List<Cheep>();
-            var queryString = @"
-                SELECT c.text, c.pub_date, a.author_id, a.username, a.email
-                FROM cheep c JOIN author a 
-                ON c.author_id = a.author_id
-                ORDER BY c.pub_date DESC
-                LIMIT @limit OFFSET @offset";
-
-            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
-            using var command = connection.CreateCommand();
-            command.CommandText = queryString;
-            command.Parameters.AddWithValue("@limit", _database.readLimit);
-            command.Parameters.AddWithValue("@offset", pagenum * _database.readLimit);
-
-            await connection.OpenAsync();
-
-            using var reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
+            var cheeps = messages.Select(m => new Cheep
             {
-                var author = new Author(
-                     reader.GetInt32(reader.GetOrdinal("author_id")),
-                     reader.GetString(reader.GetOrdinal("username")),
-                     reader.GetString(reader.GetOrdinal("email")),
-                     new List<Cheep>()
-                );
-
-                var cheep = new Cheep(
-                    reader.GetString(reader.GetOrdinal("text")),
-                    reader.GetDateTime(reader.GetOrdinal("pub_date")),
-                    author
-                );
-
-                results.Add(cheep);
-            }
-            return results;
+                CheepId = m.CheepId,
+                AuthorId = m.AuthorId,
+                Author = new Author
+                {
+                    AuthorId = m.Author!.AuthorId,
+                    Name = m.Author.Name,
+                    Email = m.Author.Email,
+                    Cheeps = new List<Cheep>()
+                },
+                Text = m.Text,
+                TimeStamp = m.TimeStamp
+            });
+            return cheeps;
         }
 
+        /// <summary>
+        /// Retrieves an author with a paginated list of their cheeps ordered by publication date (newest first).
+        /// </summary>
+        /// <param name="username">The username of the author to retrieve.</param>
+        /// <param name="pagenum">The zero-based page number to retrieve. Default is 0.</param>
+        /// <returns>A task containing the author with their cheeps, or null if the author is not found.</returns>
         public async Task<Author?> ReadPageFromAuthorAsync(string username, int pagenum = 0)
         {
-            var author = GetAuthorFromUsername(username);
-            if (author == null) return null;
+            var user = await _dbContext.Authors.FirstOrDefaultAsync(u => u.Name == username);
+            if (user == null)
+                return null;
 
-            var queryString = @"
-                SELECT c.text, c.pub_date
-                FROM cheep c join author a 
-                ON c.author_id = a.author_id
-                WHERE a.username = @username
-                ORDER BY c.pub_date DESC
-                LIMIT @limit OFFSET @offset";
+            var messages = await _dbContext.Cheeps
+                .Where(m => m.AuthorId == user.AuthorId)
+                .OrderByDescending(m => m.TimeStamp)
+                .Skip(pagenum * _readLimit)
+                .Take(_readLimit)
+                .ToListAsync();
 
-            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
-            using var command = connection.CreateCommand();
-            command.CommandText = queryString;
-            command.Parameters.AddWithValue("@username", username);
-            command.Parameters.AddWithValue("@limit", _database.readLimit);
-            command.Parameters.AddWithValue("@offset", pagenum * _database.readLimit);
-
-            await connection.OpenAsync();
-
-            using var reader = await command.ExecuteReaderAsync();
-            List<Cheep> cheeps = new List<Cheep>();
-            while (await reader.ReadAsync())
+            var cheeps = messages.Select(m => new Cheep
             {
-                var cheep = new Cheep(
-                    reader.GetString(reader.GetOrdinal("text")),
-                    reader.GetDateTime(reader.GetOrdinal("pub_date")),
-                    author
-                );
-                cheeps.Add(cheep);
-            }
-            return author with { Cheeps = cheeps };
+                CheepId = m.CheepId,
+                AuthorId = m.AuthorId,
+                Author = new Author()
+                {
+                    AuthorId = user.AuthorId,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Cheeps = new List<Cheep>()
+                },
+                Text = m.Text,
+                TimeStamp = m.TimeStamp
+            }).ToList();
+
+            return new Author
+            {
+                AuthorId = user.AuthorId,
+                Name = user.Name,
+                Email = user.Email,
+                Cheeps = cheeps
+            };
         }
 
+        /// <summary>
+        /// Retrieves an author by their username.
+        /// </summary>
+        /// <param name="username">The username of the author to retrieve.</param>
+        /// <returns>The author if found, otherwise null.</returns>
         public Author? GetAuthorFromUsername(string username)
         {
-            var queryString =
-                @"SELECT author_id, username, email
-                  FROM author
-                  WHERE username = @username
-                  LIMIT 1;";
+            var user = _dbContext.Authors.FirstOrDefault(u => u.Name == username);
+            if (user == null)
+                return null;
 
-            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
-            using var command = connection.CreateCommand();
-            command.CommandText = queryString;
-            command.Parameters.AddWithValue("@username", username);
-            connection.Open();
-
-            using var reader = command.ExecuteReader();
-            if (reader.Read())
+            return new Author
             {
-                return new Author(
-                    reader.GetInt32(reader.GetOrdinal("author_id")),
-                    reader.GetString(reader.GetOrdinal("username")),
-                    reader.GetString(reader.GetOrdinal("email")),
-                    new List<Cheep>()
-                );
-            }
-            return null;
+                AuthorId = user.AuthorId,
+                Name = user.Name,
+                Email = user.Email,
+                Cheeps = new List<Cheep>()
+            };
         }
 
-        public Author? GetAuthorFromAuthorID(int authorID)
+        /// <summary>
+        /// Retrieves an author by their author ID.
+        /// </summary>
+        /// <param name="authorId">The ID of the author to retrieve.</param>
+        /// <returns>The author if found, otherwise null.</returns>
+        public Author? GetAuthorFromAuthorID(int authorId)
         {
-            var queryString =
-                @"SELECT author_id, username, email
-                  FROM author
-                  WHERE author_id = @author_id
-                  LIMIT 1;";
+            var user = _dbContext.Authors.FirstOrDefault(u => u.AuthorId == authorId);
+            if (user == null)
+                return null;
 
-            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
-            using var command = connection.CreateCommand();
-            command.CommandText = queryString;
-            command.Parameters.AddWithValue("@author_id", authorID);
-            connection.Open();
-
-            using var reader = command.ExecuteReader();
-            if (reader.Read())
+            return new Author
             {
-                return new Author(
-                    reader.GetInt32(reader.GetOrdinal("author_id")),
-                    reader.GetString(reader.GetOrdinal("username")),
-                    reader.GetString(reader.GetOrdinal("email")),
-                    new List<Cheep>()
-                );
-            }
-            return null;
-        }
-
-        private static string UnixTimestampToDateTimeString(double unixTimeStamp)
-        {
-            DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = dateTime.AddSeconds(unixTimeStamp);
-            return dateTime.ToString("MM/dd/yy H:mm:ss");
+                AuthorId = user.AuthorId,
+                Name = user.Name,
+                Email = user.Email,
+                Cheeps = new List<Cheep>()
+            };
         }
     }
 }

@@ -1,29 +1,11 @@
 using Chirp.Domain;
+using Chirp.Infrastructure;
 
 namespace Chirp.Razor
 {
-    public interface ICheepService
+    public class CheepService(ChirpDbContext dbContext) : ICheepService
     {
-        public List<CheepDTO> GetCheeps(int pagenum = 0);
-        /// <summary>
-        /// Returns at most N Cheeps from author. Will create a new author on request if no author exist.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="pagenum"></param>
-        /// <returns>The cheeps associated with an author, or a emptyList if author doesn't exist</returns>
-        public List<CheepDTO> GetCheepsFromAuthor(string username, int pagenum = 0);
-        public void PostCheep(String text, int authorID);
-    }
-
-    public class CheepService : ICheepService
-    {
-
-        private readonly ICheepRepository _repository;
-
-        public CheepService(ICheepRepository repository)
-        {
-            _repository = repository;
-        }
+        private readonly CheepRepository _repository = new(dbContext);
 
         public List<CheepDTO> GetCheeps(int page = 0)
         {
@@ -35,7 +17,7 @@ namespace Chirp.Razor
                     new CheepDTO(
                         cheep.Text,
                         cheep.TimeStamp.ToString(),
-                        cheep.Author.Name
+                        cheep.Author?.Name ?? string.Empty
                     )
                 );
             }
@@ -46,7 +28,7 @@ namespace Chirp.Razor
         {
             // Return empty list if no such author
             var result = _repository.ReadPageFromAuthorAsync(author, page).GetAwaiter().GetResult();
-            if (result == null) return new List<CheepDTO>();
+            if (result == null) return [];
 
             List<Cheep> cheeps = result.Cheeps.ToList();
             List<CheepDTO> DTOCheeps = new List<CheepDTO>();
@@ -56,7 +38,7 @@ namespace Chirp.Razor
                     new CheepDTO(
                         cheep.Text,
                         cheep.TimeStamp.ToString(),
-                        cheep.Author.Name
+                        cheep.Author?.Name ?? string.Empty
                     )
                 );
             }
@@ -72,11 +54,13 @@ namespace Chirp.Razor
                 throw new Exception($"No such author exists {authorID}");
             }
 
-            Cheep cheep = new Cheep(
-                text,
-                DateTime.Now,
-                author
-            );
+            Cheep cheep = new()
+            {
+                AuthorId = authorID,
+                Author = author,
+                Text = text,
+                TimeStamp = DateTime.Now
+            };
             _repository.PostAsync(cheep).GetAwaiter().GetResult();
         }
     }
