@@ -20,6 +20,31 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+
+      - name: Ensure testsuite exists for all projects
+        run: |
+          missing=0
+          while IFS= read -r project; do
+          project_name=$(basename "$project" .csproj)
+
+          #Skips Domain, since there is no testable logic
+          if [[ "$project_name" == *.Domain ]]; then
+            continue
+          fi
+
+          test_project="${project_name}.Tests.csproj"
+          
+          if ! find ./test -name "$test_project" -print -quit | grep -q .; then
+            echo "::error::Missing testsuite for project: $project_name"
+            missing=1
+          fi
+          done < <(find ./src -name "*.csproj") #Feeds loop, used instead of piping to avoid subshelling
+
+          if [ $missing -eq 1 ]; then
+            exit 1
+          fi
+
+
       - name: Run tests with code coverage
         run: dotnet test --collect:"XPlat Code Coverage"
 
@@ -38,7 +63,7 @@ jobs:
 
       - name: Ensure code coverage threshold
         run: |
-          treshold=80
+          threshold=80
           reportSummary="CoverageReport/Summary.txt"
 
           if [ ! -f "$reportSummary" ]; then
@@ -51,15 +76,16 @@ jobs:
           #Gets summary percantage value from the summary
           coveragePct=$(grep -oE '[0-9]+([.][0-9]+)?%' "$reportSummary" | head -n1 | tr -d '%' | bc -l)
 
-          if [ -z "$pct" ]; then
+          if [ -z "$coveragePct" ]; then
             echo "::error::Couldn't parse coverage percantage from $reportSummary!"
-          fi
-
-          echo "Coverage percent: $coveragePct (treshold: ${treshold}%)"
-
-          if [ "$(echo "$coveragePct < $treshold" | bc -l)" -eq 1 ]; then
-            echo"::error::Coverage not within treshold: ${coveragePct}% < ${treshold}%"
             exit 1
           fi
 
-          echo "Coverage OK: ${coveragePct}% >= ${treshold}%"
+          echo "Coverage percent: $coveragePct (threshold: ${threshold}%)"
+
+          if [ "$(echo "$coveragePct < $threshold" | bc -l)" -eq 1 ]; then
+            echo "::error::Coverage not within threshold: ${coveragePct}% < ${threshold}%"
+            exit 1
+          fi
+
+          echo "Coverage OK: ${coveragePct}% >= ${threshold}%"
