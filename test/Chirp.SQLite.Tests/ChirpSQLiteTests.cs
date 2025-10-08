@@ -1,18 +1,23 @@
 ﻿using Chirp.Domain;
 using Chirp.Razor;
+using Chirp.Infrastructure;
 using Microsoft.Data.Sqlite;
 
 public class ChirpSQLiteTests
 {
     private readonly string _databasePath = "/tmp/chirp/test.db";
 
-    private CheepService _cheepService;
+    private Database _database;
+    private ICheepRepository _cheepRepository;
+    private ICheepService _cheepService;
 
     public ChirpSQLiteTests()
     {
         Environment.SetEnvironmentVariable("CHIRPDBPATH", _databasePath);
 
-        _cheepService = new CheepService();
+        _database = new Database();
+        _cheepRepository = new CheepRepository(_database);
+        _cheepService = new CheepService(_cheepRepository);
 
         // Set up db for testing
         using (var connection = new SqliteConnection($"Data Source={_databasePath}"))
