@@ -25,5 +25,6 @@ namespace Chirp.Domain
         void InsertAuthor(Author author);
         /// <returns>An author if it exists given the username</returns>
         Author? GetAuthorFromUsername(string username);
+        Author? GetAuthorFromAuthorID(int authorID);
     }
 }
