@@ -152,6 +152,33 @@ namespace Chirp.Infrastructure
             return null;
         }
 
+        public Author? GetAuthorFromAuthorID(int authorID)
+        {
+            var queryString =
+                @"SELECT author_id, username, email
+                  FROM author
+                  WHERE author_id = @author_id
+                  LIMIT 1;";
+
+            using var connection = new SqliteConnection($"Data Source={_database.sqlDBFilePath}");
+            using var command = connection.CreateCommand();
+            command.CommandText = queryString;
+            command.Parameters.AddWithValue("@author_id", authorID);
+            connection.Open();
+
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                return new Author(
+                    reader.GetInt32(reader.GetOrdinal("author_id")),
+                    reader.GetString(reader.GetOrdinal("username")),
+                    reader.GetString(reader.GetOrdinal("email")),
+                    new List<Cheep>()
+                );
+            }
+            return null;
+        }
+
         private static string UnixTimestampToDateTimeString(double unixTimeStamp)
         {
             DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);

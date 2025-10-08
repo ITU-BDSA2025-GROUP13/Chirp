@@ -1,6 +1,5 @@
 ﻿using Chirp.Razor.Pages;
 using Chirp.Razor;
-using Chirp.Domain;
 using Chirp.Infrastructure;
 using Microsoft.Data.Sqlite;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -86,7 +85,7 @@ public class ChirpRazorTests
 
         Assert.NotNull(pageModel.Cheeps);
         Assert.Single(pageModel.Cheeps);
-        Assert.Equal("Karl Fortnite", pageModel.Cheeps[0].Author.Name);
+        Assert.Equal("Karl Fortnite", pageModel.Cheeps[0].AuthorName);
         Assert.Equal("I love Fortnite", pageModel.Cheeps[0].Text);
 
         clearTables();

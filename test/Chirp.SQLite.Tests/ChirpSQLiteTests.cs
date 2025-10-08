@@ -1,4 +1,5 @@
 ﻿using Chirp.Domain;
+using Chirp.Razor;
 using Microsoft.Data.Sqlite;
 
 public class ChirpSQLiteTests
@@ -47,49 +48,46 @@ public class ChirpSQLiteTests
     [Fact]
     public void ReadAllMessageTest()
     {
-        List<Cheep> cheeps = _cheepService.GetCheeps();
+        List<CheepDTO> cheeps = _cheepService.GetCheeps();
 
         Assert.Equal("hello world", cheeps[0].Text);
-        Assert.Equal("Jacqualine Gilcoine", cheeps[0].Author.Name);
+        Assert.Equal("Jacqualine Gilcoine", cheeps[0].AuthorName);
 
         Assert.Equal("hello pork world", cheeps[1].Text);
-        Assert.Equal("John Pork", cheeps[1].Author.Name);
+        Assert.Equal("John Pork", cheeps[1].AuthorName);
 
         Assert.Equal("I love Fortnite", cheeps[2].Text);
-        Assert.Equal("Karl Fortnite", cheeps[2].Author.Name);
+        Assert.Equal("Karl Fortnite", cheeps[2].AuthorName);
     }
 
     [Fact]
     public void ReadUserMessagesTest()
     {
-        List<Cheep> cheeps = _cheepService.GetCheepsFromAuthor("Karl Fortnite");
+        List<CheepDTO> cheeps = _cheepService.GetCheepsFromAuthor("Karl Fortnite");
 
         Assert.Equal("I love Fortnite", cheeps[0].Text);
-        Assert.Equal("Karl Fortnite", cheeps[0].Author.Name);
+        Assert.Equal("Karl Fortnite", cheeps[0].AuthorName);
 
         Assert.Single(cheeps);
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
-            Cheep cheep = cheeps[2];
+            CheepDTO cheep = cheeps[2];
         });
     }
 
     [Fact]
     public void CreateMessage()
     {
-        Author? author = _cheepService.GetAuthorFromUsername("Karl Fortnite");
-        Assert.NotNull(author);
-        Cheep newCheep = new Cheep("Mannnnnnn I Love Fortnite", DateTime.UtcNow, author);
-        _cheepService.PostCheep(newCheep);
+        _cheepService.PostCheep("Mannnnnnn I Love Fortnite", 3);
 
-        List<Cheep> cheeps = _cheepService.GetCheepsFromAuthor("Karl Fortnite");
+        List<CheepDTO> cheeps = _cheepService.GetCheepsFromAuthor("Karl Fortnite");
         Assert.Equal(2, cheeps.Count);
 
         Assert.Equal("Mannnnnnn I Love Fortnite", cheeps[0].Text);
-        Assert.Equal(author.Name, cheeps[0].Author.Name);
+        Assert.Equal("Karl Fortnite", cheeps[0].AuthorName);
 
+        Assert.Equal("Karl Fortnite", cheeps[1].AuthorName);
         Assert.Equal("I love Fortnite", cheeps[1].Text);
-        Assert.Equal(author.Name, cheeps[1].Author.Name);
     }
 }

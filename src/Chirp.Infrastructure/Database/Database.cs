@@ -1,6 +1,5 @@
 using System.Data;
 using Microsoft.Data.Sqlite;
-using Chirp.Domain;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace Chirp.Infrastructure
