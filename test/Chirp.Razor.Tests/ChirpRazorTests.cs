@@ -1,12 +1,15 @@
 ﻿using Chirp.Razor.Pages;
 using Chirp.Razor;
+using Chirp.Domain;
 using Chirp.Infrastructure;
 using Microsoft.Data.Sqlite;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 public class ChirpRazorTests
 {
-    private CheepService _cheepService;
+    private Database _database;
+    private ICheepRepository _cheepRepository;
+    private ICheepService _cheepService;
     private readonly string _databasePath = "/tmp/chirp/razorTest.db";
     private readonly WebApplicationFactory<Program> _factory;
 
@@ -14,7 +17,9 @@ public class ChirpRazorTests
     {
         Environment.SetEnvironmentVariable("CHIRPDBPATH", _databasePath);
 
-        _cheepService = new CheepService();
+        _database = new Database();
+        _cheepRepository = new CheepRepository(_database);
+        _cheepService = new CheepService(_cheepRepository);
 
         _factory = new WebApplicationFactory<Program>();
     }
@@ -59,7 +64,7 @@ public class ChirpRazorTests
     {
         populateTable();
 
-        var service = new CheepService();
+        var service = _cheepService;
 
         var pageModel = new PublicModel(service);
 
@@ -77,7 +82,7 @@ public class ChirpRazorTests
     {
         populateTable();
 
-        var service = new CheepService();
+        var service = _cheepService;
 
         var pageModel = new UserTimelineModel(service);
 
@@ -98,7 +103,7 @@ public class ChirpRazorTests
 
         clearTables();
 
-        var service = new CheepService();
+        var service = _cheepService;
 
         var pageModel = new PublicModel(service);
 
@@ -114,7 +119,7 @@ public class ChirpRazorTests
 
         clearTables();
 
-        var service = new CheepService();
+        var service = _cheepService;
 
         var pageModel = new UserTimelineModel(service);
 

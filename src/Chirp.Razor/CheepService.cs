@@ -1,5 +1,4 @@
 using Chirp.Domain;
-using Chirp.Infrastructure;
 
 namespace Chirp.Razor
 {
@@ -12,7 +11,8 @@ namespace Chirp.Razor
         /// <param name="username"></param>
         /// <param name="pagenum"></param>
         /// <returns>The cheeps associated with an author, or a emptyList if author doesn't exist</returns>
-        public List<CheepDTO> GetCheepsFromAuthor(string username, int pagenum);
+        public List<CheepDTO> GetCheepsFromAuthor(string username, int pagenum = 0);
+        public void PostCheep(String text, int authorID);
     }
 
     public class CheepService : ICheepService
@@ -20,10 +20,9 @@ namespace Chirp.Razor
 
         private readonly ICheepRepository _repository;
 
-        public CheepService()
+        public CheepService(ICheepRepository repository)
         {
-            Database database = new Database();
-            _repository = new CheepRepository(database);
+            _repository = repository;
         }
 
         public List<CheepDTO> GetCheeps(int page = 0)

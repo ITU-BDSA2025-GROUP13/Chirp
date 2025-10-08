@@ -1,3 +1,6 @@
+using Chirp.Infrastructure;
+using Chirp.Domain;
+
 namespace Chirp.Razor
 {
     public partial class Program
@@ -8,6 +11,8 @@ namespace Chirp.Razor
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddSingleton<Database>();
+            builder.Services.AddSingleton<ICheepRepository, CheepRepository>();
             builder.Services.AddSingleton<ICheepService, CheepService>();
 
 
