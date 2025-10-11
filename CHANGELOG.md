@@ -1,5 +1,33 @@
 # Changelog
 
+## [5.0.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v4.0.1...v5.0.0) (2025-10-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* changes everything lmao
+* CheepService now returns CheepDTOs instead of Cheeps
+* add author as identity
+* switching to author and message changes the database schema, changing the dbfacade api
+* you must now interface with the repository instead of the database
+
+### Features
+
+* add author as identity ([71a239c](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/71a239cfb891b4bead387d8107376d194d649629))
+* add dependency injection ([8f08aa7](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/8f08aa7142aa89c9ccbb8d942e9ebc0d99bffa96))
+* add DTO to the application layer ([0fa0f80](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/0fa0f809c8b4b39fe91234b39599689297bc0645))
+* migrate to EF Core ([b72a03e](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/b72a03e336d029ad4f06c060690a7961533c4ff4))
+
+
+### Bug Fixes
+
+* explicitly close filestream in dbfacade ([71a239c](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/71a239cfb891b4bead387d8107376d194d649629))
+
+
+### Code Refactoring
+
+* add repository pattern ([1dc490f](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/1dc490ff6d32843e9ac398467ecd63fafa490d73))
+
 ## [4.0.1](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v4.0.0...v4.0.1) (2025-10-03)
 
 
