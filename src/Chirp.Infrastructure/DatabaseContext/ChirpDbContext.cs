@@ -15,7 +15,7 @@ namespace Chirp.Infrastructure
         /// Gets or sets the collection of users in the database.
         /// </summary>
         public DbSet<Author> Authors { get; set; }
-    
+
         /// <summary>
         /// Gets or sets the collection of messages in the database.
         /// </summary>

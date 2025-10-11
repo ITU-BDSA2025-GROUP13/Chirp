@@ -1,4 +1,5 @@
-namespace Chirp.Razor {
+namespace Chirp.Razor
+{
     public interface ICheepService
     {
         public List<CheepDTO> GetCheeps(int pagenum = 0);
