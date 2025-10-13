@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{51460179-B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Infrastructure", "src\Chirp.Infrastructure\Chirp.Infrastructure.csproj", "{5FF0AE7B-10D8-4335-A59D-6EBD1CBD9F10}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Domain.Tests", "test\Chirp.Domain.Tests\Chirp.Domain.Tests.csproj", "{6EED967D-EE68-48FE-8341-FA52CD124FFE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,18 @@ Global
 		{5FF0AE7B-10D8-4335-A59D-6EBD1CBD9F10}.Release|x64.Build.0 = Release|Any CPU
 		{5FF0AE7B-10D8-4335-A59D-6EBD1CBD9F10}.Release|x86.ActiveCfg = Release|Any CPU
 		{5FF0AE7B-10D8-4335-A59D-6EBD1CBD9F10}.Release|x86.Build.0 = Release|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Debug|x64.Build.0 = Debug|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Debug|x86.Build.0 = Debug|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Release|x64.ActiveCfg = Release|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Release|x64.Build.0 = Release|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Release|x86.ActiveCfg = Release|Any CPU
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,5 +80,6 @@ Global
 		{967F9741-FDAA-43C6-8BD4-1C0B100AC615} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{54C14235-D984-4D6D-8B00-A4C908175CA7} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{5FF0AE7B-10D8-4335-A59D-6EBD1CBD9F10} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{6EED967D-EE68-48FE-8341-FA52CD124FFE} = {51460179-BB0B-4357-8459-65C27811A5D3}
 	EndGlobalSection
 EndGlobal
