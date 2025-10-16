@@ -43,6 +43,7 @@ namespace Chirp.Razor
             using (var scope = app.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
+                db.Database.Migrate();
                 if (!db.Cheeps.Any()) // Replace Cheeps with your main DbSet
                 {
                     DbInitializer.SeedDatabase(db);
