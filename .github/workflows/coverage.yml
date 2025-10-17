@@ -15,7 +15,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0'
+          dotnet-version: "8.0"
 
       - name: Restore dependencies
         run: dotnet restore
@@ -24,10 +24,10 @@ jobs:
         run: dotnet test --collect:"XPlat Code Coverage"
 
       - name: Generate HTML coverage report
-        run : |
+        run: |
           dotnet tool install --global dotnet-reportgenerator-globaltool || true
           export PATH="$PATH:$HOME/.dotnet/tools"
-          reportgenerator -reports:"**/TestResults/*/coverage.cobertura.xml" -targetdir:"CoverageReport" -reporttypes:"HtmlInline;TextSummary" -assemblyfilters:"-*Tests"
+          reportgenerator -reports:"**/TestResults/*/coverage.cobertura.xml" -targetdir:"CoverageReport" -reporttypes:"HtmlInline;TextSummary" -assemblyfilters:"-*Tests" -filefilters:"-**/Migrations/*;-**/DbInitializer.cs;-**.cshtml"
 
       - name: Upload Coverage Report
         if: always()
