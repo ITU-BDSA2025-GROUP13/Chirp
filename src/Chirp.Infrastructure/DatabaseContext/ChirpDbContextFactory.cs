@@ -11,7 +11,7 @@ namespace Chirp.Infrastructure
         public ChirpDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ChirpDbContext>();
-            optionsBuilder.UseSqlite("Data Source=chirp.db");
+            optionsBuilder.UseSqlite("Data Source=../../data/chirp.db");
 
             return new ChirpDbContext(optionsBuilder.Options);
         }
