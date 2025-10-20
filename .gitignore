@@ -60,3 +60,7 @@ TestResult.xml
 nunit-*.xml
 /.idea
 Chirp.sln.DotSettings.user
+data/chirp.db-wal
+data/chirp.db-shm
+data/chirp.db
+src/Chirp.Web/chirp.db
