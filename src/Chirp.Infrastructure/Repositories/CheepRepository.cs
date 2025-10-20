@@ -28,8 +28,7 @@ namespace Chirp.Infrastructure
             {
                 AuthorId = author.AuthorId,
                 Name = author.Name,
-                Email = author.Email,
-                PasswordHash = ""
+                Email = author.Email
             };
             _dbContext.Authors.Add(user);
             _dbContext.SaveChanges();
