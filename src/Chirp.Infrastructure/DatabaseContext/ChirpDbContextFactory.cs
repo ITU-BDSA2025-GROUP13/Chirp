@@ -3,12 +3,15 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Chirp.Infrastructure
 {
+    /// <summary>
+    /// Used by EFCore to perform migrations
+    /// </summary>
     public class ChirpDbContextFactory : IDesignTimeDbContextFactory<ChirpDbContext>
     {
         public ChirpDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ChirpDbContext>();
-            optionsBuilder.UseSqlite("Data Source=chirp.db"); // Use your actual connection string
+            optionsBuilder.UseSqlite("Data Source=chirp.db");
 
             return new ChirpDbContext(optionsBuilder.Options);
         }

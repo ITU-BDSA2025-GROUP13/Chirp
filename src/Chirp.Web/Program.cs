@@ -4,50 +4,45 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Razor
 {
-    public partial class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-            builder.Services.AddRazorPages();
-
-            // Register ChirpDbContext with connection string
-            builder.Services.AddDbContext<ChirpDbContext>(options =>
-                options.UseSqlite(builder.Configuration.GetConnectionString("ChirpDb")));
-
-            // Register IChirpDbContext to resolve to ChirpDbContext
-            builder.Services.AddScoped<IChirpDbContext>(provider => provider.GetRequiredService<ChirpDbContext>());
-
-            builder.Services.AddScoped<ICheepRepository, CheepRepository>();
-            builder.Services.AddScoped<ICheepService, CheepService>();
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
+            //Builds the web application
+            WebApplicationBuilder appBuilder = WebApplication.CreateBuilder(args);
+            
+            appBuilder.Services.AddRazorPages();
+            
+            appBuilder.Services.AddScoped<ICheepRepository, CheepRepository>();
+            appBuilder.Services.AddScoped<ICheepService, CheepService>();
+            appBuilder.Services.AddScoped<IChirpDbContext>(provider => 
+                provider.GetRequiredService<ChirpDbContext>());
+            
+            appBuilder.Services.AddDbContext<ChirpDbContext>(options =>
+                options.UseSqlite(appBuilder.Configuration.GetConnectionString("ChirpDb"))); //Retrieves DB connection from ./appsetings.json
+            WebApplication app = appBuilder.Build();
+            
+            //Sets up middleware pipelines
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.MapRazorPages();
 
-            using (var scope = app.Services.CreateScope())
+            //Database initialization
+            using (IServiceScope scope = app.Services.CreateScope())
             {
-                var db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
+                ChirpDbContext db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
                 try
                 {
                     if (db.Database.EnsureCreated())
                     {
-                        Console.WriteLine("Database not found, performing migrations...");
+                        Console.WriteLine("Database not found, creating one based on seed...");
                         DbInitializer.SeedDatabase(db);
                     }
                 }
