@@ -56,7 +56,7 @@ namespace Chirp.Razor
                 {
                     Console.WriteLine(err);
                 }
-                
+
             }
 
             app.Run();
