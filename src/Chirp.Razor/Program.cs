@@ -45,11 +45,10 @@ namespace Chirp.Razor
                 var db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
                 try
                 {
-                    if (db.Database.EnsureCreated()) // Replace Cheeps with your main DbSet
+                    if (db.Database.EnsureCreated())
                     {
                         Console.WriteLine("Database not found, performing migrations...");
                         DbInitializer.SeedDatabase(db);
-                        //db.Database.Migrate();
                     }
                 }
                 catch (Microsoft.Data.Sqlite.SqliteException err)
