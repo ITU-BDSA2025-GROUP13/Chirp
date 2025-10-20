@@ -24,12 +24,7 @@ namespace Chirp.Domain
         /// Gets or sets the email address of the user.
         /// </summary>
         public string Email { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the hashed password of the user.
-        /// </summary>
-        public string PasswordHash { get; set; } = string.Empty;
-
+        
         /// <summary>
         /// Gets or sets the collection of cheeps authored by this user.
         /// </summary>

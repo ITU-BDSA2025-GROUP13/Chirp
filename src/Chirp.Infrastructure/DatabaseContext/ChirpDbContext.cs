@@ -34,7 +34,6 @@ namespace Chirp.Infrastructure
                 entity.Property(u => u.AuthorId).HasColumnName("user_id").ValueGeneratedOnAdd(); // Autoincrement
                 entity.Property(u => u.Name).HasColumnName("username");
                 entity.Property(u => u.Email).HasColumnName("email");
-                entity.Property(u => u.PasswordHash).HasColumnName("pw_hash");
             });
 
             modelBuilder.Entity<Cheep>(entity =>
