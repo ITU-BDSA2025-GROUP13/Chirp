@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Domain.Tests", "test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Infrastructure.Tests", "test\Chirp.Infrastructure.Tests\Chirp.Infrastructure.Tests.csproj", "{9E7087C9-16B1-4E2B-8053-F7666310F3D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Razor.Tests", "test\Chirp.Razor.Tests\Chirp.Razor.Tests.csproj", "{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +88,18 @@ Global
 		{9E7087C9-16B1-4E2B-8053-F7666310F3D5}.Release|x64.Build.0 = Release|Any CPU
 		{9E7087C9-16B1-4E2B-8053-F7666310F3D5}.Release|x86.ActiveCfg = Release|Any CPU
 		{9E7087C9-16B1-4E2B-8053-F7666310F3D5}.Release|x86.Build.0 = Release|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Debug|x64.Build.0 = Debug|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Debug|x86.Build.0 = Debug|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Release|x64.ActiveCfg = Release|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Release|x64.Build.0 = Release|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Release|x86.ActiveCfg = Release|Any CPU
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,5 +110,6 @@ Global
 		{5FF0AE7B-10D8-4335-A59D-6EBD1CBD9F10} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{6EED967D-EE68-48FE-8341-FA52CD124FFE} = {51460179-BB0B-4357-8459-65C27811A5D3}
 		{9E7087C9-16B1-4E2B-8053-F7666310F3D5} = {51460179-BB0B-4357-8459-65C27811A5D3}
+		{EA0CF929-5C4B-41CE-AD39-9F4D7AD3F920} = {51460179-BB0B-4357-8459-65C27811A5D3}
 	EndGlobalSection
 EndGlobal
