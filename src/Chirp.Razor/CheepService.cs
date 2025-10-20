@@ -3,9 +3,9 @@ using Chirp.Infrastructure;
 
 namespace Chirp.Razor
 {
-    public class CheepService(ChirpDbContext dbContext) : ICheepService
+    public class CheepService(ICheepRepository cheepRepository) : ICheepService
     {
-        private readonly CheepRepository _repository = new(dbContext);
+        private readonly ICheepRepository _repository = cheepRepository;
 
         public List<CheepDTO> GetCheeps(int page = 0)
         {
