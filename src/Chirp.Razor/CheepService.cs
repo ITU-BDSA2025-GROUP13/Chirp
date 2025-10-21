@@ -54,7 +54,7 @@ namespace Chirp.Razor
                 throw new Exception($"No such author exists {authorID}");
             }
 
-            Cheep cheep = new()
+            Cheep cheep = new Cheep
             {
                 AuthorId = authorID,
                 Author = author,
