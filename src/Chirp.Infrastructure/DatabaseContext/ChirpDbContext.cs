@@ -1,7 +1,7 @@
+using Chirp.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using Chirp.Domain;
 
-namespace Chirp.Infrastructure
+namespace Chirp.Infrastructure.DatabaseContext
 {
     /// <summary>
     /// Database context for the Chirp application, managing Users and Messages entities.

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Chirp.Domain
+namespace Chirp.Core.Models
 {
     /// <summary>
     /// Represents a user in the Chirp application.

@@ -1,6 +1,6 @@
-using Chirp.Infrastructure;
-using Chirp.Domain;
-using Chirp.Razor;
+using Chirp.Infrastructure.DatabaseContext;
+using Chirp.Infrastructure.Repositories;
+using Chirp.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Web
@@ -15,6 +15,7 @@ namespace Chirp.Web
             appBuilder.Services.AddRazorPages();
 
             appBuilder.Services.AddScoped<ICheepRepository, CheepRepository>();
+            appBuilder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
             appBuilder.Services.AddScoped<ICheepService, CheepService>();
             appBuilder.Services.AddScoped<IChirpDbContext>(provider =>
                 provider.GetRequiredService<ChirpDbContext>());

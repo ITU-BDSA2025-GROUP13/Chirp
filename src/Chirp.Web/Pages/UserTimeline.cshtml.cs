@@ -1,4 +1,4 @@
-﻿using Chirp.Razor;
+﻿using Chirp.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -17,7 +17,7 @@ public class UserTimelineModel : PageModel
 
     public ActionResult OnGet(string author, [FromQuery] int page)
     {
-        Cheeps = _service.GetCheepsFromAuthor(author, page);
+        Cheeps = _service.GetCheepsFromAuthorName(author, page);
         return Page();
     }
 }

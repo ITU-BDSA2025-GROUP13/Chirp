@@ -1,4 +1,6 @@
-using Chirp.Domain;
+using Chirp.Core.Models;
+using Chirp.Infrastructure.DatabaseContext;
+
 
 public static class DbInitializer
 {

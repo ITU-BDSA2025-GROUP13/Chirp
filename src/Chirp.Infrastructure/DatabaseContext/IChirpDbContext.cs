@@ -1,6 +1,7 @@
+using Chirp.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Chirp.Domain
+namespace Chirp.Infrastructure.DatabaseContext
 {
     public interface IChirpDbContext
     {

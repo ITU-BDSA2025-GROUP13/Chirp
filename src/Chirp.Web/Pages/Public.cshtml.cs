@@ -1,4 +1,4 @@
-﻿using Chirp.Razor;
+﻿using Chirp.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -17,7 +17,7 @@ public class PublicModel : PageModel
 
     public ActionResult OnGet([FromQuery] int page)
     {
-        Cheeps = _service.GetCheeps(page);
+        Cheeps = _service.GetMainPageCheeps(page);
         return Page();
     }
 }
