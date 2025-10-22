@@ -1,7 +1,7 @@
-﻿using Chirp.Razor.Pages;
-using Chirp.Razor;
+﻿using Chirp.Razor;
 using Chirp.Domain;
 using Chirp.Infrastructure;
+using Chirp.Web.Pages;
 using FluentAssertions;
 using Moq;
 using MockQueryable.Moq;

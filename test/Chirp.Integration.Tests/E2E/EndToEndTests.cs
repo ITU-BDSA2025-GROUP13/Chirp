@@ -1,9 +1,10 @@
 ﻿using Chirp.Razor;
+using Chirp.Web;
 using Microsoft.AspNetCore.Mvc;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace Chirp.Infrastructure.Tests.Repository;
+namespace Chirp.Integration.Tests.E2E;
 
 public class EndToEndTests
 {
@@ -19,7 +20,7 @@ public class EndToEndTests
     public async Task Get_PublicTimeline_ReturnsSuccessAndContainsExpectedContent()
     {
         populateTable();
-
+        
         if (_factory is null)
         {
             throw new InvalidOperationException("HttpClientFactory is not available.");
