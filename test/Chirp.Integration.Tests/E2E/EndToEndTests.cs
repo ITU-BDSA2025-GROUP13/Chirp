@@ -13,6 +13,7 @@ public class EndToEndTests
     private void populateTable()
     {
         // this runs the program as is, it doesnt use an in memory database as we need program options to make it so
+        Environment.SetEnvironmentVariable("DB_PATH", $"{Path.GetTempPath()}/chirp/e2eTest.db");
         _factory = new WebApplicationFactory<Program>();
     }
 

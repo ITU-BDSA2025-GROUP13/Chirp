@@ -11,7 +11,8 @@ public class ChirpDbContextFactoryTest
     [Fact]
     public void CreateDbContext_WithDefaultArguments_ReturnsSqliteConfiguredDbContext()
     {
-
+        string testDBPath = $"{Path.GetTempPath()}/chirp/dbContextTest.db";
+        Environment.SetEnvironmentVariable("DB_PATH", testDBPath);
         var factory = new ChirpDbContextFactory();
 
         string[] args = Array.Empty<string>();
@@ -23,6 +24,6 @@ public class ChirpDbContextFactoryTest
 
         context.Database.ProviderName.Should().Be("Microsoft.EntityFrameworkCore.Sqlite");
 
-        context.Database.GetConnectionString().Should().Be("Data Source=chirp.db");
+        context.Database.GetConnectionString().Should().Be($"Data Source={testDBPath}");
     }
 }
