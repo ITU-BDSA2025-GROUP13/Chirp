@@ -19,7 +19,7 @@ public class EndToEndTests
     public async Task Get_PublicTimeline_ReturnsSuccessAndContainsExpectedContent()
     {
         populateTable();
-        
+
         if (_factory is null)
         {
             throw new InvalidOperationException("HttpClientFactory is not available.");

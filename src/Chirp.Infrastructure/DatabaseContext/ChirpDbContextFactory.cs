@@ -13,7 +13,7 @@ namespace Chirp.Infrastructure
             var optionsBuilder = new DbContextOptionsBuilder<ChirpDbContext>();
             string? dbPathFromEnv = Environment.GetEnvironmentVariable("DB_PATH");
             string dbPath = string.IsNullOrEmpty(dbPathFromEnv) ? $"{Path.GetTempPath()}/chirp.db" : dbPathFromEnv;
-            
+
             if (!File.Exists(dbPath))
             {
                 string? dbDir = Path.GetDirectoryName(dbPath);
@@ -25,7 +25,7 @@ namespace Chirp.Infrastructure
 
                 File.Create(dbPath);
             }
-            
+
             optionsBuilder.UseSqlite($"Data Source={dbPath}");
             return new ChirpDbContext(optionsBuilder.Options);
         }
