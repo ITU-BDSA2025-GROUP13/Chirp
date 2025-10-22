@@ -60,7 +60,7 @@ public class IntegrationTests
             throw new InvalidOperationException("cheeps is not available.");
         }
 
-        var result = _cheepService.GetCheeps(0);
+        var result = _cheepService.GetMainPageCheeps(0);
         result.Should().HaveCount(cheeps.Count);
         result.First().Text.Should().Be(text3);
         result.Last().Text.Should().Be(text1);
@@ -74,7 +74,7 @@ public class IntegrationTests
         {
             throw new InvalidOperationException("cheep service is not available.");
         }
-        var result = _cheepService.GetCheepsFromAuthor(name1);
+        var result = _cheepService.GetCheepsFromAuthorName(name1);
         result.Should().HaveCount(3);
         result.First().Text.Should().Be(text3);
         result.Last().Text.Should().Be(text1);
@@ -128,16 +128,16 @@ public class IntegrationTests
             .Returns(karlFortniteWithCheeps);
 
         mockRepository
-            .Setup(c => c.PostAsync(It.IsAny<Cheep>()))
+            .Setup(c => c.InsertCheep(It.IsAny<Cheep>()))
             .Callback<Cheep>(c => cheeps.Push(c))
             .Returns(Task.CompletedTask);
 
         mockRepository
-            .Setup(c => c.ReadPageAsync(It.IsAny<int>()))
+            .Setup(c => c.GetMainPageAsync(It.IsAny<int>()))
             .ReturnsAsync(() => stackToList());
 
         mockRepository
-            .Setup(c => c.ReadPageFromAuthorAsync(name3, It.IsAny<int>()))
+            .Setup(c => c.GetPageFromAuthorAsync(name3, It.IsAny<int>()))
             .ReturnsAsync(karlFortniteWithCheeps);
 
         _cheepService = new CheepService(mockRepository.Object);

@@ -1,15 +1,14 @@
-using Chirp.Domain;
-using Chirp.Infrastructure;
+using Chirp.Core.Models;
+using Chirp.Infrastructure.Repositories;
+using Chirp.Infrastructure.Services;
 
-namespace Chirp.Razor
+namespace Chirp.Infrastructure.Services
 {
-    public class CheepService(ICheepRepository cheepRepository) : ICheepService
+    public class CheepService(ICheepRepository cheepRepo, IAuthorRepository authorRepo) : ICheepService
     {
-        private readonly ICheepRepository _repository = cheepRepository;
-
-        public List<CheepDTO> GetCheeps(int page = 0)
+        public List<CheepDTO> GetMainPageCheeps(int page = 0)
         {
-            List<Cheep> cheeps = _repository.ReadPageAsync(page).GetAwaiter().GetResult().ToList();
+            List<Cheep> cheeps = cheepRepo.GetMainPage(page).GetAwaiter().GetResult().ToList();
             List<CheepDTO> DTOCheeps = new List<CheepDTO>();
             foreach (Cheep cheep in cheeps)
             {
@@ -23,14 +22,30 @@ namespace Chirp.Razor
             }
             return DTOCheeps;
         }
-
-        public List<CheepDTO> GetCheepsFromAuthor(string author, int page = 0)
+        public List<CheepDTO> GetCheepsFromAuthorName(string authorName, int pagenum = 0)
         {
-            // Return empty list if no such author
-            var result = _repository.ReadPageFromAuthorAsync(author, page).GetAwaiter().GetResult();
-            if (result == null) return [];
+            Author? author = authorRepo.GetAuthorByName(authorName);
+            if (author == null) return [];
 
-            List<Cheep> cheeps = result.Cheeps.ToList();
+            return ToDTO(author.Cheeps);
+        }
+        public List<CheepDTO> GetCheepsFromAuthorID(int authorID, int pagenum = 0)
+        {
+            Author? author = authorRepo.GetAuthorByID(authorID);
+            if (author == null) return [];
+            
+            return ToDTO(author.Cheeps);
+        }
+        public List<CheepDTO> GetCheepsFromAuthorEmail(string authorEmail, int pagenum = 0)
+        {
+            Author? author = authorRepo.GetAuthorByEmail(authorEmail);
+            if (author == null) return [];
+            
+            return ToDTO(author.Cheeps);
+        }
+
+        private List<CheepDTO> ToDTO(IEnumerable<Cheep> cheeps)
+        {
             List<CheepDTO> DTOCheeps = new List<CheepDTO>();
             foreach (Cheep cheep in cheeps)
             {
@@ -44,16 +59,12 @@ namespace Chirp.Razor
             }
             return DTOCheeps;
         }
-
-
+        
         public void PostCheep(String text, int authorID)
         {
-            Author? author = _repository.GetAuthorFromAuthorID(authorID);
-            if (author == null)
-            {
-                throw new Exception($"No such author exists {authorID}");
-            }
-
+            Author? author = authorRepo.GetAuthorByID(authorID);
+            if (author == null) throw new Exception($"No such author exists {authorID}");
+            
             Cheep cheep = new Cheep
             {
                 AuthorId = authorID,
@@ -61,7 +72,7 @@ namespace Chirp.Razor
                 Text = text,
                 TimeStamp = DateTime.Now
             };
-            _repository.PostAsync(cheep).GetAwaiter().GetResult();
+            cheepRepo.InsertCheep(cheep).GetAwaiter().GetResult();
         }
     }
 }

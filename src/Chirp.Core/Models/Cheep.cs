@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Chirp.Domain
+namespace Chirp.Core.Models
 {
     /// <summary>
     /// Represents a message (cheep) posted by a user in the Chirp application.
@@ -24,7 +24,7 @@ namespace Chirp.Domain
         /// Gets or sets the user who authored this message.
         /// </summary>
         [ForeignKey("AuthorId")]
-        public required Author? Author { get; set; }
+        public Author? Author { get; set; }
 
         /// <summary>
         /// Gets or sets the text content of the message.

@@ -1,30 +1,29 @@
-namespace Chirp.Domain
+using Chirp.Core.Models;
+
+namespace Chirp.Infrastructure.Repositories
 {
     public interface ICheepRepository
     {
         /// <summary>
-        /// Returns a single page cheeps
+        /// Retrieves a paginated list of cheeps ordered by publication date (newest first).
         /// </summary>
-        /// <param name="pagenum">Which page of cheeps is wished for (the higher the older cheeps)</param>
-        /// <returns></returns>
-        Task<IEnumerable<Cheep>> ReadPageAsync(int pagenum = 0);
+        /// <param name="pagenum">The zero-based page number to retrieve. Default is 0.</param>
+        /// <returns>A task containing an enumerable collection of cheeps for the specified page.</returns>
+        Task<IEnumerable<Cheep>> GetMainPage(int pagenum = 0);
         /// <summary>
-        /// Returns a single author containing all the cheeps related to that author
+        /// Retrieves an author with a paginated list of their cheeps ordered by publication date (newest first).
         /// </summary>
-        /// <param name="username">The username of the author of the cheeps</param>
-        /// <param name="pagenum">Which page of cheeps is wished for (the higher the older cheeps)</param>
-        /// <returns></returns>
-        Task<Author?> ReadPageFromAuthorAsync(string username, int pagenum = 0);
+        /// <param name="author">The author of the cheeps to retrieve.</param>
+        /// <param name="pagenum">The zero-based page number to retrieve. Default is 0.</param>
+        /// <returns>A task containing the author with their cheeps, or null if the author is not found.</returns>
+        Task<IEnumerable<Cheep>> GetAuthorPage(Author author, int pagenum = 0);
         /// <summary>
-        /// Inserts a cheep into the database
+        /// Posts a new cheep (message) to the database asynchronously.
         /// </summary>
-        Task PostAsync(Cheep cheep);
-        /// <summary>
-        /// Inserts an author into the database
-        /// </summary>
-        void InsertAuthor(Author author);
-        /// <returns>An author if it exists given the username</returns>
-        Author? GetAuthorFromUsername(string username);
-        Author? GetAuthorFromAuthorID(int authorID);
+        /// <param name="cheep">The cheep to post.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="Exception">Thrown when the author is not found in the database.</exception>
+        Task InsertCheep(Cheep cheep);
+        
     }
 }

@@ -28,13 +28,13 @@ public class PublicModelTests
             new("Public message 2", "2023-01-02", "User2")
         };
 
-        mockService.Setup(s => s.GetCheeps(1)).Returns(expectedCheeps);
+        mockService.Setup(s => s.GetMainPageCheeps(1)).Returns(expectedCheeps);
         var model = new PublicModel(mockService.Object);
 
         var result = model.OnGet(1);
 
         result.Should().BeOfType<PageResult>();
-        mockService.Verify(s => s.GetCheeps(1), Times.Once);
+        mockService.Verify(s => s.GetMainPageCheeps(1), Times.Once);
         model.Cheeps.Should().BeEquivalentTo(expectedCheeps);
     }
 
@@ -48,13 +48,13 @@ public class PublicModelTests
             new(text, "2023-01-01", "User1")
         };
 
-        mockService.Setup(s => s.GetCheeps(0)).Returns(expectedCheeps);
+        mockService.Setup(s => s.GetMainPageCheeps(0)).Returns(expectedCheeps);
         var model = new PublicModel(mockService.Object);
 
         var result = model.OnGet(0);
 
         result.Should().BeOfType<PageResult>();
-        mockService.Verify(s => s.GetCheeps(0), Times.Once);
+        mockService.Verify(s => s.GetMainPageCheeps(0), Times.Once);
         model.Cheeps.Should().HaveCount(1);
         model.Cheeps.First().Text.Should().Be(text);
     }
@@ -63,7 +63,7 @@ public class PublicModelTests
     public void OnGet_WhenServiceReturnsNoCheeps_ReturnsPageResultWithEmptyCheepList()
     {
         var mockService = new Mock<ICheepService>();
-        mockService.Setup(s => s.GetCheeps(It.IsAny<int>())).Returns(new List<CheepDTO>());
+        mockService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>())).Returns(new List<CheepDTO>());
         var model = new PublicModel(mockService.Object);
 
         var result = model.OnGet(5);

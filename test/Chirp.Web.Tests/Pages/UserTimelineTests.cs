@@ -29,13 +29,13 @@ public class UserTimelineModelTests
             new("User message 2", "2023-01-02", user)
         };
 
-        mockService.Setup(s => s.GetCheepsFromAuthor(user, 0)).Returns(expectedCheeps);
+        mockService.Setup(s => s.GetCheepsFromAuthorName(user, 0)).Returns(expectedCheeps);
         var model = new UserTimelineModel(mockService.Object);
 
         var result = model.OnGet(user, 0);
 
         result.Should().BeOfType<PageResult>();
-        mockService.Verify(s => s.GetCheepsFromAuthor(user, 0), Times.Once);
+        mockService.Verify(s => s.GetCheepsFromAuthorName(user, 0), Times.Once);
         model.Cheeps.Should().BeEquivalentTo(expectedCheeps);
     }
 
@@ -49,13 +49,13 @@ public class UserTimelineModelTests
             new("First page user message", "2023-01-01", "AnotherUser")
         };
 
-        mockService.Setup(s => s.GetCheepsFromAuthor(anotherUser, 0)).Returns(expectedCheeps);
+        mockService.Setup(s => s.GetCheepsFromAuthorName(anotherUser, 0)).Returns(expectedCheeps);
         var model = new UserTimelineModel(mockService.Object);
 
         var result = model.OnGet(anotherUser, 0);
 
         result.Should().BeOfType<PageResult>();
-        mockService.Verify(s => s.GetCheepsFromAuthor(anotherUser, 0), Times.Once);
+        mockService.Verify(s => s.GetCheepsFromAuthorName(anotherUser, 0), Times.Once);
         model.Cheeps.Should().HaveCount(1);
         model.Cheeps.First().AuthorName.Should().Be(anotherUser);
     }
@@ -64,7 +64,7 @@ public class UserTimelineModelTests
     public void OnGet_WhenUserDoesNotExist_ReturnsPageResultWithEmptyCheepList()
     {
         var mockService = new Mock<ICheepService>();
-        mockService.Setup(s => s.GetCheepsFromAuthor("NonExistent", It.IsAny<int>()))
+        mockService.Setup(s => s.GetCheepsFromAuthorName("NonExistent", It.IsAny<int>()))
                   .Returns(new List<CheepDTO>());
         var model = new UserTimelineModel(mockService.Object);
 
@@ -84,7 +84,7 @@ public class UserTimelineModelTests
             new("Special user message", "2023-01-01", user)
         };
 
-        mockService.Setup(s => s.GetCheepsFromAuthor(user, 0)).Returns(expectedCheeps);
+        mockService.Setup(s => s.GetCheepsFromAuthorName(user, 0)).Returns(expectedCheeps);
         var model = new UserTimelineModel(mockService.Object);
 
         var result = model.OnGet(user, 0);

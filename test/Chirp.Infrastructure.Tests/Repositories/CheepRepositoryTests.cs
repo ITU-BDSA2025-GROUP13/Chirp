@@ -1,9 +1,10 @@
 ﻿using FluentAssertions;
 using Chirp.Domain;
+using Chirp.Infrastructure.Repositories;
 using Moq;
 using MockQueryable.Moq;
 
-namespace Chirp.Infrastructure.Tests.Repository;
+namespace Chirp.Infrastructure.Tests.Repositories;
 
 public class CheepRepositoryTests
 {
@@ -25,9 +26,9 @@ public class CheepRepositoryTests
 
         var mockCheepSet = cheeps.BuildMockDbSet();
         mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
-        var repository = new CheepRepository(mockContext.Object);
+        var cheepRepo = new CheepRepository(mockContext.Object);
 
-        var result = await repository.ReadPageAsync(0);
+        var result = await cheepRepo.GetMainPage(0);
 
         result.Should().HaveCount(cheeps.Count());
         result.First().Text.Should().Be(text3);
@@ -73,7 +74,7 @@ public class CheepRepositoryTests
 
         var repository = new CheepRepository(mockContext.Object);
 
-        Author? result = await repository.ReadPageFromAuthorAsync("TestUser2");
+        Author? result = await repository.GetAuthorPage("TestUser2");
 
         result.Should().NotBeNull();
         result!.Name.Should().Be(name2);
@@ -113,8 +114,8 @@ public class CheepRepositoryTests
 
         var repository = new CheepRepository(mockContext.Object);
 
-        await repository.PostAsync(cheep);
-        var result = await repository.ReadPageAsync(0);
+        await repository.InsertCheep(cheep);
+        var result = await repository.GetMainPage(0);
 
         result.Should().NotBeNull();
         result.Should().HaveCount(2);
@@ -143,7 +144,7 @@ public class CheepRepositoryTests
 
         repository.InsertAuthor(author);
 
-        Author? result = await repository.ReadPageFromAuthorAsync("TestUser");
+        Author? result = await repository.GetAuthorPage("TestUser");
 
         result.Should().NotBeNull();
         result!.Name.Should().Be("TestUser");

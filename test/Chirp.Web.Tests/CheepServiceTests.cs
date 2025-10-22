@@ -24,12 +24,12 @@ public class CheepServiceTests
         var mockRepository = new Mock<ICheepRepository>();
 
         mockRepository
-            .Setup(c => c.ReadPageAsync(0))
+            .Setup(c => c.GetMainPageAsync(0))
             .ReturnsAsync(cheeps);
 
         var service = new CheepService(mockRepository.Object);
 
-        var result = service.GetCheeps(0);
+        var result = service.GetMainPageCheeps(0);
 
         result.Should().HaveCount(cheeps.Count());
         result.First().Text.Should().Be(text3);
@@ -72,12 +72,12 @@ public class CheepServiceTests
         var mockAuthorSet = authors;
 
         mockRepository
-            .Setup(c => c.ReadPageFromAuthorAsync(It.IsAny<string>(), 0))
+            .Setup(c => c.GetPageFromAuthorAsync(It.IsAny<string>(), 0))
             .ReturnsAsync(author2_autour);
 
         var service = new CheepService(mockRepository.Object);
 
-        var result = service.GetCheepsFromAuthor(name2);
+        var result = service.GetCheepsFromAuthorName(name2);
 
         result.Should().HaveCount(author2Cheeps.Count());
         result.First().Text.Should().Be(text3);
@@ -103,18 +103,18 @@ public class CheepServiceTests
             .Returns(author1);
 
         mockRepository
-            .Setup(c => c.PostAsync(It.IsAny<Cheep>()))
+            .Setup(c => c.InsertCheep(It.IsAny<Cheep>()))
             .Callback<Cheep>(c => cheeps.Push(c))
             .Returns(Task.CompletedTask);
 
         mockRepository
-            .Setup(c => c.ReadPageAsync(It.IsAny<int>()))
+            .Setup(c => c.GetMainPageAsync(It.IsAny<int>()))
             .ReturnsAsync(() => cheeps);
 
         var service = new CheepService(mockRepository.Object);
         service.PostCheep(text2, author1.AuthorId);
 
-        var result = service.GetCheeps(0);
+        var result = service.GetMainPageCheeps(0);
 
         result.Should().NotBeNull();
         result.Should().HaveCount(2);
