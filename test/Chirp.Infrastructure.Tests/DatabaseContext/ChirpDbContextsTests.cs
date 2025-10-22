@@ -1,6 +1,5 @@
-﻿using Chirp.Infrastructure;
+﻿using Chirp.Domain;
 using FluentAssertions;
-using Chirp.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Infrastructure.Tests.Repository;

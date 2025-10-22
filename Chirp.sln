@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{51460179-B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Infrastructure", "src\Chirp.Infrastructure\Chirp.Infrastructure.csproj", "{5FF0AE7B-10D8-4335-A59D-6EBD1CBD9F10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Domain.Tests", "test\Chirp.Domain.Tests\Chirp.Domain.Tests.csproj", "{6EED967D-EE68-48FE-8341-FA52CD124FFE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Core.Tests", "test\Chirp.Core.Tests\Chirp.Core.Tests.csproj", "{6EED967D-EE68-48FE-8341-FA52CD124FFE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Infrastructure.Tests", "test\Chirp.Infrastructure.Tests\Chirp.Infrastructure.Tests.csproj", "{9E7087C9-16B1-4E2B-8053-F7666310F3D5}"
 EndProject

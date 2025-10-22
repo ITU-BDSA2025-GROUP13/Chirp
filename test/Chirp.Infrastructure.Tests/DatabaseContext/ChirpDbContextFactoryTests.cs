@@ -1,8 +1,5 @@
-using Chirp.Infrastructure;
 using FluentAssertions;
-using Xunit;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Chirp.Infrastructure.Tests;
 
