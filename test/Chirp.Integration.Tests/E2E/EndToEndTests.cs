@@ -1,6 +1,4 @@
-﻿using Chirp.Razor;
-using Chirp.Web;
-using Microsoft.AspNetCore.Mvc;
+﻿using Chirp.Web;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 

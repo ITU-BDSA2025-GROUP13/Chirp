@@ -1,11 +1,7 @@
-﻿using Chirp.Infrastructure;
-using FluentAssertions;
-using Xunit;
+﻿using FluentAssertions;
 using Chirp.Domain;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using MockQueryable.Moq;
-using System.Linq;
 
 namespace Chirp.Infrastructure.Tests.Repository;
 
