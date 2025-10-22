@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <AssemblyName>Chirp.Web.Tests</AssemblyName>
+    <RootNamespace>Chirp.Web.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +26,7 @@
     <ProjectReference Include="..\..\src\Chirp.Razor\Chirp.Razor.csproj" />
     <ProjectReference Include="..\..\src\Chirp.Infrastructure\Chirp.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Chirp.Domain\Chirp.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Chirp.Web\Chirp.Web.csproj" />
   </ItemGroup>
 
 </Project>

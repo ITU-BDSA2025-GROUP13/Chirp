@@ -1,6 +1,5 @@
-using Chirp.Razor.Pages;
+using Chirp.Web.Pages;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
