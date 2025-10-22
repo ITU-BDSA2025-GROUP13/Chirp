@@ -11,8 +11,22 @@ namespace Chirp.Infrastructure
         public ChirpDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ChirpDbContext>();
-            optionsBuilder.UseSqlite("Data Source=chirp.db");
+            string? dbPathFromEnv = Environment.GetEnvironmentVariable("DB_PATH");
+            string dbPath = string.IsNullOrEmpty(dbPathFromEnv) ? $"{Path.GetTempPath()}/chirp.db" : dbPathFromEnv;
+            
+            if (!File.Exists(dbPath))
+            {
+                string? dbDir = Path.GetDirectoryName(dbPath);
+                // Must check if dbDir is null or empty, else compiler warns
+                if (!string.IsNullOrEmpty(dbDir))
+                {
+                    Directory.CreateDirectory(dbDir);
+                }
 
+                File.Create(dbPath);
+            }
+            
+            optionsBuilder.UseSqlite($"Data Source={dbPath}");
             return new ChirpDbContext(optionsBuilder.Options);
         }
     }
