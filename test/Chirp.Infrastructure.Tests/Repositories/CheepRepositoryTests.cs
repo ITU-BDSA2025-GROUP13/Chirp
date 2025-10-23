@@ -1,5 +1,6 @@
-﻿using FluentAssertions;
-using Chirp.Domain;
+﻿using Chirp.Core.Models;
+using FluentAssertions;
+using Chirp.Infrastructure.DatabaseContext;
 using Chirp.Infrastructure.Repositories;
 using Moq;
 using MockQueryable.Moq;
@@ -63,6 +64,8 @@ public class CheepRepositoryTests
             new Cheep { CheepId = 2, AuthorId = 2, Author = author2, Text = text2, TimeStamp = DateTime.Now.AddHours(-4) },
             new Cheep { CheepId = 1, AuthorId = 2, Author = author2, Text = text1, TimeStamp = DateTime.Now.AddHours(-5) }
         };
+        author1.Cheeps = cheeps.Where(c => c.AuthorId == author1.AuthorId).ToList();
+        author2.Cheeps = cheeps.Where(c => c.AuthorId == author2.AuthorId).ToList();
 
         var mockContext = new Mock<IChirpDbContext>();
 
@@ -72,9 +75,10 @@ public class CheepRepositoryTests
         mockContext.Setup(c => c.Authors).Returns(mockAuthorSet.Object);
         mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
 
-        var repository = new CheepRepository(mockContext.Object);
+        var cheepRepo = new CheepRepository(mockContext.Object);
+        var authorRepo = new AuthorRepository(mockContext.Object);
 
-        Author? result = await repository.GetAuthorPage("TestUser2");
+        Author? result = authorRepo.GetAuthorByName("TestUser2");
 
         result.Should().NotBeNull();
         result!.Name.Should().Be(name2);
@@ -138,13 +142,14 @@ public class CheepRepositoryTests
         mockContext.Setup(c => c.Authors).Returns(mockAuthorSet.Object);
         mockAuthorSet.Setup(d => d.Add(It.IsAny<Author>())).Callback<Author>(c => authors.Add(c));
 
-        var repository = new CheepRepository(mockContext.Object);
+        var cheepRepo = new CheepRepository(mockContext.Object);
+        var authorRepo = new AuthorRepository(mockContext.Object);
 
         var author = new Author { AuthorId = 1, Name = "TestUser", Email = "test@test.com" };
 
-        repository.InsertAuthor(author);
+        authorRepo.InsertAuthor(author);
 
-        Author? result = await repository.GetAuthorPage("TestUser");
+        Author? result = authorRepo.GetAuthorByName("TestUser");
 
         result.Should().NotBeNull();
         result!.Name.Should().Be("TestUser");
@@ -172,9 +177,9 @@ public class CheepRepositoryTests
         mockContext.Setup(c => c.Authors).Returns(mockAuthorSet.Object);
         mockAuthorSet.Setup(d => d.Add(It.IsAny<Author>())).Callback<Author>(c => authors.Add(c));
 
-        var repository = new CheepRepository(mockContext.Object);
+        var repository = new AuthorRepository(mockContext.Object);
 
-        Author? result = repository.GetAuthorFromUsername("TestUser1");
+        Author? result = repository.GetAuthorByName("TestUser1");
 
         result.Should().NotBeNull();
         result!.Name.Should().Be(name1);
@@ -202,9 +207,9 @@ public class CheepRepositoryTests
         mockContext.Setup(c => c.Authors).Returns(mockAuthorSet.Object);
         mockAuthorSet.Setup(d => d.Add(It.IsAny<Author>())).Callback<Author>(c => authors.Add(c));
 
-        var repository = new CheepRepository(mockContext.Object);
+        var repository = new AuthorRepository(mockContext.Object);
 
-        Author? result = repository.GetAuthorFromAuthorID(1);
+        Author? result = repository.GetAuthorByID(1);
 
         result.Should().NotBeNull();
         result!.Name.Should().Be(name1);

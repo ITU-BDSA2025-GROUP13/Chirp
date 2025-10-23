@@ -1,8 +1,7 @@
-﻿using Chirp.Domain;
+﻿using Chirp.Core.Models;
 using FluentAssertions;
-using Xunit;
 
-namespace Chirp.Domain.Tests.Models;
+namespace Chirp.Core.Tests.Models;
 
 public class AuthorTests
 {

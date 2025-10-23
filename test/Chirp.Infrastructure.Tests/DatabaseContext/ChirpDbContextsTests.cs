@@ -1,8 +1,9 @@
-﻿using Chirp.Domain;
+﻿using Chirp.Core.Models;
+using Chirp.Infrastructure.DatabaseContext;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Chirp.Infrastructure.Tests.Repository;
+namespace Chirp.Infrastructure.Tests.DatabaseContext;
 
 public class ChirpDbContextsTests
 {

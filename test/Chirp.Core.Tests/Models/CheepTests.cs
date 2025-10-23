@@ -1,8 +1,7 @@
-﻿using FluentAssertions;
-using Chirp.Domain;
-using Xunit;
+﻿using Chirp.Core.Models;
+using FluentAssertions;
 
-namespace Chirp.Domain.Tests.Models;
+namespace Chirp.Core.Tests.Models;
 
 public class CheepTests
 {
