@@ -1,6 +1,7 @@
+using Chirp.Infrastructure.Services;
 using FluentAssertions;
 
-namespace Chirp.Razor.Tests;
+namespace Chirp.Web.Tests.DTO;
 
 public class CheepDTOTests
 {

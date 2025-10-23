@@ -1,16 +1,18 @@
-﻿using Chirp.Domain;
-using Chirp.Infrastructure;
-using Chirp.Razor;
+﻿using Chirp.Core.Models;
+using Chirp.Infrastructure.DatabaseContext;
+using Chirp.Infrastructure.Repositories;
+using Chirp.Infrastructure.Services;
 using Chirp.Web.Pages;
 using FluentAssertions;
 using MockQueryable.Moq;
 using Moq;
 
-namespace Chirp.Integration.Tests;
+namespace Chirp.Integration.Tests.Integration;
 
 public class IntegrationTests
 {
     private ICheepRepository? _cheepRepository;
+    private IAuthorRepository? _authorRepository;
     private ICheepService? _cheepService;
 
     string text6 = "I love Fortnite";
@@ -38,13 +40,15 @@ public class IntegrationTests
             new Cheep{ CheepId = 2, AuthorId = 1, Author = author, Text = text2, TimeStamp = DateTime.Now.AddHours(-1) },
             new Cheep{ CheepId = 1, AuthorId = 1, Author = author, Text = text1, TimeStamp = DateTime.Now.AddHours(-2) }
         };
+        author.Cheeps = cheeps;
         var mockContext = new Mock<IChirpDbContext>();
         var mockCheepSet = cheeps.BuildMockDbSet();
         var mockAuthorSet = authors.BuildMockDbSet();
         mockContext.Setup(c => c.Authors).Returns(mockAuthorSet.Object);
         mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
         _cheepRepository = new CheepRepository(mockContext.Object);
-        _cheepService = new CheepService(_cheepRepository);
+        _authorRepository = new AuthorRepository(mockContext.Object);
+        _cheepService = new CheepService(_cheepRepository, _authorRepository);
     }
 
     [Fact]
@@ -96,7 +100,7 @@ public class IntegrationTests
 
         var stackToList = () => cheeps.ToList();
 
-        var author2_autour = new Author
+        var author2_author = new Author
         {
             AuthorId = author2.AuthorId,
             Name = author2.Name,
@@ -115,32 +119,33 @@ public class IntegrationTests
         }
         };
 
-        var mockRepository = new Mock<ICheepRepository>();
+        var mockCheepRepo = new Mock<ICheepRepository>();
+        var mockAuthorRepo = new Mock<IAuthorRepository>();
 
-        mockRepository
-            .Setup(c => c.GetAuthorFromAuthorID(1))
+        mockAuthorRepo
+            .Setup(c => c.GetAuthorByID(1))
             .Returns(author1);
-        mockRepository
-            .Setup(c => c.GetAuthorFromAuthorID(2))
-            .Returns(author2_autour);
-        mockRepository
-            .Setup(c => c.GetAuthorFromAuthorID(3))
+        mockAuthorRepo
+            .Setup(c => c.GetAuthorByID(2))
+            .Returns(author2_author);
+        mockAuthorRepo
+            .Setup(c => c.GetAuthorByID(3))
             .Returns(karlFortniteWithCheeps);
 
-        mockRepository
+        mockCheepRepo
             .Setup(c => c.InsertCheep(It.IsAny<Cheep>()))
             .Callback<Cheep>(c => cheeps.Push(c))
             .Returns(Task.CompletedTask);
 
-        mockRepository
-            .Setup(c => c.GetMainPageAsync(It.IsAny<int>()))
+        mockCheepRepo
+            .Setup(c => c.GetMainPage(It.IsAny<int>()))
             .ReturnsAsync(() => stackToList());
+        
+        mockAuthorRepo
+            .Setup(c => c.GetAuthorByName(name3))
+            .Returns(karlFortniteWithCheeps);
 
-        mockRepository
-            .Setup(c => c.GetPageFromAuthorAsync(name3, It.IsAny<int>()))
-            .ReturnsAsync(karlFortniteWithCheeps);
-
-        _cheepService = new CheepService(mockRepository.Object);
+        _cheepService = new CheepService(mockCheepRepo.Object, mockAuthorRepo.Object);
     }
 
     [Fact]

@@ -1,9 +1,10 @@
+using Chirp.Infrastructure.Services;
 using Chirp.Web.Pages;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
-namespace Chirp.Razor.Tests;
+namespace Chirp.Web.Tests.Pages;
 
 public class PublicModelTests
 {
