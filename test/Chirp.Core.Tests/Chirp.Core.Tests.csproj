@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <IsPublishable>false</IsPublishable>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <AssemblyName>Chirp.Core.Tests</AssemblyName>
