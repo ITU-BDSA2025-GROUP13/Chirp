@@ -29,6 +29,7 @@ namespace Chirp.Domain
         /// <summary>
         /// Gets or sets the text content of the message.
         /// </summary>
+        [StringLength(160)]
         public required string Text { get; set; } = string.Empty;
 
         /// <summary>

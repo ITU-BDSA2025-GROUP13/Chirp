@@ -43,6 +43,7 @@ namespace Chirp.Infrastructure
                 entity.Property(m => m.CheepId).HasColumnName("message_id").ValueGeneratedOnAdd(); // Autoincrement
                 entity.Property(m => m.AuthorId).HasColumnName("author_id");
                 entity.Property(m => m.Text).HasColumnName("text");
+                entity.ToTable(t => t.HasCheckConstraint("length_constraint", "length(text) <= 160"));
                 entity.Property(m => m.TimeStamp).HasColumnName("pub_date");
             });
         }
