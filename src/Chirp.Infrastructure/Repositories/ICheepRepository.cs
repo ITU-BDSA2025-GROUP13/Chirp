@@ -24,6 +24,6 @@ namespace Chirp.Infrastructure.Repositories
         /// <returns>A task representing the asynchronous operation.</returns>
         /// <exception cref="Exception">Thrown when the author is not found in the database.</exception>
         Task InsertCheep(Cheep cheep);
-        
+
     }
 }
