@@ -19,8 +19,9 @@ namespace Chirp.Web
             appBuilder.Services.AddScoped<IChirpDbContext>(provider =>
                 provider.GetRequiredService<ChirpDbContext>());
 
+            string dbPath = GetDBPathFromEnv();
             appBuilder.Services.AddDbContext<ChirpDbContext>(options =>
-                options.UseSqlite(appBuilder.Configuration.GetConnectionString("ChirpDb"))); //Retrieves DB connection from ./appsetings.json
+                options.UseSqlite($"Data Source={dbPath}"));
             WebApplication app = appBuilder.Build();
 
             //Sets up middleware pipelines
@@ -55,6 +56,35 @@ namespace Chirp.Web
             }
 
             app.Run();
+        }
+
+        /// <summary>
+        /// Returns the path to the database as specified by CHIRPDBPATH
+        /// or falls back to /tmp/chirp.db
+        /// </summary>
+        /// <returns>
+        /// $CHIRPDBPATH or $TMPDIR/chirp.db
+        /// </returns>
+        private static string GetDBPathFromEnv()
+        {
+            string? dbPathFromEnv = Environment.GetEnvironmentVariable("CHIRPDBPATH");
+            string dbPath = string.IsNullOrEmpty(dbPathFromEnv)
+                ? $"{Path.GetTempPath()}/chirp.db"
+                : dbPathFromEnv;
+
+            // Ensure directory and file exist
+            if (!File.Exists(dbPath))
+            {
+                string? dbDir = Path.GetDirectoryName(dbPath);
+                // Must check if dbDir is null or empty, else compiler warns
+                if (!string.IsNullOrEmpty(dbDir))
+                {
+                    Directory.CreateDirectory(dbDir);
+                }
+
+                File.Create(dbPath);
+            }
+            return dbPath;
         }
     }
 }
