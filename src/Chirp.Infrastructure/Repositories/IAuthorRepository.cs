@@ -11,10 +11,10 @@ public interface IAuthorRepository
     /// <param name="author">The author to insert.</param>
     void InsertAuthor(Author author);
     #endregion
-    
+
     #region UPDATE
     #endregion
-    
+
     #region GET
     /// <summary>
     /// Retrieves an author by their username.

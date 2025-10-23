@@ -13,11 +13,11 @@ public class AuthorRepository(IChirpDbContext dbContext) : IAuthorRepository
         dbContext.SaveChanges();
     }
     #endregion
-    
+
     #region UPDATE
-    
+
     #endregion
-    
+
     #region GET
     public Author? GetAuthorByName(string name)
     {

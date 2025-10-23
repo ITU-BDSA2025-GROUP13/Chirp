@@ -12,14 +12,14 @@ public class AuthorRepositoryTests
     {
         string dbPath = $"{Path.GetTempPath()}/chirp/authorRepoTest.db";
         Environment.SetEnvironmentVariable("DB_PATH", dbPath);
-        
+
         DbContextOptions<ChirpDbContext> options = new DbContextOptionsBuilder<ChirpDbContext>()
             .UseInMemoryDatabase(databaseName: $"{dbPath}/{Guid.NewGuid()}")
             .Options;
-        
+
         return new ChirpDbContext(options);
     }
-    
+
     [Fact]
     public void InsertAuthor_AddsAuthorToDB()
     {
@@ -27,7 +27,7 @@ public class AuthorRepositoryTests
         IAuthorRepository authorRepo = new AuthorRepository(context);
         authorRepo.InsertAuthor(new Author());
         context.SaveChanges();
-        
+
         authorRepo.GetAllAuthors().Should().HaveCount(1);
     }
 

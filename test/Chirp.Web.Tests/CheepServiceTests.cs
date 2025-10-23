@@ -30,7 +30,7 @@ public class CheepServiceTests
             .Setup(c => c.GetMainPage(0))
             .ReturnsAsync(cheeps);
 
-        var service = new CheepService(mockCheepRepo.Object,  mockAuthorRepo.Object);
+        var service = new CheepService(mockCheepRepo.Object, mockAuthorRepo.Object);
 
         var result = service.GetMainPageCheeps(0);
 
@@ -45,10 +45,10 @@ public class CheepServiceTests
         string text3 = "Newest cheep";
         string text2 = "Older cheep";
         string text1 = "Oldest cheep";
-        
+
         string name2 = "TestUser2";
         var author2 = new Author { AuthorId = 2, Name = name2, Email = "test2@test.com" };
-        
+
         var author2Cheeps = new List<Cheep>
         {
             new Cheep { CheepId = 3, AuthorId = 2, Author = author2, Text = text3, TimeStamp = DateTime.Now.AddHours(-3) },
@@ -56,9 +56,9 @@ public class CheepServiceTests
             new Cheep { CheepId = 1, AuthorId = 2, Author = author2, Text = text1, TimeStamp = DateTime.Now.AddHours(-5) }
         };
         author2.Cheeps = author2Cheeps;
-        
+
         var mockCheepRepo = new Mock<ICheepRepository>();
-        var mockAuthorRepo =  new Mock<IAuthorRepository>();
+        var mockAuthorRepo = new Mock<IAuthorRepository>();
         mockAuthorRepo
             .Setup(c => c.GetAuthorByName(It.IsAny<string>()))
             .Returns(author2);
@@ -85,7 +85,7 @@ public class CheepServiceTests
 
         var mockCheepRepo = new Mock<ICheepRepository>();
         var mockAuthorRepo = new Mock<IAuthorRepository>();
-        
+
         mockAuthorRepo
             .Setup(c => c.GetAuthorByID(It.IsAny<int>()))
             .Returns(author1);

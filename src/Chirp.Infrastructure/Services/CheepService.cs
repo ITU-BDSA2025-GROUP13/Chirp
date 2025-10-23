@@ -33,14 +33,14 @@ namespace Chirp.Infrastructure.Services
         {
             Author? author = authorRepo.GetAuthorByID(authorID);
             if (author == null) return [];
-            
+
             return ToDTO(author.Cheeps);
         }
         public List<CheepDTO> GetCheepsFromAuthorEmail(string authorEmail, int pagenum = 0)
         {
             Author? author = authorRepo.GetAuthorByEmail(authorEmail);
             if (author == null) return [];
-            
+
             return ToDTO(author.Cheeps);
         }
 
@@ -59,12 +59,12 @@ namespace Chirp.Infrastructure.Services
             }
             return DTOCheeps;
         }
-        
+
         public void PostCheep(String text, int authorID)
         {
             Author? author = authorRepo.GetAuthorByID(authorID);
             if (author == null) throw new Exception($"No such author exists {authorID}");
-            
+
             Cheep cheep = new Cheep
             {
                 AuthorId = authorID,

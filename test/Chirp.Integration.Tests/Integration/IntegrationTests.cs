@@ -140,7 +140,7 @@ public class IntegrationTests
         mockCheepRepo
             .Setup(c => c.GetMainPage(It.IsAny<int>()))
             .ReturnsAsync(() => stackToList());
-        
+
         mockAuthorRepo
             .Setup(c => c.GetAuthorByName(name3))
             .Returns(karlFortniteWithCheeps);

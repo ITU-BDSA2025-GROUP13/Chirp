@@ -18,7 +18,7 @@ namespace Chirp.Infrastructure.Repositories
         {
             if (cheep.AuthorId <= 0) throw new ArgumentNullException($"Invalid ID {cheep.AuthorId}");
             cheep.Author = null; //Prevents EFCore from auto-inserting a new author
-            
+
             dbContext.Cheeps.Add(cheep);
             await dbContext.SaveChangesAsync();
         }
@@ -26,7 +26,7 @@ namespace Chirp.Infrastructure.Repositories
 
         #region UPDATE
         #endregion
-        
+
         #region GET
         public async Task<IEnumerable<Cheep>> GetMainPage(int pagenum = 0)
         {
