@@ -17,7 +17,6 @@ public class PublicModel : PageModel
 
     public ActionResult OnGet([FromQuery] int page)
     {
-        Console.WriteLine(page);
         Cheeps = _service.GetCheeps(page);
         return Page();
     }
