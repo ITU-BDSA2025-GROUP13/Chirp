@@ -25,6 +25,23 @@
                 </li>
             }
         </ul>
+
+        <div style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        ">
+            @if (Model.HasPreviousPage)
+            {
+                <a href="/@routeName/?page=@(Model.CurrentPage - 1)" style="font-size: 20px;">&larr;</a>
+            }
+            <span style="font-size: 16px;">Page @Model.CurrentPage</span>
+            @if (Model.HasNextPage)
+            {
+                <a href="/@routeName/?page=@(Model.CurrentPage + 1)" style="font-size: 20px;">&rarr;</a>
+            }
+        </div>
     }
     else
     {
