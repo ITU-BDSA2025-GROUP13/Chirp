@@ -26,22 +26,23 @@ namespace Chirp.Infrastructure.Services
         {
             Author? author = authorRepo.GetAuthorByName(authorName);
             if (author == null) return [];
-
-            return ToDTO(author.Cheeps);
+            return ToDTO(cheepRepo.GetAuthorPage(author, pagenum).GetAwaiter().GetResult());
         }
         public List<CheepDTO> GetCheepsFromAuthorID(int authorID, int pagenum = 0)
         {
             Author? author = authorRepo.GetAuthorByID(authorID);
             if (author == null) return [];
 
-            return ToDTO(author.Cheeps);
+            return ToDTO(cheepRepo.GetAuthorPage(author, pagenum).GetAwaiter().GetResult());
+
         }
         public List<CheepDTO> GetCheepsFromAuthorEmail(string authorEmail, int pagenum = 0)
         {
             Author? author = authorRepo.GetAuthorByEmail(authorEmail);
             if (author == null) return [];
 
-            return ToDTO(author.Cheeps);
+            return ToDTO(cheepRepo.GetAuthorPage(author, pagenum).GetAwaiter().GetResult());
+
         }
 
         private List<CheepDTO> ToDTO(IEnumerable<Cheep> cheeps)
