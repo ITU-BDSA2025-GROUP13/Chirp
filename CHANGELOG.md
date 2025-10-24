@@ -1,5 +1,25 @@
 # Changelog
 
+## [5.1.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.0.0...v5.1.0) (2025-10-24)
+
+
+### Features
+
+* Added length constraint to EF Core and SQLite Database. Triggers SQLiteException on Cheeps over 160 characters. ([bf92085](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/bf9208504a4b6baf8be568137523636e60500a9b))
+* proper handling of DB path ([b3dffc9](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/b3dffc98ee849327d5c11000f77bc074a608bcf0))
+* Split repo's into two ([d2f1f0a](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/d2f1f0ae8cf172f200e62fd881f7babc89943895))
+
+
+### Bug Fixes
+
+* add type to new var ([3baaa24](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/3baaa24712e69678e55049371e0fc1819646f932))
+* Fixed wrong config settings for Azure deployment ([8caf525](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/8caf5255f48e82b5c33571b55ac0ebaa39746afe))
+* fixes both azure AND local database creation/migrations ([420c213](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/420c213f5333f95f33588ad7297cf8b2a509412c))
+* remove migration, DbInitializer and cshtml files from coverage cicd ([e96ff37](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/e96ff37f80a5c3502745ab0ed903fe1638ba969f))
+* removed unused column from DB ([40ca1be](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/40ca1be6127c102c46fe519855ca87473d9149ec))
+* restore Chirp.Web reading CHIRPDBPATH ([95d0efd](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/95d0efde8e0fed4d5adf82060b3f4f7677070338))
+* update service to take a Irepository insted of making one ([c699ba8](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/c699ba86144bc63d7bfafbdd1e7689ad16f0aaec))
+
 ## [5.0.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v4.0.1...v5.0.0) (2025-10-20)
 
 
