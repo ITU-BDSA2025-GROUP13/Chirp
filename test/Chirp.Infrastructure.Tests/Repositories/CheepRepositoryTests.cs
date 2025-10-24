@@ -2,8 +2,10 @@
 using FluentAssertions;
 using Chirp.Infrastructure.DatabaseContext;
 using Chirp.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using MockQueryable.Moq;
+using Xunit.Sdk;
 
 namespace Chirp.Infrastructure.Tests.Repositories;
 
@@ -214,5 +216,30 @@ public class CheepRepositoryTests
         result.Should().NotBeNull();
         result!.Name.Should().Be(name1);
         result!.Email.Should().Be(email1);
+    }
+    
+    [Fact]
+    public void CheepOver160Chars_ReturnsError()
+    {
+        int authorID = 1;
+        Author author1 = new Author { AuthorId = authorID, Name = "Karl Fortnite", Email = "KarlFortnite@gmail.com" };
+        Cheep cheep = new Cheep {
+            CheepId = 1,
+            AuthorId = 1,
+            Author = author1,
+            TimeStamp = DateTime.Now,
+            Text = "OOne morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head."
+        };
+        
+        string dbPath = $"{Path.GetTempPath()}/chirp/cheepDBtest.db";
+        Environment.SetEnvironmentVariable("DB_PATH", dbPath);
+
+        DbContextOptions<ChirpDbContext> options = new DbContextOptionsBuilder<ChirpDbContext>()
+            .UseSqlite("Datasource=:memory:")
+            .Options;
+        
+        IChirpDbContext context = new ChirpDbContext(options);
+        ICheepRepository cheepRepository = new CheepRepository(context);
+        Assert.Throws<DbUpdateException>(cheepRepository.InsertCheep(cheep).GetAwaiter().GetResult);
     }
 }
