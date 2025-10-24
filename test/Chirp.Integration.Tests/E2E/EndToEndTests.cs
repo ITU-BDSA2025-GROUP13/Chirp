@@ -31,7 +31,7 @@ public class EndToEndTests
         var html = await response.Content.ReadAsStringAsync();
         html.Should().Contain("Public Timeline");
         html.Should().Contain("Starbuck now is what we hear the worst."); // this is in the DBinit
-        html.Should().Contain("<a href=\"/Jacqualine Gilcoine\">");
+        html.Should().Contain("<a href=\"/user/Jacqualine Gilcoine\">");
     }
 
     [Fact]
@@ -45,11 +45,11 @@ public class EndToEndTests
         }
 
         var client = _factory.CreateClient();
-        var response = await client.GetAsync("/Jacqualine Gilcoine");
+        var response = await client.GetAsync("/user/Jacqualine Gilcoine");
         response.EnsureSuccessStatusCode();
         var html = await response.Content.ReadAsStringAsync();
         html.Should().Contain("Jacqualine Gilcoine's Timeline");
         html.Should().Contain("Starbuck now is what we hear the worst."); // this is in the DBinit
-        html.Should().Contain("<a href=\"/Jacqualine Gilcoine\">");
+        html.Should().Contain("<a href=\"/user/Jacqualine Gilcoine\">");
     }
 }

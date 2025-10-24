@@ -226,3 +226,38 @@ li.topic {
   -webkit-border-radius: 5px;
   min-height: 20px;
 }
+
+div.navigation_bar {
+  background: #DEE9E8;
+  animation: navigation_bar_animation 1s infinite;
+}
+
+div.navigation_bar a.navigation_button {
+  color: #464444;
+}
+
+img.icon {
+  animation: spin 10s infinite;
+}
+
+@keyframes navigation_bar_animation {
+  25% {
+    background: #00F8FF;
+  }
+  50% {
+    background: #FF00E8;
+  }
+  75% {
+    background: #FFFA00;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
