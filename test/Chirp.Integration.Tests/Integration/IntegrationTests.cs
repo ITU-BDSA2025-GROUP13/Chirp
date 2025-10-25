@@ -25,7 +25,7 @@ public class IntegrationTests
     readonly string _name1 = "TestUser1";
     readonly string _name2 = "TestUser2";
     readonly string _name3 = "Karl Fortnite";
-    
+
     List<Cheep>? cheeps;
 
     private void IntegrationTestsServiceAndRepo()
@@ -136,7 +136,7 @@ public class IntegrationTests
         mockAuthorRepo
             .Setup(c => c.GetAuthorByID(3))
             .Returns(karlFortniteWithCheeps);
-        
+
         mockAuthorRepo
             .Setup(c => c.GetAuthorByName(_name3))
             .Returns(karlFortniteWithCheeps);

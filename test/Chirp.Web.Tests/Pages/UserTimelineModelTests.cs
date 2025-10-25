@@ -31,7 +31,7 @@ public class UserTimelineModelTests
         };
 
         mockService.Setup(s => s.GetCheepsFromAuthorName(It.IsAny<string>(), It.IsAny<int>()))
-           .Returns(expectedCheeps); 
+           .Returns(expectedCheeps);
         var model = new UserTimelineModel(mockService.Object);
 
         var result = model.OnGet(user, 0);
@@ -52,7 +52,7 @@ public class UserTimelineModelTests
         };
 
         mockService.Setup(s => s.GetCheepsFromAuthorName(It.IsAny<string>(), It.IsAny<int>()))
-           .Returns(expectedCheeps); 
+           .Returns(expectedCheeps);
         var model = new UserTimelineModel(mockService.Object);
 
         var result = model.OnGet(anotherUser, 0);
@@ -88,9 +88,9 @@ public class UserTimelineModelTests
         };
 
         mockService.Setup(s => s.GetCheepsFromAuthorName(It.IsAny<string>(), It.IsAny<int>()))
-           .Returns(expectedCheeps); 
+           .Returns(expectedCheeps);
         var model = new UserTimelineModel(mockService.Object);
-        
+
 
         var result = model.OnGet(user, 0);
 

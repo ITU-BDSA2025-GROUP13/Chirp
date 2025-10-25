@@ -50,7 +50,7 @@ public class PublicModelTests
         };
 
         mockService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>()))
-           .Returns(expectedCheeps); 
+           .Returns(expectedCheeps);
         var model = new PublicModel(mockService.Object);
 
         var result = model.OnGet(0);
