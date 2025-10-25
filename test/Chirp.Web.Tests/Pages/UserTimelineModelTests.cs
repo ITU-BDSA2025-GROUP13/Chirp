@@ -30,7 +30,8 @@ public class UserTimelineModelTests
             new("User message 2", "2023-01-02", user)
         };
 
-        mockService.Setup(s => s.GetCheepsFromAuthorName(user, 0)).Returns(expectedCheeps);
+        mockService.Setup(s => s.GetCheepsFromAuthorName(It.IsAny<string>(), It.IsAny<int>()))
+           .Returns(expectedCheeps); 
         var model = new UserTimelineModel(mockService.Object);
 
         var result = model.OnGet(user, 0);
@@ -50,7 +51,8 @@ public class UserTimelineModelTests
             new("First page user message", "2023-01-01", "AnotherUser")
         };
 
-        mockService.Setup(s => s.GetCheepsFromAuthorName(anotherUser, 0)).Returns(expectedCheeps);
+        mockService.Setup(s => s.GetCheepsFromAuthorName(It.IsAny<string>(), It.IsAny<int>()))
+           .Returns(expectedCheeps); 
         var model = new UserTimelineModel(mockService.Object);
 
         var result = model.OnGet(anotherUser, 0);
@@ -85,8 +87,10 @@ public class UserTimelineModelTests
             new("Special user message", "2023-01-01", user)
         };
 
-        mockService.Setup(s => s.GetCheepsFromAuthorName(user, 0)).Returns(expectedCheeps);
+        mockService.Setup(s => s.GetCheepsFromAuthorName(It.IsAny<string>(), It.IsAny<int>()))
+           .Returns(expectedCheeps); 
         var model = new UserTimelineModel(mockService.Object);
+        
 
         var result = model.OnGet(user, 0);
 

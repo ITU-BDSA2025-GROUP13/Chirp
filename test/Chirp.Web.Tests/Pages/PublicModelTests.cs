@@ -29,7 +29,7 @@ public class PublicModelTests
             new("Public message 2", "2023-01-02", "User2")
         };
 
-        mockService.Setup(s => s.GetMainPageCheeps(1)).Returns(expectedCheeps);
+        mockService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>())).Returns(expectedCheeps);
         var model = new PublicModel(mockService.Object);
 
         var result = model.OnGet(1);
@@ -49,7 +49,8 @@ public class PublicModelTests
             new(text, "2023-01-01", "User1")
         };
 
-        mockService.Setup(s => s.GetMainPageCheeps(0)).Returns(expectedCheeps);
+        mockService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>()))
+           .Returns(expectedCheeps); 
         var model = new PublicModel(mockService.Object);
 
         var result = model.OnGet(0);
