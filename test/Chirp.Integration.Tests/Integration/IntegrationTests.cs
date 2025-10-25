@@ -15,31 +15,34 @@ public class IntegrationTests
     private IAuthorRepository? _authorRepository;
     private ICheepService? _cheepService;
 
-    string text6 = "I love Fortnite";
-    string text5 = "new 5";
-    string text4 = "new 4";
-    string text3 = "Newest cheep";
-    string text2 = "Older cheep";
-    string text1 = "Oldest cheep";
+    readonly string _text1 = "Oldest cheep";
+    readonly string _text2 = "Older cheep";
+    readonly string _text3 = "Newest cheep";
+    readonly string _text4 = "new 4";
+    readonly string _text5 = "new 5";
+    readonly string _text6 = "I love Fortnite";
 
-    string name1 = "TestUser1";
-    string name2 = "TestUser2";
-    string name3 = "Karl Fortnite";
+    readonly string _name1 = "TestUser1";
+    readonly string _name2 = "TestUser2";
+    readonly string _name3 = "Karl Fortnite";
+    
     List<Cheep>? cheeps;
 
     private void IntegrationTestsServiceAndRepo()
     {
-        var author = new Author { AuthorId = 1, Name = name1, Email = "test@test.com" };
+        var author = new Author { AuthorId = 1, Name = _name1, Email = "test@test.com" };
         var authors = new List<Author>
         {
             author
         };
+
         cheeps = new List<Cheep>
         {
-            new Cheep{ CheepId = 3, AuthorId = 1, Author = author, Text = text3, TimeStamp = DateTime.Now },
-            new Cheep{ CheepId = 2, AuthorId = 1, Author = author, Text = text2, TimeStamp = DateTime.Now.AddHours(-1) },
-            new Cheep{ CheepId = 1, AuthorId = 1, Author = author, Text = text1, TimeStamp = DateTime.Now.AddHours(-2) }
+            new Cheep{ CheepId = 3, AuthorId = 1, Author = author, Text = _text3, TimeStamp = DateTime.Now },
+            new Cheep{ CheepId = 2, AuthorId = 1, Author = author, Text = _text2, TimeStamp = DateTime.Now.AddHours(-1) },
+            new Cheep{ CheepId = 1, AuthorId = 1, Author = author, Text = _text1, TimeStamp = DateTime.Now.AddHours(-2) }
         };
+
         author.Cheeps = cheeps;
         var mockContext = new Mock<IChirpDbContext>();
         var mockCheepSet = cheeps.BuildMockDbSet();
@@ -66,8 +69,8 @@ public class IntegrationTests
 
         var result = _cheepService.GetMainPageCheeps(0);
         result.Should().HaveCount(cheeps.Count);
-        result.First().Text.Should().Be(text3);
-        result.Last().Text.Should().Be(text1);
+        result.First().Text.Should().Be(_text3);
+        result.Last().Text.Should().Be(_text1);
     }
 
     [Fact]
@@ -78,27 +81,27 @@ public class IntegrationTests
         {
             throw new InvalidOperationException("cheep service is not available.");
         }
-        var result = _cheepService.GetCheepsFromAuthorName(name1);
+        var result = _cheepService.GetCheepsFromAuthorName(_name1);
         result.Should().HaveCount(3);
-        result.First().Text.Should().Be(text3);
-        result.Last().Text.Should().Be(text1);
+        result.First().Text.Should().Be(_text3);
+        result.Last().Text.Should().Be(_text1);
     }
 
     private void IntegrationTestsUIAndService()
     {
-        var author1 = new Author { AuthorId = 1, Name = name1, Email = "test1@test.com" };
-        var author2 = new Author { AuthorId = 2, Name = name2, Email = "test2@test.com" };
-        var karlFortnite = new Author { AuthorId = 3, Name = name3, Email = "karl@fortnite.com" };
+        var author1 = new Author { AuthorId = 1, Name = _name1, Email = "test1@test.com" };
+        var author2 = new Author { AuthorId = 2, Name = _name2, Email = "test2@test.com" };
+        var karlFortnite = new Author { AuthorId = 3, Name = _name3, Email = "karl@fortnite.com" };
         var authors = new List<Author> { author1, author2, karlFortnite };
 
         var cheeps = new Stack<Cheep>();
-        cheeps.Push(new Cheep { CheepId = 1, AuthorId = 2, Author = author2, Text = text1, TimeStamp = DateTime.Now.AddHours(-5) });
-        cheeps.Push(new Cheep { CheepId = 2, AuthorId = 2, Author = author2, Text = text2, TimeStamp = DateTime.Now.AddHours(-4) });
-        cheeps.Push(new Cheep { CheepId = 3, AuthorId = 2, Author = author2, Text = text3, TimeStamp = DateTime.Now.AddHours(-3) });
-        cheeps.Push(new Cheep { CheepId = 4, AuthorId = 1, Author = author1, Text = text4, TimeStamp = DateTime.Now.AddHours(-2) });
-        cheeps.Push(new Cheep { CheepId = 5, AuthorId = 1, Author = author1, Text = text5, TimeStamp = DateTime.Now.AddHours(-1) });
+        cheeps.Push(new Cheep { CheepId = 1, AuthorId = 2, Author = author2, Text = _text1, TimeStamp = DateTime.Now.AddHours(-5) });
+        cheeps.Push(new Cheep { CheepId = 2, AuthorId = 2, Author = author2, Text = _text2, TimeStamp = DateTime.Now.AddHours(-4) });
+        cheeps.Push(new Cheep { CheepId = 3, AuthorId = 2, Author = author2, Text = _text3, TimeStamp = DateTime.Now.AddHours(-3) });
+        cheeps.Push(new Cheep { CheepId = 4, AuthorId = 1, Author = author1, Text = _text4, TimeStamp = DateTime.Now.AddHours(-2) });
+        cheeps.Push(new Cheep { CheepId = 5, AuthorId = 1, Author = author1, Text = _text5, TimeStamp = DateTime.Now.AddHours(-1) });
 
-        var stackToList = () => cheeps.ToList();
+        List<Cheep> stackToList() => cheeps.ToList();
 
         var author2_author = new Author
         {
@@ -114,9 +117,9 @@ public class IntegrationTests
             Name = karlFortnite.Name,
             Email = karlFortnite.Email,
             Cheeps = new List<Cheep>
-        {
-            new Cheep { CheepId = 100, AuthorId = 3, Author = karlFortnite, Text = text6, TimeStamp = DateTime.Now }
-        }
+            {
+                new Cheep { CheepId = 100, AuthorId = 3, Author = karlFortnite, Text = _text6, TimeStamp = DateTime.Now }
+            }
         };
 
         var mockCheepRepo = new Mock<ICheepRepository>();
@@ -125,11 +128,17 @@ public class IntegrationTests
         mockAuthorRepo
             .Setup(c => c.GetAuthorByID(1))
             .Returns(author1);
+
         mockAuthorRepo
             .Setup(c => c.GetAuthorByID(2))
             .Returns(author2_author);
+
         mockAuthorRepo
             .Setup(c => c.GetAuthorByID(3))
+            .Returns(karlFortniteWithCheeps);
+        
+        mockAuthorRepo
+            .Setup(c => c.GetAuthorByName(_name3))
             .Returns(karlFortniteWithCheeps);
 
         mockCheepRepo
@@ -141,9 +150,13 @@ public class IntegrationTests
             .Setup(c => c.GetMainPage(It.IsAny<int>()))
             .ReturnsAsync(() => stackToList());
 
-        mockAuthorRepo
-            .Setup(c => c.GetAuthorByName(name3))
-            .Returns(karlFortniteWithCheeps);
+        mockCheepRepo
+            .Setup(c => c.GetAuthorPage(It.IsAny<Author>(), It.IsAny<int>()))
+            .ReturnsAsync(() => stackToList());
+
+        mockCheepRepo
+            .Setup(c => c.GetAuthorPage(karlFortniteWithCheeps, It.IsAny<int>()))
+            .ReturnsAsync(() => karlFortniteWithCheeps.Cheeps);
 
         _cheepService = new CheepService(mockCheepRepo.Object, mockAuthorRepo.Object);
     }
@@ -157,11 +170,11 @@ public class IntegrationTests
             throw new InvalidOperationException("cheep service is not available.");
         }
         var pageModel = new UserTimelineModel(_cheepService);
-        pageModel.OnGet(name3, 0);
+        pageModel.OnGet(_name3, 0);
         pageModel.Cheeps.Should().NotBeNull();
         pageModel.Cheeps.Should().HaveCount(1);
-        pageModel.Cheeps[0].AuthorName.Should().Be(name3);
-        pageModel.Cheeps[0].Text.Should().Be(text6);
+        pageModel.Cheeps[0].AuthorName.Should().Be(_name3);
+        pageModel.Cheeps[0].Text.Should().Be(_text6);
     }
 
     [Fact]
@@ -188,7 +201,7 @@ public class IntegrationTests
 
         pageModel.Cheeps.Should().NotBeNull();
         newLength.Should().Be(oldLength + 1);
-        newFirstCheep.AuthorName.Should().Be(name1);
+        newFirstCheep.AuthorName.Should().Be(_name1);
         newFirstCheep.Text.Should().Be(text);
         newFirstCheep.Text.Should().NotBe(oldFirstCheep?.Text);
     }

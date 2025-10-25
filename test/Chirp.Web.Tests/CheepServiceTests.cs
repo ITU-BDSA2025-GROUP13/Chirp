@@ -58,6 +58,10 @@ public class CheepServiceTests
         author2.Cheeps = author2Cheeps;
 
         var mockCheepRepo = new Mock<ICheepRepository>();
+        mockCheepRepo
+            .Setup(c => c.GetAuthorPage(It.IsAny<Author>(), It.IsAny<int>()))
+            .ReturnsAsync(author2Cheeps);
+
         var mockAuthorRepo = new Mock<IAuthorRepository>();
         mockAuthorRepo
             .Setup(c => c.GetAuthorByName(It.IsAny<string>()))
