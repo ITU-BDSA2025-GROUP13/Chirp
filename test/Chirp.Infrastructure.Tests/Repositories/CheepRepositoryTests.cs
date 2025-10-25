@@ -39,7 +39,7 @@ public class CheepRepositoryTests
     }
 
     [Fact]
-    public async Task ReadPageFromAuthorAsync_WithValidAuthorName_ReturnsAuthorWithCheepsInDescendingOrder()
+    public void ReadPageFromAuthorAsync_WithValidAuthorName_ReturnsAuthorWithCheepsInDescendingOrder()
     {
         string text6 = "Cheep 6";
         string text5 = "Cheep 5";
@@ -130,7 +130,7 @@ public class CheepRepositoryTests
     }
 
     [Fact]
-    public async Task InsertAuthor_WhenNewAuthorIsAdded_AuthorCanBeRetrieved()
+    public void InsertAuthor_WhenNewAuthorIsAdded_AuthorCanBeRetrieved()
     {
         var cheeps = new List<Cheep> { };
         var authors = new List<Author> { };
