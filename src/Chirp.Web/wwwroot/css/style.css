@@ -226,3 +226,11 @@ li.topic {
   -webkit-border-radius: 5px;
   min-height: 20px;
 }
+
+nav {
+  background: #DEE9E8;
+}
+
+nav a{
+  color: #464444;
+}
