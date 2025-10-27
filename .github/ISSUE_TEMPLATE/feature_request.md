@@ -16,5 +16,8 @@ A clear and concise description of what you want to happen
 **Acceptance criteria**
 A list of criteria for a pr closing this issue to be accepted
 
+**Test criteria (if applicable)**
+A list of test criteria for a pr closing this issue to be accepted
+
 **Additional context**
 Add any other context or screenshots about the feature request here
