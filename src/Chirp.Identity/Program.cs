@@ -79,7 +79,7 @@ using (IServiceScope scope = app.Services.CreateScope())
         {
             Console.WriteLine("Identity database not found, creating one...");
             db.Database.Migrate();
-            
+
         }
     }
     catch (Microsoft.Data.Sqlite.SqliteException err)
