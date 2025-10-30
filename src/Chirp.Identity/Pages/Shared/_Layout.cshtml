@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@ViewData["Title"]</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="/favicon/favicon.ico">
+</head>
+<body>
+<div class=page>
+    <h1>
+        <a href="/"><img src="/images/icon1.png" alt="Icon1"/></a>Chirp!
+    </h1>
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <!-- todo: These two User.Identity.Name below need to reference the Author table -->
+        <nav>
+            <a class="navigation_button" href="/">Public Timeline</a>
+            |
+            <a class="navigation_button" href="/@(User.Identity.Name)">My timeline</a>
+            |
+            <a class="navigation_button" href="/Identity/Account/Logout">Logout [@(User.Identity.Name)]</a>
+        </nav>
+    }
+    else
+    {
+        <nav>
+            <a class="navigation_button" href="/">Public Timeline</a>
+            |
+            <a class="navigation_button" href="/Identity/Account/Register">Register</a>
+            |
+            <a class="navigation_button" href="/Identity/Account/Login">Login</a>
+        </nav>
+    }
+    
+    
+    <div class=body>
+        @RenderBody()
+    </div>
+    <div class=footer>
+        Chirp &mdash; An ASP.NET Application
+    </div>
+</div>
+
+</body>
+</html>

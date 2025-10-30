@@ -1,3 +1,4 @@
+using Chirp.Core.Models;
 using Chirp.Infrastructure.DatabaseContext;
 using Chirp.Infrastructure.Repositories;
 using Chirp.Infrastructure.Services;
@@ -23,6 +24,14 @@ namespace Chirp.Web
             string dbPath = GetDBPathFromEnv();
             appBuilder.Services.AddDbContext<ChirpDbContext>(options =>
                 options.UseSqlite($"Data Source={dbPath}"));
+            appBuilder.Services.AddDbContext<IdentityContext>(options =>
+                options.UseSqlite($"Data Source={dbPath}"));
+
+            appBuilder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<IdentityContext>();
+            
+            Console.WriteLine($"Db path: {dbPath}");
+            
             WebApplication app = appBuilder.Build();
 
             //Sets up middleware pipelines
@@ -35,6 +44,8 @@ namespace Chirp.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.MapRazorPages();
 
             //Database initialization
