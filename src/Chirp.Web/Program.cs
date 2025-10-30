@@ -29,9 +29,9 @@ namespace Chirp.Web
 
             appBuilder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<IdentityContext>();
-            
+
             Console.WriteLine($"Db path: {dbPath}");
-            
+
             WebApplication app = appBuilder.Build();
 
             //Sets up middleware pipelines
