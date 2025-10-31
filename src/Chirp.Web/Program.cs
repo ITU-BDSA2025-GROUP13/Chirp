@@ -31,29 +31,26 @@ namespace Chirp.Web
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+            else
+            {
+                // Database initialization
+                using (IServiceScope scope = app.Services.CreateScope())
+                {
+                    ChirpDbContext db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
+                    db.Database.EnsureCreated();
+                }
+            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.MapRazorPages();
 
-            //Database initialization
+            // Database seeding
             using (IServiceScope scope = app.Services.CreateScope())
             {
                 ChirpDbContext db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
-                try
-                {
-                    if (db.Database.EnsureCreated())
-                    {
-                        Console.WriteLine("Database not found, creating one based on seed...");
-                        DbInitializer.SeedDatabase(db);
-                    }
-                }
-                catch (Microsoft.Data.Sqlite.SqliteException err)
-                {
-                    Console.WriteLine(err);
-                }
-
+                DbInitializer.SeedDatabase(db);
             }
 
             app.Run();
