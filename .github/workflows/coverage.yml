@@ -28,7 +28,7 @@ jobs:
           project_name=$(basename "$project" .csproj)
 
           #Skips Domain, since there is no testable logic
-          if [[ "$project_name" == *.Domain ]]; then
+          if [[ "$project_name" == *.Identity.wwwroot ]]; then
             continue
           fi
 
