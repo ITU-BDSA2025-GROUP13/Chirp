@@ -1,4 +1,4 @@
-﻿using Chirp.Web;
+﻿using Chirp.Identity;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 
