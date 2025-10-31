@@ -6,8 +6,8 @@
     <IsPublishable>false</IsPublishable>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
-    <AssemblyName>Chirp.Web.Tests</AssemblyName>
-    <RootNamespace>Chirp.Web.Tests</RootNamespace>
+    <AssemblyName>Chirp.Identity.Tests</AssemblyName>
+    <RootNamespace>Chirp.Identity.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Chirp.Identity\Chirp.Identity.csproj" />
     <ProjectReference Include="..\..\src\Chirp.Infrastructure\Chirp.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\Chirp.Web\Chirp.Web.csproj" />
   </ItemGroup>
 
 </Project>

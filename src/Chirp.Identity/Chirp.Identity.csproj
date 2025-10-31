@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Chirp.Identity-f4b0ad29-ce40-4596-8cc5-9b5cc60937ac</UserSecretsId>
+    <AssemblyName>Chirp.Web</AssemblyName>
+    <RootNamespace>Chirp.Web</RootNamespace>
   </PropertyGroup>
 
     <ItemGroup>

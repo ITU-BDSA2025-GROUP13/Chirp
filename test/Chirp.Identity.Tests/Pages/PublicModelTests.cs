@@ -3,8 +3,7 @@ using Chirp.Web.Pages;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
-
-namespace Chirp.Web.Tests.Pages;
+namespace Chirp.Identity.Tests.Pages;
 
 public class PublicModelTests
 {
