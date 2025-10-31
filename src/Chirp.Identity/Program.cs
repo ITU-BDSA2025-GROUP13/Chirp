@@ -38,14 +38,14 @@ namespace Chirp.Identity
             // Ensure directory and file exist
             if (!File.Exists(dbPath))
             {
-            string? dbDir = Path.GetDirectoryName(dbPath);
-            // Must check if dbDir is null or empty, else compiler warns
-            if (!string.IsNullOrEmpty(dbDir))
-            {
-            Directory.CreateDirectory(dbDir);
-            }
+                string? dbDir = Path.GetDirectoryName(dbPath);
+                // Must check if dbDir is null or empty, else compiler warns
+                if (!string.IsNullOrEmpty(dbDir))
+                {
+                    Directory.CreateDirectory(dbDir);
+                }
 
-            File.Create(dbPath);
+                File.Create(dbPath);
             }
 
             builder.Services.AddDbContext<ChirpDbContext>(options =>
@@ -59,52 +59,52 @@ namespace Chirp.Identity
             //Chirp Database initialization
             using (IServiceScope scope = app.Services.CreateScope())
             {
-            ChirpDbContext db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
-            try
-            {
-            if (db.Database.EnsureCreated())
-            {
-                Console.WriteLine("Database not found, creating one based on seed...");
-                DbInitializer.SeedDatabase(db);
-            }
-            }
-            catch (Microsoft.Data.Sqlite.SqliteException err)
-            {
-            Console.WriteLine(err);
-            }
+                ChirpDbContext db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
+                try
+                {
+                    if (db.Database.EnsureCreated())
+                    {
+                        Console.WriteLine("Database not found, creating one based on seed...");
+                        DbInitializer.SeedDatabase(db);
+                    }
+                }
+                catch (Microsoft.Data.Sqlite.SqliteException err)
+                {
+                    Console.WriteLine(err);
+                }
             }
 
 
             // Identity Database initialization
             using (IServiceScope scope = app.Services.CreateScope())
             {
-            ApplicationDbContext db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            try
-            {
-            if (!db.Database.CanConnect())
-            {
-                Console.WriteLine("Identity database not found, creating one...");
-                db.Database.Migrate();
+                ApplicationDbContext db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                try
+                {
+                    if (!db.Database.CanConnect())
+                    {
+                        Console.WriteLine("Identity database not found, creating one...");
+                        db.Database.Migrate();
 
-            }
-            }
-            catch (Microsoft.Data.Sqlite.SqliteException err)
-            {
-            Console.WriteLine(err);
-            }
+                    }
+                }
+                catch (Microsoft.Data.Sqlite.SqliteException err)
+                {
+                    Console.WriteLine(err);
+                }
             }
 
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-            app.UseMigrationsEndPoint();
+                app.UseMigrationsEndPoint();
             }
             else
             {
-            app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
 
 
@@ -115,7 +115,7 @@ namespace Chirp.Identity
             app.UseAuthorization();
             app.MapRazorPages();
 
-            app.Run();            
-        }    
+            app.Run();
+        }
     }
 }
