@@ -31,25 +31,17 @@ namespace Chirp.Web
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-            else
-            {
-                // Database initialization
-                using (IServiceScope scope = app.Services.CreateScope())
-                {
-                    ChirpDbContext db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
-                    db.Database.EnsureCreated();
-                }
-            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.MapRazorPages();
 
-            // Database seeding
+            // Database seeding & migration
             using (IServiceScope scope = app.Services.CreateScope())
             {
                 ChirpDbContext db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
+                db.Database.Migrate();
                 DbInitializer.SeedDatabase(db);
             }
 
