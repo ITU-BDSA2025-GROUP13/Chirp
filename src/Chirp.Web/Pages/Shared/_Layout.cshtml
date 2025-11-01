@@ -10,13 +10,28 @@
     <h1>
         <a href="/"><img src="/images/icon1.png" alt="Icon1"/></a>Chirp!
     </h1>
-    <nav>
-        <a class="navigation_button" href="/">Public Timeline</a>
-        |
-        <a class="navigation_button" href="/register">Register</a>
-        |
-        <a class="navigation_button" href="/login">Login</a>
-    </nav>
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <!-- todo: These two User.Identity.Name below need to reference the Author table -->
+        <nav>
+            <a class="navigation_button" href="/">Public Timeline</a>
+            |
+            <a class="navigation_button" href="/user/@(User.Identity.Name)">My timeline</a>
+            |
+            <a class="navigation_button" href="/Identity/Account/Logout">Logout [@(User.Identity.Name)]</a>
+        </nav>
+    }
+    else
+    {
+        <nav>
+            <a class="navigation_button" href="/">Public Timeline</a>
+            |
+            <a class="navigation_button" href="/Identity/Account/Register">Register</a>
+            |
+            <a class="navigation_button" href="/Identity/Account/Login">Login</a>
+        </nav>
+    }
+    @await RenderSectionAsync("Scripts", required: false)
     <div class=body>
         @RenderBody()
     </div>
