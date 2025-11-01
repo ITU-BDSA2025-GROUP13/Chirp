@@ -1,4 +1,5 @@
 using Chirp.Core.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Infrastructure.DatabaseContext
@@ -7,7 +8,7 @@ namespace Chirp.Infrastructure.DatabaseContext
     /// Database context for the Chirp application, managing Users and Messages entities.
     /// </summary>
     /// <param name="options">Configuration options for the database context.</param>
-    public class ChirpDbContext : DbContext, IChirpDbContext
+    public class ChirpDbContext : IdentityDbContext<ChirpUser>, IChirpDbContext
     {
         public ChirpDbContext(DbContextOptions<ChirpDbContext> options) : base(options) { }
 
@@ -27,6 +28,8 @@ namespace Chirp.Infrastructure.DatabaseContext
         /// <param name="modelBuilder">The builder being used to construct the model for this context.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Author>(entity =>
             {
                 entity.ToTable("user");
@@ -46,6 +49,10 @@ namespace Chirp.Infrastructure.DatabaseContext
                 entity.ToTable(t => t.HasCheckConstraint("length_constraint", "length(text) <= 160"));
                 entity.Property(m => m.TimeStamp).HasColumnName("pub_date");
             });
+
+            modelBuilder.Entity<ChirpUser>()
+                .HasIndex(u => u.UserName)
+                .IsUnique();
         }
     }
 }
