@@ -90,6 +90,7 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
+            chmod +x efbundle
             ./efbundle
 
       - name: Deploy to Azure Web App
