@@ -1,7 +1,10 @@
+using Chirp.Core.Models;
 using Chirp.Infrastructure.DatabaseContext;
 using Chirp.Infrastructure.Repositories;
 using Chirp.Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Chirp.Infrastructure;
 
 namespace Chirp.Web
 {
@@ -12,6 +15,17 @@ namespace Chirp.Web
             //Builds the web application
             WebApplicationBuilder appBuilder = WebApplication.CreateBuilder(args);
 
+            string dbPath = GetDBPathFromEnv();
+            appBuilder.Services.AddDbContext<ChirpDbContext>(options =>
+                options.UseSqlite($"Data Source={dbPath}"));
+
+            appBuilder.Services.AddDefaultIdentity<ChirpUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false; // TODO: Consider enabling email verification
+                options.SignIn.RequireConfirmedEmail = false;
+            })
+            .AddEntityFrameworkStores<ChirpDbContext>();
+
             appBuilder.Services.AddRazorPages();
 
             appBuilder.Services.AddScoped<ICheepRepository, CheepRepository>();
@@ -20,9 +34,6 @@ namespace Chirp.Web
             appBuilder.Services.AddScoped<IChirpDbContext>(provider =>
                 provider.GetRequiredService<ChirpDbContext>());
 
-            string dbPath = GetDBPathFromEnv();
-            appBuilder.Services.AddDbContext<ChirpDbContext>(options =>
-                options.UseSqlite($"Data Source={dbPath}"));
             WebApplication app = appBuilder.Build();
 
             //Sets up middleware pipelines
@@ -35,6 +46,8 @@ namespace Chirp.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.MapRazorPages();
 
             // Database seeding & migration
