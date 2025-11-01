@@ -1,5 +1,22 @@
 # Changelog
 
+## [5.2.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.1.0...v5.2.0) (2025-11-01)
+
+
+### Features
+
+* add taskbar to website layout ([0e12ecc](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/0e12ecc41cab0d8195d7f2afeeef1e71f2fe2346))
+* added pagination buttons ([23f55b9](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/23f55b935aada11348dbb49d4af8f9dc8cf47181))
+* make logo link to homepage ([32b2bff](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/32b2bff05f60a88488e764cb6a887857a08c4046))
+* migrate on startup ([0dd3ecc](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/0dd3ecc4fc400d4278a561cc8a1fb457aae648ec))
+* move user timelines to /user route ([03504cf](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/03504cfde3e4d31df5b9d7f0a0f4ba5ca04671f7))
+* restore migrations ([8134580](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/813458032aed50fc32d7c08de379bbb8b8f15b96))
+
+
+### Bug Fixes
+
+* fix pagination not working when specifing an author ([e973272](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/e9732724816b4211fa408d49966bec37012413e7))
+
 ## [5.1.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.0.0...v5.1.0) (2025-10-24)
 
 
