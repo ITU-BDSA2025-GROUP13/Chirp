@@ -5,6 +5,9 @@ using Chirp.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Chirp.Infrastructure;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using AspNet.Security.OAuth.GitHub;
+using Microsoft.AspNetCore.Authentication.OAuth;
 
 namespace Chirp.Web
 {
@@ -26,6 +29,24 @@ namespace Chirp.Web
             })
             .AddEntityFrameworkStores<ChirpDbContext>();
 
+            appBuilder.Services.AddAuthentication(options =>
+            {
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+                options.LogoutPath = "/Identity/Account/Logout";
+            })
+            .AddGitHub(options =>
+            {
+                options.ClientId = appBuilder.Configuration["authentication:github:clientId"]!;
+                options.ClientSecret = appBuilder.Configuration["authentication:github:clientSecret"]!;
+                options.CallbackPath = "/signin-github";
+                options.Scope.Add("user:email");
+            });
+
+            appBuilder.Services.AddSession();
             appBuilder.Services.AddRazorPages();
 
             appBuilder.Services.AddScoped<ICheepRepository, CheepRepository>();
@@ -48,6 +69,7 @@ namespace Chirp.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSession();
             app.MapRazorPages();
 
             // Database seeding & migration

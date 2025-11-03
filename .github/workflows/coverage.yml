@@ -20,7 +20,6 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-
       - name: Ensure testsuite exists for all projects
         run: |
           missing=0
@@ -46,7 +45,10 @@ jobs:
 
 
       - name: Run tests with code coverage
-        run: dotnet test --collect:"XPlat Code Coverage"
+        run: |
+          export authentication__github__clientId="${{ secrets.OAUTH_CLIENTID }}"
+          export authentication__github__clientSecret="${{ secrets.OAUTH_CLIENTSECRET }}"
+          dotnet test --collect:"XPlat Code Coverage"
 
       - name: Generate HTML coverage report
         run: |
