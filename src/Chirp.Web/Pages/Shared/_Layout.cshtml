@@ -10,27 +10,32 @@
     <h1>
         <a href="/"><img src="/images/icon1.png" alt="Icon1"/></a>Chirp!
     </h1>
-    @if (User.Identity != null && User.Identity.IsAuthenticated)
-    {
+    
         <!-- todo: These two User.Identity.Name below need to reference the Author table -->
-        <nav>
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 0 0.5rem;">
+        <div>
             <a class="navigation_button" href="/">Public Timeline</a>
             |
-            <a class="navigation_button" href="/user/@(User.Identity.Name)">My timeline</a>
-            |
-            <a class="navigation_button" href="/Identity/Account/Logout">Logout [@(User.Identity.Name)]</a>
-        </nav>
-    }
-    else
-    {
-        <nav>
-            <a class="navigation_button" href="/">Public Timeline</a>
-            |
-            <a class="navigation_button" href="/Identity/Account/Register">Register</a>
-            |
-            <a class="navigation_button" href="/Identity/Account/Login">Login</a>
-        </nav>
-    }
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <a class="navigation_button" href="/user/@(User.Identity.Name)">My timeline</a>    
+                <a>|</a>
+                <a class="navigation_button" href="/Identity/Account/Logout">Logout [@(User.Identity.Name)]</a>
+            }
+            else
+            {
+                <a class="navigation_button" href="/Identity/Account/Register">Register</a>
+                <a>|</a>
+                <a class="navigation_button" href="/Identity/Account/Login">Login</a>        
+            }
+        </div>
+        
+    </nav>
+    
+    
+    
+    
+    
     @await RenderSectionAsync("Scripts", required: false)
     <div class=body>
         @RenderBody()
