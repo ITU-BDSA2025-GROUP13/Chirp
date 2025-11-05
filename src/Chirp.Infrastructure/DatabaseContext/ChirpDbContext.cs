@@ -14,12 +14,12 @@ namespace Chirp.Infrastructure.DatabaseContext
         /// <summary>
         /// Gets or sets the collection of users in the database.
         /// </summary>
-        public DbSet<Author> Authors { get; set; }
+        public DbSet<Author> Authors { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the collection of messages in the database.
         /// </summary>
-        public DbSet<Cheep> Cheeps { get; set; }
+        public DbSet<Cheep> Cheeps { get; set; } = null!;
 
         /// <summary>
         /// Configures the database schema and entity relationships.
