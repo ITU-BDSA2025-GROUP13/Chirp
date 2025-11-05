@@ -16,7 +16,7 @@ namespace Chirp.Infrastructure.Repositories
         /// <param name="author">The author of the cheeps to retrieve.</param>
         /// <param name="pagenum">The zero-based page number to retrieve. Default is 0.</param>
         /// <returns>A task containing the author with their cheeps, or null if the author is not found.</returns>
-        Task<IEnumerable<Cheep>> GetAuthorPage(Author author, int pagenum = 0);
+        Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 0);
         /// <summary>
         /// Posts a new cheep (message) to the database asynchronously.
         /// </summary>

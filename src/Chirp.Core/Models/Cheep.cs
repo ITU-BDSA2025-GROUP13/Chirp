@@ -23,8 +23,7 @@ namespace Chirp.Core.Models
         /// <summary>
         /// Gets or sets the user who authored this message.
         /// </summary>
-        [ForeignKey("AuthorId")]
-        public Author? Author { get; set; }
+        public ChirpUser Author { get; set; }
 
         /// <summary>
         /// Gets or sets the text content of the message.

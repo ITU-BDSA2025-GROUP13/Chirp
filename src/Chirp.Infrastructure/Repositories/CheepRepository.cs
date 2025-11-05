@@ -38,10 +38,10 @@ namespace Chirp.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Cheep>> GetAuthorPage(Author author, int pagenum = 0)
+        public async Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 0)
         {
             return await dbContext.Cheeps
-                .Where(m => m.AuthorId == author.AuthorId) //Joins Author's 
+                .Where(m => m.AuthorId == author.Id) //Joins Author's 
                 .OrderByDescending(m => m.TimeStamp)
                 .Skip(pagenum * _readLimit)
                 .Take(_readLimit)

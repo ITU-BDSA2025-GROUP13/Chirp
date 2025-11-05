@@ -26,6 +26,7 @@ namespace Chirp.Web
             {
                 options.SignIn.RequireConfirmedAccount = false; // TODO: Consider enabling email verification
                 options.SignIn.RequireConfirmedEmail = false;
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
             })
             .AddEntityFrameworkStores<ChirpDbContext>();
 
@@ -50,7 +51,6 @@ namespace Chirp.Web
             appBuilder.Services.AddRazorPages();
 
             appBuilder.Services.AddScoped<ICheepRepository, CheepRepository>();
-            appBuilder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
             appBuilder.Services.AddScoped<ICheepService, CheepService>();
             appBuilder.Services.AddScoped<IChirpDbContext>(provider =>
                 provider.GetRequiredService<ChirpDbContext>());
@@ -75,9 +75,10 @@ namespace Chirp.Web
             // Database seeding & migration
             using (IServiceScope scope = app.Services.CreateScope())
             {
-                ChirpDbContext db = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
-                db.Database.Migrate();
-                DbInitializer.SeedDatabase(db);
+                ChirpDbContext chirpContext = scope.ServiceProvider.GetRequiredService<ChirpDbContext>();
+                UserManager<ChirpUser> userManager = scope.ServiceProvider.GetRequiredService<UserManager<ChirpUser>>();
+                chirpContext.Database.Migrate();
+                DbInitializer.SeedDatabase(chirpContext, userManager);
             }
 
             app.Run();

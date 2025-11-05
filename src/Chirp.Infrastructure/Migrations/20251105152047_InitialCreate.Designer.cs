@@ -3,6 +3,7 @@ using System;
 using Chirp.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,12 +11,36 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chirp.Infrastructure.Migrations
 {
     [DbContext(typeof(ChirpDbContext))]
-    partial class ChirpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251105152047_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
+
+            modelBuilder.Entity("Chirp.Core.Models.Author", b =>
+                {
+                    b.Property<int>("AuthorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("email");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("username");
+
+                    b.HasKey("AuthorId");
+
+                    b.ToTable("user", (string)null);
+                });
 
             modelBuilder.Entity("Chirp.Core.Models.Cheep", b =>
                 {
@@ -247,10 +272,10 @@ namespace Chirp.Infrastructure.Migrations
 
             modelBuilder.Entity("Chirp.Core.Models.Cheep", b =>
                 {
-                    b.HasOne("Chirp.Core.Models.ChirpUser", "Author")
+                    b.HasOne("Chirp.Core.Models.Author", "Author")
                         .WithMany("Cheeps")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");
@@ -307,7 +332,7 @@ namespace Chirp.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Chirp.Core.Models.ChirpUser", b =>
+            modelBuilder.Entity("Chirp.Core.Models.Author", b =>
                 {
                     b.Navigation("Cheeps");
                 });
