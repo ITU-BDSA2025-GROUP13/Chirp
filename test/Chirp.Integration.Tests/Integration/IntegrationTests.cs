@@ -205,4 +205,33 @@ public class IntegrationTests
         newFirstCheep.Text.Should().Be(text);
         newFirstCheep.Text.Should().NotBe(oldFirstCheep?.Text);
     }
+
+    [Fact]
+    public void LoginModelOnGet_AfterPostingCheep_ShowsNewCheepFirst()
+    {
+        string text = "New test cheep";
+        IntegrationTestsUIAndService();
+        if (_cheepService is null)
+        {
+            throw new InvalidOperationException("cheep service is not available.");
+        }
+
+        var pageModel = new PublicModel(_cheepService);
+
+        pageModel.OnGet(0);
+        var oldLength = pageModel.Cheeps.Count;
+        var oldFirstCheep = pageModel.Cheeps.FirstOrDefault();
+
+        _cheepService.PostCheep(text, 1);
+
+        pageModel.OnGet(0);
+        var newLength = pageModel.Cheeps.Count;
+        var newFirstCheep = pageModel.Cheeps.First();
+
+        pageModel.Cheeps.Should().NotBeNull();
+        newLength.Should().Be(oldLength + 1);
+        newFirstCheep.AuthorName.Should().Be(_name1);
+        newFirstCheep.Text.Should().Be(text);
+        newFirstCheep.Text.Should().NotBe(oldFirstCheep?.Text);
+    }
 }
