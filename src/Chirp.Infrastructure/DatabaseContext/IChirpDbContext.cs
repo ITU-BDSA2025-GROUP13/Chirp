@@ -5,10 +5,6 @@ namespace Chirp.Infrastructure.DatabaseContext
 {
     public interface IChirpDbContext
     {
-        /// <summary>
-        /// Gets or sets the collection of users in the database.
-        /// </summary>
-        DbSet<Author> Authors { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of messages in the database.

@@ -1,10 +1,13 @@
 using Chirp.Core.Models;
 using Chirp.Infrastructure.Repositories;
+using Chirp.Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace Chirp.Infrastructure.Services
 {
-    public class CheepService(ICheepRepository cheepRepo, IAuthorRepository authorRepo) : ICheepService
+    public class CheepService(ICheepRepository cheepRepo, UserManager<ChirpUser> userManager) : ICheepService
     {
+        private const string DeletedUser = "Deleted User";
         public List<CheepDTO> GetMainPageCheeps(int page = 0)
         {
             List<Cheep> cheeps = cheepRepo.GetMainPage(page).GetAwaiter().GetResult().ToList();
@@ -15,7 +18,7 @@ namespace Chirp.Infrastructure.Services
                     new CheepDTO(
                         cheep.Text,
                         cheep.TimeStamp.ToString(),
-                        cheep.Author?.Name ?? string.Empty
+                        cheep.Author.UserName ?? DeletedUser
                     )
                 );
             }
@@ -23,13 +26,13 @@ namespace Chirp.Infrastructure.Services
         }
         public List<CheepDTO> GetCheepsFromAuthorName(string authorName, int pagenum = 0)
         {
-            Author? author = authorRepo.GetAuthorByName(authorName);
+            ChirpUser? author = userManager.FindByNameAsync(authorName).GetAwaiter().GetResult();
             if (author == null) return [];
             return ToDTO(cheepRepo.GetAuthorPage(author, pagenum).GetAwaiter().GetResult());
         }
         public List<CheepDTO> GetCheepsFromAuthorID(int authorID, int pagenum = 0)
         {
-            Author? author = authorRepo.GetAuthorByID(authorID);
+            ChirpUser? author = userManager.FindByIdAsync(authorID.ToString()).GetAwaiter().GetResult();
             if (author == null) return [];
 
             return ToDTO(cheepRepo.GetAuthorPage(author, pagenum).GetAwaiter().GetResult());
@@ -37,7 +40,7 @@ namespace Chirp.Infrastructure.Services
         }
         public List<CheepDTO> GetCheepsFromAuthorEmail(string authorEmail, int pagenum = 0)
         {
-            Author? author = authorRepo.GetAuthorByEmail(authorEmail);
+            ChirpUser? author = userManager.FindByEmailAsync(authorEmail).GetAwaiter().GetResult();
             if (author == null) return [];
 
             return ToDTO(cheepRepo.GetAuthorPage(author, pagenum).GetAwaiter().GetResult());
@@ -53,16 +56,23 @@ namespace Chirp.Infrastructure.Services
                     new CheepDTO(
                         cheep.Text,
                         cheep.TimeStamp.ToString(),
-                        cheep.Author?.Name ?? string.Empty
+                        cheep.Author.UserName ?? DeletedUser
                     )
                 );
             }
             return DTOCheeps;
         }
 
+        public int GetAuthorIDFromName(string authorName)
+        {
+            ChirpUser? author = userManager.FindByNameAsync(authorName).GetAwaiter().GetResult();
+            if (author == null) throw new Exception($"No such author exists with name {authorName}");
+            return author.Id;
+        }
+
         public void PostCheep(String text, int authorID)
         {
-            Author? author = authorRepo.GetAuthorByID(authorID);
+            ChirpUser? author = userManager.FindByIdAsync(authorID.ToString()).GetAwaiter().GetResult();
             if (author == null) throw new Exception($"No such author exists {authorID}");
 
             Cheep cheep = new Cheep

@@ -1,6 +1,8 @@
 using Chirp.Core.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Chirp.Infrastructure.DatabaseContext
 {
@@ -8,14 +10,9 @@ namespace Chirp.Infrastructure.DatabaseContext
     /// Database context for the Chirp application, managing Users and Messages entities.
     /// </summary>
     /// <param name="options">Configuration options for the database context.</param>
-    public class ChirpDbContext : IdentityDbContext<ChirpUser>, IChirpDbContext
+    public class ChirpDbContext : IdentityDbContext<ChirpUser, IdentityRole<int>, int>, IChirpDbContext
     {
         public ChirpDbContext(DbContextOptions<ChirpDbContext> options) : base(options) { }
-
-        /// <summary>
-        /// Gets or sets the collection of users in the database.
-        /// </summary>
-        public DbSet<Author> Authors { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the collection of messages in the database.
@@ -30,15 +27,6 @@ namespace Chirp.Infrastructure.DatabaseContext
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Author>(entity =>
-            {
-                entity.ToTable("user");
-                entity.HasKey(u => u.AuthorId);
-                entity.Property(u => u.AuthorId).HasColumnName("user_id").ValueGeneratedOnAdd(); // Autoincrement
-                entity.Property(u => u.Name).HasColumnName("username");
-                entity.Property(u => u.Email).HasColumnName("email");
-            });
-
             modelBuilder.Entity<Cheep>(entity =>
             {
                 entity.ToTable("message");
@@ -48,11 +36,18 @@ namespace Chirp.Infrastructure.DatabaseContext
                 entity.Property(m => m.Text).HasColumnName("text");
                 entity.ToTable(t => t.HasCheckConstraint("length_constraint", "length(text) <= 160"));
                 entity.Property(m => m.TimeStamp).HasColumnName("pub_date");
+                
+                entity.HasOne(m => m.Author)
+                      .WithMany(m => m.Cheeps)
+                      .HasForeignKey(m => m.AuthorId)
+                      .OnDelete(DeleteBehavior.NoAction);
             });
 
-            modelBuilder.Entity<ChirpUser>()
-                .HasIndex(u => u.UserName)
-                .IsUnique();
+            modelBuilder.Entity<ChirpUser>(entity =>
+            { 
+                entity.Property(u => u.Id).ValueGeneratedOnAdd(); 
+                entity.HasIndex(u => u.UserName);
+            });
         }
     }
 }

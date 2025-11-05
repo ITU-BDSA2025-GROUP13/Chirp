@@ -9,7 +9,7 @@
     @if (User.Identity != null && User.Identity.IsAuthenticated)
     {
         <form method="post">
-            <textarea required placeholder="Post a Cheep!" rows="4" style="width: 100%; box-sizing: border-box"></textarea>
+            <textarea asp-for="CheepMessage" required placeholder="Post a Cheep!" rows="4" style="width: 100%; box-sizing: border-box"></textarea>
             <br>
             <input type="submit" value="Post">
         </form>
