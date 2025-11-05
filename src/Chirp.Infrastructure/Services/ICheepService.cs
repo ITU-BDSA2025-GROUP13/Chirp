@@ -1,5 +1,3 @@
-using Chirp.Core.Models;
-
 namespace Chirp.Infrastructure.Services
 
 {

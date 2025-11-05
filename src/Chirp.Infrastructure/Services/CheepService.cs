@@ -1,6 +1,5 @@
 using Chirp.Core.Models;
 using Chirp.Infrastructure.Repositories;
-using Chirp.Infrastructure.Services;
 
 namespace Chirp.Infrastructure.Services
 {
