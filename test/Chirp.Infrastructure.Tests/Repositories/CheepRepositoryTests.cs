@@ -5,7 +5,6 @@ using Chirp.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using MockQueryable.Moq;
-using Xunit.Sdk;
 
 namespace Chirp.Infrastructure.Tests.Repositories;
 
