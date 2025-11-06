@@ -20,6 +20,12 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      - name: Build projects
+        run: dotnet build --no-restore
+
+      - name: Ensure browsers are installed
+        run: pwsh test/Chirp.Integration.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
+
       - name: Ensure testsuite exists for all projects
         run: |
           missing=0
@@ -32,7 +38,7 @@ jobs:
           fi
 
           test_project="${project_name}.Tests.csproj"
-          
+
           if ! find ./test -name "$test_project" -print -quit | grep -q .; then
             echo "::error::Missing testsuite for project: $project_name"
             missing=1
@@ -42,7 +48,6 @@ jobs:
           if [ $missing -eq 1 ]; then
             exit 1
           fi
-
 
       - name: Run tests with code coverage
         run: |
