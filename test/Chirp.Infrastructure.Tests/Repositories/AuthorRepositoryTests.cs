@@ -1,5 +1,5 @@
 ﻿using Chirp.Core.Models;
-using FluentAssertions;
+
 using Chirp.Infrastructure.DatabaseContext;
 using Chirp.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +28,7 @@ public class AuthorRepositoryTests
         authorRepo.InsertAuthor(new Author());
         context.SaveChanges();
 
-        authorRepo.GetAllAuthors().Should().HaveCount(1);
+        Assert.Single(authorRepo.GetAllAuthors());
     }
 
     [Fact]
@@ -39,7 +39,8 @@ public class AuthorRepositoryTests
         Author author = new Author { Name = "Karl 'DROP TABLE user;' Fortnite the -3." };
         authorRepo.InsertAuthor(author);
         context.SaveChanges();
-        authorRepo.GetAuthorByName(author.Name).Should().BeEquivalentTo(author);
+        var result = authorRepo.GetAuthorByName(author.Name);
+        Assert.Equivalent(author, result);
     }
 
     [Fact]
@@ -50,7 +51,8 @@ public class AuthorRepositoryTests
         Author author = new Author { Email = "Karl'DROP TABLE user;'Fortnite@the-3." };
         authorRepo.InsertAuthor(author);
         context.SaveChanges();
-        authorRepo.GetAuthorByEmail(author.Email).Should().BeEquivalentTo(author);
+        var result = authorRepo.GetAuthorByEmail(author.Email);
+        Assert.Equivalent(author, result);
     }
 
     [Fact]
@@ -61,6 +63,7 @@ public class AuthorRepositoryTests
         Author author = new Author { AuthorId = 1 };
         authorRepo.InsertAuthor(author);
         context.SaveChanges();
-        authorRepo.GetAuthorByID(author.AuthorId).Should().BeEquivalentTo(author);
+        var result = authorRepo.GetAuthorByID(author.AuthorId);
+        Assert.Equivalent(author, result);
     }
 }

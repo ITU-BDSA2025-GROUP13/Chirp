@@ -1,5 +1,4 @@
 using Chirp.Infrastructure.Services;
-using FluentAssertions;
 
 namespace Chirp.Web.Tests.DTO;
 
@@ -10,9 +9,9 @@ public class CheepDTOTests
     {
         var cheepDto = new CheepDTO("Test message", "2023-01-01 12:00:00", "TestAuthor");
 
-        cheepDto.Text.Should().Be("Test message");
-        cheepDto.DatePosted.Should().Be("2023-01-01 12:00:00");
-        cheepDto.AuthorName.Should().Be("TestAuthor");
+        Assert.Equal("Test message", cheepDto.Text);
+        Assert.Equal("2023-01-01 12:00:00", cheepDto.DatePosted);
+        Assert.Equal("TestAuthor", cheepDto.AuthorName);
     }
 
     [Fact]
@@ -22,10 +21,10 @@ public class CheepDTOTests
         var cheep2 = new CheepDTO("Same message", "2023-01-01", "SameAuthor");
         var cheep3 = new CheepDTO("Different message", "2023-01-01", "SameAuthor");
 
-        cheep1.Should().Be(cheep2);
-        cheep1.Should().NotBe(cheep3);
-        cheep1.Equals(cheep2).Should().BeTrue();
-        cheep1.Equals(cheep3).Should().BeFalse();
+        Assert.Equal(cheep2, cheep1);
+        Assert.NotEqual(cheep3, cheep1);
+        Assert.True(cheep1.Equals(cheep2));
+        Assert.False(cheep1.Equals(cheep3));
     }
 
     [Fact]
@@ -33,9 +32,9 @@ public class CheepDTOTests
     {
         var cheepDto = new CheepDTO("", "", "");
 
-        cheepDto.Text.Should().BeEmpty();
-        cheepDto.DatePosted.Should().BeEmpty();
-        cheepDto.AuthorName.Should().BeEmpty();
+        Assert.Empty(cheepDto.Text);
+        Assert.Empty(cheepDto.DatePosted);
+        Assert.Empty(cheepDto.AuthorName);
     }
 
     [Fact]
@@ -47,9 +46,9 @@ public class CheepDTOTests
 
         var cheepDto = new CheepDTO(longText, longDate, longAuthor);
 
-        cheepDto.Text.Should().HaveLength(500);
-        cheepDto.DatePosted.Should().Be(longDate);
-        cheepDto.AuthorName.Should().HaveLength(100);
+        Assert.Equal(500, cheepDto.Text.Length);
+        Assert.Equal(longDate, cheepDto.DatePosted);
+        Assert.Equal(100, cheepDto.AuthorName.Length);
     }
 
     [Fact]
@@ -58,7 +57,7 @@ public class CheepDTOTests
         var cheep1 = new CheepDTO("Test", "2023-01-01", "Author");
         var cheep2 = new CheepDTO("Test", "2023-01-01", "Author");
 
-        cheep1.GetHashCode().Should().Be(cheep2.GetHashCode());
+        Assert.Equal(cheep2.GetHashCode(), cheep1.GetHashCode());
     }
 
     [Fact]
@@ -68,8 +67,8 @@ public class CheepDTOTests
 
         var result = cheepDto.ToString();
 
-        result.Should().Contain("Hello World");
-        result.Should().Contain("2023-01-01");
-        result.Should().Contain("TestUser");
+        Assert.Contains("Hello World", result);
+        Assert.Contains("2023-01-01", result);
+        Assert.Contains("TestUser", result);
     }
 }

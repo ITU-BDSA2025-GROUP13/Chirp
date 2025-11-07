@@ -1,5 +1,4 @@
 ﻿using Chirp.Core.Models;
-using FluentAssertions;
 
 namespace Chirp.Core.Tests.Models;
 
@@ -10,10 +9,11 @@ public class AuthorTests
     {
         var author = new Author();
 
-        author.AuthorId.Should().Be(0);
-        author.Name.Should().Be(string.Empty);
-        author.Email.Should().Be(string.Empty);
-        author.Cheeps.Should().NotBeNull().And.BeEmpty();
+        Assert.Equal(0, author.AuthorId);
+        Assert.Equal(string.Empty, author.Name);
+        Assert.Equal(string.Empty, author.Email);
+        Assert.NotNull(author.Cheeps);
+        Assert.Empty(author.Cheeps);
     }
 
     [Fact]
@@ -27,8 +27,8 @@ public class AuthorTests
         author.Name = name;
         author.Email = email;
 
-        author.Name.Should().Be(name);
-        author.Email.Should().Be(email);
+        Assert.Equal(name, author.Name);
+        Assert.Equal(email, author.Email);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public class AuthorTests
 
         author.Cheeps.Add(cheep);
 
-        author.Cheeps.Should().HaveCount(1);
-        author.Cheeps.Should().Contain(cheep);
+        Assert.Single(author.Cheeps);
+        Assert.Contains(cheep, author.Cheeps);
     }
 }

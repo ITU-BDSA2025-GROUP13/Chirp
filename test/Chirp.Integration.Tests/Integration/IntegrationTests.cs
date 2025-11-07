@@ -3,7 +3,7 @@ using Chirp.Infrastructure.DatabaseContext;
 using Chirp.Infrastructure.Repositories;
 using Chirp.Infrastructure.Services;
 using Chirp.Web.Pages;
-using FluentAssertions;
+
 using MockQueryable.Moq;
 using Moq;
 
@@ -68,9 +68,9 @@ public class IntegrationTests
         }
 
         var result = _cheepService.GetMainPageCheeps(0);
-        result.Should().HaveCount(cheeps.Count);
-        result.First().Text.Should().Be(_text3);
-        result.Last().Text.Should().Be(_text1);
+        Assert.Equal(cheeps.Count, result.Count());
+        Assert.Equal(_text3, result.First().Text);
+        Assert.Equal(_text1, result.Last().Text);
     }
 
     [Fact]
@@ -82,9 +82,9 @@ public class IntegrationTests
             throw new InvalidOperationException("cheep service is not available.");
         }
         var result = _cheepService.GetCheepsFromAuthorName(_name1);
-        result.Should().HaveCount(3);
-        result.First().Text.Should().Be(_text3);
-        result.Last().Text.Should().Be(_text1);
+        Assert.Equal(3, result.Count());
+        Assert.Equal(_text3, result.First().Text);
+        Assert.Equal(_text1, result.Last().Text);
     }
 
     private void IntegrationTestsUIAndService()
@@ -171,10 +171,10 @@ public class IntegrationTests
         }
         var pageModel = new UserTimelineModel(_cheepService);
         pageModel.OnGet(_name3, 0);
-        pageModel.Cheeps.Should().NotBeNull();
-        pageModel.Cheeps.Should().HaveCount(1);
-        pageModel.Cheeps[0].AuthorName.Should().Be(_name3);
-        pageModel.Cheeps[0].Text.Should().Be(_text6);
+        Assert.NotNull(pageModel.Cheeps);
+        Assert.Single(pageModel.Cheeps);
+        Assert.Equal(_name3, pageModel.Cheeps[0].AuthorName);
+        Assert.Equal(_text6, pageModel.Cheeps[0].Text);
     }
 
     [Fact]
@@ -199,11 +199,11 @@ public class IntegrationTests
         var newLength = pageModel.Cheeps.Count;
         var newFirstCheep = pageModel.Cheeps.First();
 
-        pageModel.Cheeps.Should().NotBeNull();
-        newLength.Should().Be(oldLength + 1);
-        newFirstCheep.AuthorName.Should().Be(_name1);
-        newFirstCheep.Text.Should().Be(text);
-        newFirstCheep.Text.Should().NotBe(oldFirstCheep?.Text);
+        Assert.NotNull(pageModel.Cheeps);
+        Assert.Equal(oldLength + 1, newLength);
+        Assert.Equal(_name1, newFirstCheep.AuthorName);
+        Assert.Equal(text, newFirstCheep.Text);
+        Assert.NotEqual(oldFirstCheep?.Text, newFirstCheep.Text);
     }
 
     [Fact]
@@ -228,10 +228,10 @@ public class IntegrationTests
         var newLength = pageModel.Cheeps.Count;
         var newFirstCheep = pageModel.Cheeps.First();
 
-        pageModel.Cheeps.Should().NotBeNull();
-        newLength.Should().Be(oldLength + 1);
-        newFirstCheep.AuthorName.Should().Be(_name1);
-        newFirstCheep.Text.Should().Be(text);
-        newFirstCheep.Text.Should().NotBe(oldFirstCheep?.Text);
+        Assert.NotNull(pageModel.Cheeps);
+        Assert.Equal(oldLength + 1, newLength);
+        Assert.Equal(_name1, newFirstCheep.AuthorName);
+        Assert.Equal(text, newFirstCheep.Text);
+        Assert.NotEqual(oldFirstCheep?.Text, newFirstCheep.Text);
     }
 }

@@ -1,7 +1,6 @@
 using Chirp.Core.Models;
 using Chirp.Infrastructure.Repositories;
 using Chirp.Infrastructure.Services;
-using FluentAssertions;
 using Moq;
 
 namespace Chirp.Web.Tests;
@@ -34,9 +33,9 @@ public class CheepServiceTests
 
         var result = service.GetMainPageCheeps(0);
 
-        result.Should().HaveCount(cheeps.Count());
-        result.First().Text.Should().Be(text3);
-        result.Last().Text.Should().Be(text1);
+        Assert.Equal(cheeps.Count(), result.Count());
+        Assert.Equal(text3, result.First().Text);
+        Assert.Equal(text1, result.Last().Text);
     }
 
     [Fact]
@@ -70,9 +69,9 @@ public class CheepServiceTests
         var service = new CheepService(mockCheepRepo.Object, mockAuthorRepo.Object);
 
         var result = service.GetCheepsFromAuthorName(name2);
-        result.Should().HaveCount(author2Cheeps.Count);
-        result.First().Text.Should().Be(text3);
-        result.Last().Text.Should().Be(text1);
+        Assert.Equal(author2Cheeps.Count, result.Count());
+        Assert.Equal(text3, result.First().Text);
+        Assert.Equal(text1, result.Last().Text);
     }
 
     [Fact]
@@ -108,9 +107,9 @@ public class CheepServiceTests
 
         var result = service.GetMainPageCheeps(0);
 
-        result.Should().NotBeNull();
-        result.Should().HaveCount(2);
-        result.First().Text.Should().Be(text2);
-        result.Last().Text.Should().Be(text1);
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count());
+        Assert.Equal(text2, result.First().Text);
+        Assert.Equal(text1, result.Last().Text);
     }
 }

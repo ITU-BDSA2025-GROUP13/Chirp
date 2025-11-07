@@ -1,5 +1,4 @@
 ﻿using Chirp.Web;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Playwright.Xunit;
 using System.Diagnostics;
@@ -61,9 +60,9 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
 
         response.EnsureSuccessStatusCode();
         var html = await response.Content.ReadAsStringAsync();
-        html.Should().Contain("Public Timeline");
-        html.Should().Contain("Starbuck now is what we hear the worst."); // this is in the DBinit
-        html.Should().Contain("<a href=\"/user/Jacqualine Gilcoine\">");
+        Assert.Contains("Public Timeline", html);
+        Assert.Contains("Starbuck now is what we hear the worst.", html); // this is in the DBinit
+        Assert.Contains("<a href=\"/user/Jacqualine Gilcoine\">", html);
     }
 
     [Fact]
@@ -73,9 +72,9 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
 
         response.EnsureSuccessStatusCode();
         var html = await response.Content.ReadAsStringAsync();
-        html.Should().Contain("Jacqualine Gilcoine's Timeline");
-        html.Should().Contain("Starbuck now is what we hear the worst."); // this is in the DBinit
-        html.Should().Contain("<a href=\"/user/Jacqualine Gilcoine\">");
+        Assert.Contains("Jacqualine Gilcoine's Timeline", html);
+        Assert.Contains("Starbuck now is what we hear the worst.", html); // this is in the DBinit
+        Assert.Contains("<a href=\"/user/Jacqualine Gilcoine\">", html);
     }
 
     [Fact]
@@ -85,8 +84,8 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
 
         response.EnsureSuccessStatusCode();
         var html = await response.Content.ReadAsStringAsync();
-        html.Should().Contain("Login");
-        html.Should().Contain("login-submit");
+        Assert.Contains("Login", html);
+        Assert.Contains("login-submit", html);
     }
 
     [Fact]
@@ -96,8 +95,8 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
 
         response.EnsureSuccessStatusCode();
         var html = await response.Content.ReadAsStringAsync();
-        html.Should().Contain("Register");
-        html.Should().Contain("Create a new account");
+        Assert.Contains("Register", html);
+        Assert.Contains("Create a new account", html);
     }
 
     [Fact]
@@ -105,7 +104,7 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
     {
         var response = await _client.GetAsync("/Identity/Account/Logout");
 
-        response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.Redirect);
+        Assert.True(response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Redirect);
     }
 
     [Fact]
@@ -124,17 +123,17 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
         await Page.ClickAsync("button[type='submit']");
         // Verify registration success 
         await Page.WaitForURLAsync(new Regex(".*Identity/Account/Logout.*"));
-        Page.Url.Should().Contain("/Identity/Account/Logout");
+        Assert.Contains("/Identity/Account/Logout", Page.Url);
         var PostRegistrationContent = await Page.ContentAsync();
-        PostRegistrationContent.Should().ContainAny("Logout", "logout", "Click here to Logout");
+        Assert.True(PostRegistrationContent.Contains("Logout") || PostRegistrationContent.Contains("logout") || PostRegistrationContent.Contains("Click here to Logout"));
         Console.WriteLine("✓ Registration successful");
 
         // Logout
         await Page.ClickAsync("button[type='submit']");
-        Page.Url.Should().NotContain("/Identity/Account/Logout");
+        Assert.DoesNotContain("/Identity/Account/Logout", Page.Url);
         // Verify logged out success
         await Page.WaitForURLAsync(new Regex(".*Identity/Account/Login.*"));
-        Page.Url.Should().Contain("/Identity/Account/Login");
+        Assert.Contains("/Identity/Account/Login", Page.Url);
         Console.WriteLine("✓ Logout successful");
 
         // Login
@@ -142,12 +141,12 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
         await Page.FillAsync("#Input_UserName", testUser);
         await Page.FillAsync("#Input_Password", testPassword);
         await Page.ClickAsync("button[type='submit']");
-        Page.Url.Should().NotContain("/Identity/Account/Login");
+        Assert.DoesNotContain("/Identity/Account/Login", Page.Url);
         // Verify logged in success
         await Page.WaitForURLAsync(new Regex(".*Identity/Account/Logout.*"));
-        Page.Url.Should().Contain("/Identity/Account/Logout");
+        Assert.Contains("/Identity/Account/Logout", Page.Url);
         var PostLoginContent = await Page.ContentAsync();
-        PostLoginContent.Should().ContainAny("Logout", "logout", "Click here to Logout");
+        Assert.True(PostLoginContent.Contains("Logout") || PostLoginContent.Contains("logout") || PostLoginContent.Contains("Click here to Logout"));
         Console.WriteLine("✓ Login successful");
     }
 }

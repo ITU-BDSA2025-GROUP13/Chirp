@@ -1,5 +1,5 @@
 ﻿using Chirp.Core.Models;
-using FluentAssertions;
+
 using Chirp.Infrastructure.DatabaseContext;
 using Chirp.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -32,9 +32,9 @@ public class CheepRepositoryTests
 
         var result = await cheepRepo.GetMainPage(0);
 
-        result.Should().HaveCount(cheeps.Count());
-        result.First().Text.Should().Be(text3);
-        result.Last().Text.Should().Be(text1);
+        Assert.Equal(cheeps.Count(), result.Count());
+        Assert.Equal(text3, result.First().Text);
+        Assert.Equal(text1, result.Last().Text);
     }
 
     [Fact]
@@ -81,12 +81,12 @@ public class CheepRepositoryTests
 
         Author? result = authorRepo.GetAuthorByName("TestUser2");
 
-        result.Should().NotBeNull();
-        result!.Name.Should().Be(name2);
-        result!.Email.Should().Be(email2);
-        result.Cheeps.Should().HaveCount(3);
-        result.Cheeps.First().Text.Should().Be(text3); // shows the newst cheep first
-        result.Cheeps.Last().Text.Should().Be(text1);  // shows the oldest cheep last
+        Assert.NotNull(result);
+        Assert.Equal(name2, result.Name);
+        Assert.Equal(email2, result.Email);
+        Assert.Equal(3, result.Cheeps.Count());
+        Assert.Equal(text3, result.Cheeps.First().Text);  // shows the newst cheep first
+        Assert.Equal(text1, result.Cheeps.Last().Text);   // shows the oldest cheep last
     }
 
     [Fact]
@@ -122,10 +122,10 @@ public class CheepRepositoryTests
         await repository.InsertCheep(cheep);
         var result = await repository.GetMainPage(0);
 
-        result.Should().NotBeNull();
-        result.Should().HaveCount(2);
-        result.First().Text.Should().Be(text2);
-        result.Last().Text.Should().Be(text1);
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count());
+        Assert.Equal(text2, result.First().Text);
+        Assert.Equal(text1, result.Last().Text);
     }
 
     [Fact]
@@ -152,9 +152,9 @@ public class CheepRepositoryTests
 
         Author? result = authorRepo.GetAuthorByName("TestUser");
 
-        result.Should().NotBeNull();
-        result!.Name.Should().Be("TestUser");
-        result!.Email.Should().Be("test@test.com");
+        Assert.NotNull(result);
+        Assert.Equal("TestUser", result.Name);
+        Assert.Equal("test@test.com", result.Email);
     }
 
     [Fact]
@@ -182,9 +182,9 @@ public class CheepRepositoryTests
 
         Author? result = repository.GetAuthorByName("TestUser1");
 
-        result.Should().NotBeNull();
-        result!.Name.Should().Be(name1);
-        result!.Email.Should().Be(email1);
+        Assert.NotNull(result);
+        Assert.Equal(name1, result.Name);
+        Assert.Equal(email1, result.Email);
     }
 
     [Fact]
@@ -212,9 +212,9 @@ public class CheepRepositoryTests
 
         Author? result = repository.GetAuthorByID(1);
 
-        result.Should().NotBeNull();
-        result!.Name.Should().Be(name1);
-        result!.Email.Should().Be(email1);
+        Assert.NotNull(result);
+        Assert.Equal(name1, result.Name);
+        Assert.Equal(email1, result.Email);
     }
 
     [Fact]
