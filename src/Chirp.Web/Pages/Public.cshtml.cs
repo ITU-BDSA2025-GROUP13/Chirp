@@ -8,7 +8,7 @@ namespace Chirp.Web.Pages;
 
 public class PublicModel : PageModel
 {
-    private readonly ICheepService _service; 
+    private readonly ICheepService _service;
     private readonly UserManager<ChirpUser> _userManager;
     public List<CheepDTO> Cheeps { get; set; }
     public int CurrentPage { get; set; }
