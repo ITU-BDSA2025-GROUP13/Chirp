@@ -15,7 +15,7 @@ public class PublicModel : PageModel
     public bool HasNextPage { get; set; }
     public bool HasPreviousPage => CurrentPage > 0;
     [BindProperty]
-    public string CheepMessage { get; set; }
+    public string? CheepMessage { get; set; }
 
     public PublicModel(ICheepService service, UserManager<ChirpUser> userManager)
     {
@@ -34,9 +34,11 @@ public class PublicModel : PageModel
 
     public ActionResult OnPost()
     {
+        if (CheepMessage == null) return RedirectToPage("/Public");
         string? name = User.Identity?.Name;
-        ChirpUser user = _userManager.FindByNameAsync(name).GetAwaiter().GetResult();
-        
+        if (name == null) return RedirectToPage("/Public"); //TODO: Maybe error message for user here? (And below)
+        ChirpUser? user = _userManager.FindByNameAsync(name).GetAwaiter().GetResult();
+        if (user == null) return RedirectToPage("/Public");
         _service.PostCheep(CheepMessage, user.Id);
         return RedirectToPage("/Public");
     }
