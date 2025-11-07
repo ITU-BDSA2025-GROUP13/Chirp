@@ -1,6 +1,6 @@
 ﻿using Chirp.Core.Models;
 using Chirp.Infrastructure.DatabaseContext;
-using FluentAssertions;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Infrastructure.Tests.DatabaseContext;
@@ -34,9 +34,9 @@ public class ChirpDbContextsTests
         var savedCheep = await context.Cheeps
             .Include(c => c.Author)
             .FirstOrDefaultAsync();
-        savedCheep.Should().NotBeNull();
-        savedCheep!.Author.Should().NotBeNull();
-        savedCheep.Author!.Name.Should().Be(name);
+        Assert.NotNull(savedCheep);
+        Assert.NotNull(savedCheep.Author);
+        Assert.Equal(name, savedCheep.Author.Name);
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class ChirpDbContextsTests
             .Include(c => c.Author)
             .ToListAsync();
 
-        result.Should().HaveCount(1);
-        result.First().Author!.Name.Should().Be(name);
+        Assert.Single(result);
+        Assert.Equal(name, result.First().Author!.Name);
     }
 }

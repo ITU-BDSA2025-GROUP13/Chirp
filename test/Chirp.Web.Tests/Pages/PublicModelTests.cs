@@ -1,6 +1,5 @@
 using Chirp.Infrastructure.Services;
 using Chirp.Web.Pages;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
@@ -15,8 +14,8 @@ public class PublicModelTests
 
         var model = new PublicModel(mockService.Object);
 
-        model.Cheeps.Should().NotBeNull();
-        model.Cheeps.Should().BeEmpty();
+        Assert.NotNull(model.Cheeps);
+        Assert.Empty(model.Cheeps);
     }
 
     [Fact]
@@ -34,9 +33,9 @@ public class PublicModelTests
 
         var result = model.OnGet(1);
 
-        result.Should().BeOfType<PageResult>();
+        Assert.IsType<PageResult>(result);
         mockService.Verify(s => s.GetMainPageCheeps(1), Times.Once);
-        model.Cheeps.Should().BeEquivalentTo(expectedCheeps);
+        Assert.Equal(expectedCheeps, model.Cheeps);
     }
 
     [Fact]
@@ -55,10 +54,10 @@ public class PublicModelTests
 
         var result = model.OnGet(0);
 
-        result.Should().BeOfType<PageResult>();
+        Assert.IsType<PageResult>(result);
         mockService.Verify(s => s.GetMainPageCheeps(0), Times.Once);
-        model.Cheeps.Should().HaveCount(1);
-        model.Cheeps.First().Text.Should().Be(text);
+        Assert.Single(model.Cheeps);
+        Assert.Equal(text, model.Cheeps.First().Text);
     }
 
     [Fact]
@@ -70,7 +69,7 @@ public class PublicModelTests
 
         var result = model.OnGet(5);
 
-        result.Should().BeOfType<PageResult>();
-        model.Cheeps.Should().BeEmpty();
+        Assert.IsType<PageResult>(result);
+        Assert.Empty(model.Cheeps);
     }
 }

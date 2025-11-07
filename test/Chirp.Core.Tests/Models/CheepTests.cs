@@ -1,5 +1,4 @@
 ﻿using Chirp.Core.Models;
-using FluentAssertions;
 
 namespace Chirp.Core.Tests.Models;
 
@@ -21,11 +20,11 @@ public class CheepTests
             TimeStamp = timestamp
         };
 
-        cheep.CheepId.Should().Be(1);
-        cheep.Text.Should().Be(text);
-        cheep.Author.Should().Be(author);
-        cheep.AuthorId.Should().Be(0);
-        cheep.TimeStamp.Should().Be(timestamp);
+        Assert.Equal(1, cheep.CheepId);
+        Assert.Equal(text, cheep.Text);
+        Assert.Equal(author, cheep.Author);
+        Assert.Equal(0, cheep.AuthorId);
+        Assert.Equal(timestamp, cheep.TimeStamp);
     }
 
     [Theory]
@@ -46,6 +45,6 @@ public class CheepTests
             TimeStamp = timestamp
         };
 
-        cheep.Text.Should().Be(text);
+        Assert.Equal(text, cheep.Text);
     }
 }

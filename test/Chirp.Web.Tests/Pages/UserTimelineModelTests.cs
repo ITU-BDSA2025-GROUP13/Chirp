@@ -1,6 +1,5 @@
 using Chirp.Infrastructure.Services;
 using Chirp.Web.Pages;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
@@ -15,8 +14,8 @@ public class UserTimelineModelTests
 
         var model = new UserTimelineModel(mockService.Object);
 
-        model.Cheeps.Should().NotBeNull();
-        model.Cheeps.Should().BeEmpty();
+        Assert.NotNull(model.Cheeps);
+        Assert.Empty(model.Cheeps);
     }
 
     [Fact]
@@ -36,9 +35,9 @@ public class UserTimelineModelTests
 
         var result = model.OnGet(user, 0);
 
-        result.Should().BeOfType<PageResult>();
+        Assert.IsType<PageResult>(result);
         mockService.Verify(s => s.GetCheepsFromAuthorName(user, 0), Times.Once);
-        model.Cheeps.Should().BeEquivalentTo(expectedCheeps);
+        Assert.Equal(expectedCheeps, model.Cheeps);
     }
 
     [Fact]
@@ -57,10 +56,10 @@ public class UserTimelineModelTests
 
         var result = model.OnGet(anotherUser, 0);
 
-        result.Should().BeOfType<PageResult>();
+        Assert.IsType<PageResult>(result);
         mockService.Verify(s => s.GetCheepsFromAuthorName(anotherUser, 0), Times.Once);
-        model.Cheeps.Should().HaveCount(1);
-        model.Cheeps.First().AuthorName.Should().Be(anotherUser);
+        Assert.Single(model.Cheeps);
+        Assert.Equal(anotherUser, model.Cheeps.First().AuthorName);
     }
 
     [Fact]
@@ -73,8 +72,8 @@ public class UserTimelineModelTests
 
         var result = model.OnGet("NonExistent", 1);
 
-        result.Should().BeOfType<PageResult>();
-        model.Cheeps.Should().BeEmpty();
+        Assert.IsType<PageResult>(result);
+        Assert.Empty(model.Cheeps);
     }
 
     [Fact]
@@ -94,7 +93,7 @@ public class UserTimelineModelTests
 
         var result = model.OnGet(user, 0);
 
-        result.Should().BeOfType<PageResult>();
-        model.Cheeps.Should().HaveCount(1);
+        Assert.IsType<PageResult>(result);
+        Assert.Single(model.Cheeps);
     }
 }
