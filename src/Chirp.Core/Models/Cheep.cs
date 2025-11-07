@@ -23,7 +23,7 @@ namespace Chirp.Core.Models
         /// <summary>
         /// Gets or sets the user who authored this message.
         /// </summary>
-        public ChirpUser Author { get; set; }
+        public required ChirpUser Author { get; set; }
 
         /// <summary>
         /// Gets or sets the text content of the message.
