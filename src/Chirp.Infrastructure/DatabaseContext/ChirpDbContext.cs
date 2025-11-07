@@ -36,7 +36,7 @@ namespace Chirp.Infrastructure.DatabaseContext
                 entity.Property(m => m.Text).HasColumnName("text");
                 entity.ToTable(t => t.HasCheckConstraint("length_constraint", "length(text) <= 160"));
                 entity.Property(m => m.TimeStamp).HasColumnName("pub_date");
-                
+
                 entity.HasOne(m => m.Author)
                       .WithMany(m => m.Cheeps)
                       .HasForeignKey(m => m.AuthorId)
@@ -44,8 +44,8 @@ namespace Chirp.Infrastructure.DatabaseContext
             });
 
             modelBuilder.Entity<ChirpUser>(entity =>
-            { 
-                entity.Property(u => u.Id).ValueGeneratedOnAdd(); 
+            {
+                entity.Property(u => u.Id).ValueGeneratedOnAdd();
                 entity.HasIndex(u => u.UserName);
             });
         }
