@@ -22,17 +22,32 @@ public static class DbInitializer
             var a10 = new ChirpUser { UserName = "Jacqualine Gilcoine", Email = "Jacqualine.Gilcoine@gmail.com", Cheeps = new List<Cheep>() };
             var a11 = new ChirpUser { UserName = "Helge", Email = "ropf@itu.dk", Cheeps = new List<Cheep>() };
             var a12 = new ChirpUser { UserName = "Adrian", Email = "adho@itu.dk", Cheeps = new List<Cheep>() };
+            
+            var defaultUsers = new List<ChirpUser>{ a1, a2, a3, a4, a5, a6, a7, a8, a9, a10 };
 
-            var authors = new List<ChirpUser>{ a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12 };
-
-            foreach (ChirpUser author in authors)
+            IdentityResult result;
+            foreach (ChirpUser defaultUser in defaultUsers)
             {
-                var result = userManager.CreateAsync(author, defaultPassword).GetAwaiter().GetResult();
+                result = userManager.CreateAsync(defaultUser, defaultPassword).GetAwaiter().GetResult();
                 if (!result.Succeeded)
                 {
-                    throw new Exception($"Error seeding DB with user: {author} with errors: {result.Errors.First().Description}");
+                    throw new Exception($"Error seeding DB with user: {defaultUser} with errors: {result.Errors.First().Description}");
                 }   
             }
+            
+            // Adds Helge and Adrian since they are special
+            result = userManager.CreateAsync(a11, "LetM31n!").GetAwaiter().GetResult();
+            if (!result.Succeeded)
+            {
+                throw new Exception($"Error seeding DB with user: {a11} with errors: {result.Errors.First().Description}");
+            }   
+            
+            result =  userManager.CreateAsync(a12, "M32Want_Access!").GetAwaiter().GetResult();
+            if (!result.Succeeded)
+            {
+                throw new Exception($"Error seeding DB with user: {a12} with errors: {result.Errors.First().Description}");
+            }
+            
 
             var c1 = new Cheep() { CheepId = 1, AuthorId = a10.Id, Author = a10, Text = "They were married in Chicago, with old Smith, and was expected aboard every day; meantime, the two went past me.", TimeStamp = DateTime.Parse("2023-08-01 13:14:37") };
             var c2 = new Cheep() { CheepId = 2, AuthorId = a10.Id, Author = a10, Text = "And then, as he listened to all that''s left o'' twenty-one people.", TimeStamp = DateTime.Parse("2023-08-01 13:15:21") };
