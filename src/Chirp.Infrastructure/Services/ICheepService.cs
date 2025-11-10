@@ -14,6 +14,7 @@ namespace Chirp.Infrastructure.Services
         public List<CheepDTO> GetCheepsFromAuthorID(string authorID, int pagenum = 0);
         public List<CheepDTO> GetCheepsFromAuthorEmail(string authorEmail, int pagenum = 0);
         public string GetAuthorIDFromName(string authorName);
-        public void PostCheep(String text, string authorID);
+        public void PostCheep(string text, int authorID);
+        public void DeleteCheep(int cheepID);
     }
 }

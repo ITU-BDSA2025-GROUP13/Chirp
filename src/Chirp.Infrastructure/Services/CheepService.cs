@@ -18,7 +18,8 @@ namespace Chirp.Infrastructure.Services
                     new CheepDTO(
                         cheep.Text,
                         cheep.TimeStamp.ToString(),
-                        cheep.Author.UserName ?? DeletedUser
+                        cheep.Author.UserName ?? DeletedUser,
+                        cheep.CheepId
                     )
                 );
             }
@@ -56,7 +57,8 @@ namespace Chirp.Infrastructure.Services
                     new CheepDTO(
                         cheep.Text,
                         cheep.TimeStamp.ToString(),
-                        cheep.Author.UserName ?? DeletedUser
+                        cheep.Author.UserName ?? DeletedUser,
+                        cheep.CheepId
                     )
                 );
             }
@@ -83,6 +85,13 @@ namespace Chirp.Infrastructure.Services
                 TimeStamp = DateTime.Now
             };
             cheepRepo.InsertCheep(cheep).GetAwaiter().GetResult();
+        }
+
+        public void DeleteCheep(int cheepID)
+        {
+            Cheep? cheep = cheepRepo.GetCheepById(cheepID).GetAwaiter().GetResult();
+            if (cheep == null) throw new Exception($"No such cheep exists {cheepID}");
+            cheepRepo.DeleteCheep(cheep).GetAwaiter().GetResult();
         }
     }
 }
