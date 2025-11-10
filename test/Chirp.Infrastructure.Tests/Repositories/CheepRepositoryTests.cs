@@ -36,7 +36,7 @@ public class CheepRepositoryTests
         Assert.Equal(text3, result.First().Text);
         Assert.Equal(text1, result.Last().Text);
     }
-    
+
     [Fact]
     public async Task PostAsync_WhenCheepIsAdded_ItAppearsFirstInList()
     {
@@ -74,8 +74,8 @@ public class CheepRepositoryTests
         Assert.Equal(text2, result.First().Text);
         Assert.Equal(text1, result.Last().Text);
     }
-    
-    
+
+
     [Fact]
     public void CheepOver160Chars_ReturnsError()
     {

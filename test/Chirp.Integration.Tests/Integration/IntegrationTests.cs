@@ -131,7 +131,7 @@ public class IntegrationTests
 
         var mockCheepRepo = new Mock<ICheepRepository>();
         Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
-        
+
         userStore
             .Setup(c => c.FindByIdAsync("1", CancellationToken.None))
             .ReturnsAsync(author1);

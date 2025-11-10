@@ -31,7 +31,7 @@ public class CheepServiceTests
 
         Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
         UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
-        
+
         var service = new CheepService(mockCheepRepo.Object, userManager);
 
         var result = service.GetMainPageCheeps();
@@ -69,7 +69,7 @@ public class CheepServiceTests
             .Setup(c => c.FindByNameAsync(It.IsAny<string>(), CancellationToken.None))
             .ReturnsAsync(author2);
         UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
-        
+
         var service = new CheepService(mockCheepRepo.Object, userManager);
 
         var result = service.GetCheepsFromAuthorName(name2);
@@ -91,13 +91,13 @@ public class CheepServiceTests
         cheeps.Push(new Cheep { CheepId = 1, AuthorId = "1", Author = author1, Text = text1, TimeStamp = DateTime.Now.AddHours(-1) });
 
         var mockCheepRepo = new Mock<ICheepRepository>();
-        
+
         Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
         userStore
             .Setup(c => c.FindByIdAsync(It.IsAny<string>(), CancellationToken.None))
             .ReturnsAsync(author1);
         UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
-        
+
         mockCheepRepo
             .Setup(c => c.InsertCheep(It.IsAny<Cheep>()))
             .Callback<Cheep>(c => cheeps.Push(c))
