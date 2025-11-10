@@ -17,14 +17,13 @@ public class ChirpDbContextsTests
 
         await using var context = new ChirpDbContext(options);
 
-        var author = new Author { Name = name, Email = "test@test.com" };
-        context.Authors.Add(author);
+        var author = new ChirpUser { UserName = name, Email = "test@test.com" };
         await context.SaveChangesAsync();
 
         var cheep = new Cheep
         {
             Author = author,
-            AuthorId = author.AuthorId,
+            AuthorId = author.Id,
             Text = "Hello World",
             TimeStamp = DateTime.Now
         };
@@ -36,7 +35,7 @@ public class ChirpDbContextsTests
             .FirstOrDefaultAsync();
         Assert.NotNull(savedCheep);
         Assert.NotNull(savedCheep.Author);
-        Assert.Equal(name, savedCheep.Author.Name);
+        Assert.Equal(name, savedCheep.Author.UserName);
     }
 
     [Fact]
@@ -48,14 +47,13 @@ public class ChirpDbContextsTests
             .Options;
 
         await using var context = new ChirpDbContext(options);
-        var author = new Author { Name = name, Email = "alice@test.com" };
-        context.Authors.Add(author);
+        var author = new ChirpUser { UserName = name, Email = "alice@test.com" };
         await context.SaveChangesAsync();
 
         var cheep = new Cheep
         {
             Author = author,
-            AuthorId = author.AuthorId,
+            AuthorId = author.Id,
             Text = "Test message",
             TimeStamp = DateTime.Now
         };
@@ -67,6 +65,6 @@ public class ChirpDbContextsTests
             .ToListAsync();
 
         Assert.Single(result);
-        Assert.Equal(name, result.First().Author!.Name);
+        Assert.Equal(name, result.First().Author.UserName);
     }
 }

@@ -1,5 +1,7 @@
+using Chirp.Core.Models;
 using Chirp.Infrastructure.Services;
 using Chirp.Web.Pages;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
@@ -11,8 +13,9 @@ public class PublicModelTests
     public void PublicModel_WhenConstructed_InitializesEmptyCheepList()
     {
         var mockService = new Mock<ICheepService>();
-
-        var model = new PublicModel(mockService.Object);
+        Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
+        UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+        var model = new PublicModel(mockService.Object, userManager);
 
         Assert.NotNull(model.Cheeps);
         Assert.Empty(model.Cheeps);
@@ -29,7 +32,9 @@ public class PublicModelTests
         };
 
         mockService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>())).Returns(expectedCheeps);
-        var model = new PublicModel(mockService.Object);
+        Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
+        UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+        var model = new PublicModel(mockService.Object, userManager);
 
         var result = model.OnGet(1);
 
@@ -50,7 +55,9 @@ public class PublicModelTests
 
         mockService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>()))
            .Returns(expectedCheeps);
-        var model = new PublicModel(mockService.Object);
+        Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
+        UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+        var model = new PublicModel(mockService.Object, userManager);
 
         var result = model.OnGet(0);
 
@@ -65,7 +72,9 @@ public class PublicModelTests
     {
         var mockService = new Mock<ICheepService>();
         mockService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>())).Returns(new List<CheepDTO>());
-        var model = new PublicModel(mockService.Object);
+        Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
+        UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+        var model = new PublicModel(mockService.Object, userManager);
 
         var result = model.OnGet(5);
 
