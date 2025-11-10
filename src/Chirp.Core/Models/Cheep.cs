@@ -18,7 +18,7 @@ namespace Chirp.Core.Models
         /// <summary>
         /// Gets or sets the identifier of the user who authored this message.
         /// </summary>
-        public required int AuthorId { get; set; }
+        public required string AuthorId { get; set; }
 
         /// <summary>
         /// Gets or sets the user who authored this message.

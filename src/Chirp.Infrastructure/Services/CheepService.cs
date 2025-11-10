@@ -30,7 +30,7 @@ namespace Chirp.Infrastructure.Services
             if (author == null) return [];
             return ToDTO(cheepRepo.GetAuthorPage(author, pagenum).GetAwaiter().GetResult());
         }
-        public List<CheepDTO> GetCheepsFromAuthorID(int authorID, int pagenum = 0)
+        public List<CheepDTO> GetCheepsFromAuthorID(string authorID, int pagenum = 0)
         {
             ChirpUser? author = userManager.FindByIdAsync(authorID.ToString()).GetAwaiter().GetResult();
             if (author == null) return [];
@@ -63,16 +63,16 @@ namespace Chirp.Infrastructure.Services
             return DTOCheeps;
         }
 
-        public int GetAuthorIDFromName(string authorName)
+        public string GetAuthorIDFromName(string authorName)
         {
             ChirpUser? author = userManager.FindByNameAsync(authorName).GetAwaiter().GetResult();
             if (author == null) throw new Exception($"No such author exists with name {authorName}");
             return author.Id;
         }
 
-        public void PostCheep(String text, int authorID)
+        public void PostCheep(String text, string authorID)
         {
-            ChirpUser? author = userManager.FindByIdAsync(authorID.ToString()).GetAwaiter().GetResult();
+            ChirpUser? author = userManager.FindByIdAsync(authorID).GetAwaiter().GetResult();
             if (author == null) throw new Exception($"No such author exists {authorID}");
 
             Cheep cheep = new Cheep
