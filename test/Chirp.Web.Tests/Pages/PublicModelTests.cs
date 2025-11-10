@@ -27,8 +27,8 @@ public class PublicModelTests
         var mockService = new Mock<ICheepService>();
         var expectedCheeps = new List<CheepDTO>
         {
-            new("Public message 1", "2023-01-01", "User1"),
-            new("Public message 2", "2023-01-02", "User2")
+            new("Public message 1", "2023-01-01", "User1", 0),
+            new("Public message 2", "2023-01-02", "User2", 1)
         };
 
         mockService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>())).Returns(expectedCheeps);
@@ -50,7 +50,7 @@ public class PublicModelTests
         var mockService = new Mock<ICheepService>();
         var expectedCheeps = new List<CheepDTO>
         {
-            new(text, "2023-01-01", "User1")
+            new(text, "2023-01-01", "User1", 0)
         };
 
         mockService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>()))
