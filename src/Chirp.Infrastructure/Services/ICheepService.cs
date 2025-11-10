@@ -1,5 +1,4 @@
 namespace Chirp.Infrastructure.Services
-
 {
     public interface ICheepService
     {

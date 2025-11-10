@@ -1,6 +1,5 @@
 using Chirp.Core.Models;
 using Chirp.Infrastructure.Repositories;
-using Chirp.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace Chirp.Infrastructure.Services
