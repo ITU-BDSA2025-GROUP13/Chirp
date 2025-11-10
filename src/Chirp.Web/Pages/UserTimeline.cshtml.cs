@@ -12,6 +12,9 @@ public class UserTimelineModel : PageModel
     public bool HasNextPage { get; set; }
     public bool HasPreviousPage => CurrentPage > 0;
 
+    [BindProperty]
+    public int CheepIdForDeletion { get; set; }
+
     public UserTimelineModel(ICheepService service)
     {
         _service = service;
@@ -24,5 +27,11 @@ public class UserTimelineModel : PageModel
         Cheeps = _service.GetCheepsFromAuthorName(author, page);
         HasNextPage = _service.GetCheepsFromAuthorName(author, page + 1).Any();
         return Page();
+    }
+
+    public ActionResult OnPostDelete()
+    {
+        _service.DeleteCheep(CheepIdForDeletion);
+        return RedirectToPage("/Public");
     }
 }

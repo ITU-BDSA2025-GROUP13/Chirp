@@ -72,7 +72,7 @@ namespace Chirp.Infrastructure.Services
             return author.Id;
         }
 
-        public void PostCheep(String text, string authorID)
+        public void PostCheep(string text, string authorID)
         {
             ChirpUser? author = userManager.FindByIdAsync(authorID).GetAwaiter().GetResult();
             if (author == null) throw new Exception($"No such author exists {authorID}");

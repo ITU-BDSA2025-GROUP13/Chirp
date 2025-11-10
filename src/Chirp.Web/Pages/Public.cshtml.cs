@@ -14,9 +14,13 @@ public class PublicModel : PageModel
     public int CurrentPage { get; set; }
     public bool HasNextPage { get; set; }
     public bool HasPreviousPage => CurrentPage > 0;
+
     [BindProperty]
     public string? CheepMessage { get; set; }
     public string? ErrorMessage { get; set; }
+
+    [BindProperty]
+    public int CheepIdForDeletion { get; set; }
 
     public PublicModel(ICheepService service, UserManager<ChirpUser> userManager)
     {
@@ -74,6 +78,12 @@ public class PublicModel : PageModel
         }
 
         _service.PostCheep(CheepMessage, user.Id);
+        return RedirectToPage("/Public");
+    }
+
+    public ActionResult OnPostDelete()
+    {
+        _service.DeleteCheep(CheepIdForDeletion);
         return RedirectToPage("/Public");
     }
 }
