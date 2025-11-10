@@ -16,7 +16,7 @@ namespace Chirp.Infrastructure.Repositories
         #region INSERT
         public async Task InsertCheep(Cheep cheep)
         {
-            if (cheep.AuthorId <= 0) throw new ArgumentNullException($"Invalid ID {cheep.AuthorId}");
+            if (cheep.AuthorId == null) throw new ArgumentNullException($"AuthorID is null");
             dbContext.Cheeps.Add(cheep);
             await dbContext.SaveChangesAsync();
         }

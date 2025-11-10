@@ -10,7 +10,7 @@ namespace Chirp.Infrastructure.DatabaseContext
     /// Database context for the Chirp application, managing Users and Messages entities.
     /// </summary>
     /// <param name="options">Configuration options for the database context.</param>
-    public class ChirpDbContext : IdentityDbContext<ChirpUser, IdentityRole<int>, int>, IChirpDbContext
+    public class ChirpDbContext : IdentityDbContext<ChirpUser>, IChirpDbContext
     {
         public ChirpDbContext(DbContextOptions<ChirpDbContext> options) : base(options) { }
 
@@ -46,7 +46,7 @@ namespace Chirp.Infrastructure.DatabaseContext
             modelBuilder.Entity<ChirpUser>(entity =>
             {
                 entity.Property(u => u.Id).ValueGeneratedOnAdd();
-                entity.HasIndex(u => u.UserName);
+                entity.HasIndex(u => u.UserName).IsUnique();
             });
         }
     }
