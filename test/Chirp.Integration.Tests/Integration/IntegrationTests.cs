@@ -3,7 +3,7 @@ using Chirp.Infrastructure.DatabaseContext;
 using Chirp.Infrastructure.Repositories;
 using Chirp.Infrastructure.Services;
 using Chirp.Web.Pages;
-
+using Microsoft.AspNetCore.Identity;
 using MockQueryable.Moq;
 using Moq;
 
@@ -12,7 +12,7 @@ namespace Chirp.Integration.Tests.Integration;
 public class IntegrationTests
 {
     private ICheepRepository? _cheepRepository;
-    private IAuthorRepository? _authorRepository;
+    private UserManager<ChirpUser> _userManager;
     private ICheepService? _cheepService;
 
     readonly string _text1 = "Oldest cheep";
@@ -30,28 +30,35 @@ public class IntegrationTests
 
     private void IntegrationTestsServiceAndRepo()
     {
-        var author = new Author { AuthorId = 1, Name = _name1, Email = "test@test.com" };
-        var authors = new List<Author>
+        string authorID = "1";
+        var author = new ChirpUser { Id = authorID, UserName = _name1, Email = "test@test.com" };
+        var authors = new List<ChirpUser>
         {
             author
         };
 
         cheeps = new List<Cheep>
         {
-            new Cheep{ CheepId = 3, AuthorId = 1, Author = author, Text = _text3, TimeStamp = DateTime.Now },
-            new Cheep{ CheepId = 2, AuthorId = 1, Author = author, Text = _text2, TimeStamp = DateTime.Now.AddHours(-1) },
-            new Cheep{ CheepId = 1, AuthorId = 1, Author = author, Text = _text1, TimeStamp = DateTime.Now.AddHours(-2) }
+            new Cheep{ CheepId = 3, AuthorId = authorID, Author = author, Text = _text3, TimeStamp = DateTime.Now },
+            new Cheep{ CheepId = 2, AuthorId = authorID, Author = author, Text = _text2, TimeStamp = DateTime.Now.AddHours(-1) },
+            new Cheep{ CheepId = 1, AuthorId = authorID, Author = author, Text = _text1, TimeStamp = DateTime.Now.AddHours(-2) }
         };
 
         author.Cheeps = cheeps;
         var mockContext = new Mock<IChirpDbContext>();
         var mockCheepSet = cheeps.BuildMockDbSet();
-        var mockAuthorSet = authors.BuildMockDbSet();
-        mockContext.Setup(c => c.Authors).Returns(mockAuthorSet.Object);
         mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
         _cheepRepository = new CheepRepository(mockContext.Object);
-        _authorRepository = new AuthorRepository(mockContext.Object);
-        _cheepService = new CheepService(_cheepRepository, _authorRepository);
+        Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
+        userStore
+            .Setup(x => x.FindByIdAsync(authorID, CancellationToken.None))
+            .ReturnsAsync(author);
+        UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+        userStore
+            .Setup(x => x.FindByNameAsync(_name1, CancellationToken.None))
+            .ReturnsAsync(author);
+        _userManager = userManager;
+        _cheepService = new CheepService(_cheepRepository, userManager);
     }
 
     [Fact]
@@ -82,64 +89,64 @@ public class IntegrationTests
             throw new InvalidOperationException("cheep service is not available.");
         }
         var result = _cheepService.GetCheepsFromAuthorName(_name1);
-        Assert.Equal(3, result.Count());
+        Assert.Equal(3, result.Count);
         Assert.Equal(_text3, result.First().Text);
         Assert.Equal(_text1, result.Last().Text);
     }
 
     private void IntegrationTestsUIAndService()
     {
-        var author1 = new Author { AuthorId = 1, Name = _name1, Email = "test1@test.com" };
-        var author2 = new Author { AuthorId = 2, Name = _name2, Email = "test2@test.com" };
-        var karlFortnite = new Author { AuthorId = 3, Name = _name3, Email = "karl@fortnite.com" };
-        var authors = new List<Author> { author1, author2, karlFortnite };
+        var author1 = new ChirpUser { Id = "1", UserName = _name1, Email = "test1@test.com" };
+        var author2 = new ChirpUser { Id = "2", UserName = _name2, Email = "test2@test.com" };
+        var karlFortnite = new ChirpUser { Id = "3", UserName = _name3, Email = "karl@fortnite.com" };
+        var authors = new List<ChirpUser> { author1, author2, karlFortnite };
 
         var cheeps = new Stack<Cheep>();
-        cheeps.Push(new Cheep { CheepId = 1, AuthorId = 2, Author = author2, Text = _text1, TimeStamp = DateTime.Now.AddHours(-5) });
-        cheeps.Push(new Cheep { CheepId = 2, AuthorId = 2, Author = author2, Text = _text2, TimeStamp = DateTime.Now.AddHours(-4) });
-        cheeps.Push(new Cheep { CheepId = 3, AuthorId = 2, Author = author2, Text = _text3, TimeStamp = DateTime.Now.AddHours(-3) });
-        cheeps.Push(new Cheep { CheepId = 4, AuthorId = 1, Author = author1, Text = _text4, TimeStamp = DateTime.Now.AddHours(-2) });
-        cheeps.Push(new Cheep { CheepId = 5, AuthorId = 1, Author = author1, Text = _text5, TimeStamp = DateTime.Now.AddHours(-1) });
+        cheeps.Push(new Cheep { CheepId = 1, AuthorId = "2", Author = author2, Text = _text1, TimeStamp = DateTime.Now.AddHours(-5) });
+        cheeps.Push(new Cheep { CheepId = 2, AuthorId = "2", Author = author2, Text = _text2, TimeStamp = DateTime.Now.AddHours(-4) });
+        cheeps.Push(new Cheep { CheepId = 3, AuthorId = "2", Author = author2, Text = _text3, TimeStamp = DateTime.Now.AddHours(-3) });
+        cheeps.Push(new Cheep { CheepId = 4, AuthorId = "1", Author = author1, Text = _text4, TimeStamp = DateTime.Now.AddHours(-2) });
+        cheeps.Push(new Cheep { CheepId = 5, AuthorId = "1", Author = author1, Text = _text5, TimeStamp = DateTime.Now.AddHours(-1) });
 
         List<Cheep> stackToList() => cheeps.ToList();
 
-        var author2_author = new Author
+        var author2_author = new ChirpUser
         {
-            AuthorId = author2.AuthorId,
-            Name = author2.Name,
+            Id = author2.Id,
+            UserName = author2.UserName,
             Email = author2.Email,
             Cheeps = stackToList()
         };
 
-        var karlFortniteWithCheeps = new Author
+        var karlFortniteWithCheeps = new ChirpUser
         {
-            AuthorId = karlFortnite.AuthorId,
-            Name = karlFortnite.Name,
+            Id = karlFortnite.Id,
+            UserName = karlFortnite.UserName,
             Email = karlFortnite.Email,
             Cheeps = new List<Cheep>
             {
-                new Cheep { CheepId = 100, AuthorId = 3, Author = karlFortnite, Text = _text6, TimeStamp = DateTime.Now }
+                new Cheep { CheepId = 100, AuthorId = "3", Author = karlFortnite, Text = _text6, TimeStamp = DateTime.Now }
             }
         };
 
         var mockCheepRepo = new Mock<ICheepRepository>();
-        var mockAuthorRepo = new Mock<IAuthorRepository>();
+        Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
+        
+        userStore
+            .Setup(c => c.FindByIdAsync("1", CancellationToken.None))
+            .ReturnsAsync(author1);
 
-        mockAuthorRepo
-            .Setup(c => c.GetAuthorByID(1))
-            .Returns(author1);
+        userStore
+            .Setup(c => c.FindByIdAsync("2", CancellationToken.None))
+            .ReturnsAsync(author2_author);
 
-        mockAuthorRepo
-            .Setup(c => c.GetAuthorByID(2))
-            .Returns(author2_author);
+        userStore
+            .Setup(c => c.FindByIdAsync("3", CancellationToken.None))
+            .ReturnsAsync(karlFortniteWithCheeps);
 
-        mockAuthorRepo
-            .Setup(c => c.GetAuthorByID(3))
-            .Returns(karlFortniteWithCheeps);
-
-        mockAuthorRepo
-            .Setup(c => c.GetAuthorByName(_name3))
-            .Returns(karlFortniteWithCheeps);
+        userStore
+            .Setup(c => c.FindByNameAsync(_name3, CancellationToken.None))
+            .ReturnsAsync(karlFortniteWithCheeps);
 
         mockCheepRepo
             .Setup(c => c.InsertCheep(It.IsAny<Cheep>()))
@@ -151,14 +158,15 @@ public class IntegrationTests
             .ReturnsAsync(() => stackToList());
 
         mockCheepRepo
-            .Setup(c => c.GetAuthorPage(It.IsAny<Author>(), It.IsAny<int>()))
+            .Setup(c => c.GetAuthorPage(It.IsAny<ChirpUser>(), It.IsAny<int>()))
             .ReturnsAsync(() => stackToList());
 
         mockCheepRepo
             .Setup(c => c.GetAuthorPage(karlFortniteWithCheeps, It.IsAny<int>()))
             .ReturnsAsync(() => karlFortniteWithCheeps.Cheeps);
 
-        _cheepService = new CheepService(mockCheepRepo.Object, mockAuthorRepo.Object);
+        UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+        _cheepService = new CheepService(mockCheepRepo.Object, userManager);
     }
 
     [Fact]
@@ -187,13 +195,13 @@ public class IntegrationTests
             throw new InvalidOperationException("cheep service is not available.");
         }
 
-        var pageModel = new PublicModel(_cheepService);
+        var pageModel = new PublicModel(_cheepService, _userManager);
 
         pageModel.OnGet(0);
         var oldLength = pageModel.Cheeps.Count;
         var oldFirstCheep = pageModel.Cheeps.FirstOrDefault();
 
-        _cheepService.PostCheep(text, 1);
+        _cheepService.PostCheep(text, "1");
 
         pageModel.OnGet(0);
         var newLength = pageModel.Cheeps.Count;
@@ -216,13 +224,13 @@ public class IntegrationTests
             throw new InvalidOperationException("cheep service is not available.");
         }
 
-        var pageModel = new PublicModel(_cheepService);
+        var pageModel = new PublicModel(_cheepService, _userManager);
 
         pageModel.OnGet(0);
         var oldLength = pageModel.Cheeps.Count;
         var oldFirstCheep = pageModel.Cheeps.FirstOrDefault();
 
-        _cheepService.PostCheep(text, 1);
+        _cheepService.PostCheep(text, "1");
 
         pageModel.OnGet(0);
         var newLength = pageModel.Cheeps.Count;
