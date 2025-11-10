@@ -45,6 +45,20 @@ namespace Chirp.Infrastructure.Repositories
                 .Take(_readLimit)
                 .ToListAsync();
         }
+
+        public Task DeleteCheep(Cheep cheep)
+        {
+            dbContext.Cheeps.Attach(cheep);
+            dbContext.Cheeps.Remove(cheep);
+            return dbContext.SaveChangesAsync();
+        }
+
+        public Task<Cheep?> GetCheepById(int cheepID)
+        {
+            return dbContext.Cheeps
+                .Include(m => m.Author)
+                .FirstOrDefaultAsync(c => c.CheepId == cheepID);
+        }
         #endregion
     }
 }

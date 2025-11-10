@@ -25,5 +25,18 @@ namespace Chirp.Infrastructure.Repositories
         /// <exception cref="Exception">Thrown when the author is not found in the database.</exception>
         Task InsertCheep(Cheep cheep);
 
+        /// <summary>
+        /// Deletes a cheep from the database asynchronously.
+        /// </summary>
+        /// <param name="cheep"></param>
+        /// <returns></returns>
+        Task DeleteCheep(Cheep cheep);
+
+        /// <summary>
+        /// Retrieves a cheep by its ID asynchronously.
+        /// </summary>
+        /// <param name="cheepID">The ID of the cheep to retrieve.</param>
+        /// <returns>A task containing the cheep if found, or null if not found.</returns>
+        Task<Cheep?> GetCheepById(int cheepID);
     }
 }
