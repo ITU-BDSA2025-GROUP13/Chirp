@@ -75,7 +75,6 @@ public class CheepRepositoryTests
         Assert.Equal(text1, result.Last().Text);
     }
 
-
     [Fact]
     public void CheepOver160Chars_ReturnsError()
     {

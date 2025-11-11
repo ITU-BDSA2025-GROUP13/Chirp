@@ -16,6 +16,7 @@ public class PublicModel : PageModel
     public bool HasPreviousPage => CurrentPage > 0;
     [BindProperty]
     public string? CheepMessage { get; set; }
+    public string? ErrorMessage { get; set; }
 
     public PublicModel(ICheepService service, UserManager<ChirpUser> userManager)
     {
@@ -34,11 +35,44 @@ public class PublicModel : PageModel
 
     public ActionResult OnPost()
     {
-        if (CheepMessage == null) return RedirectToPage("/Public");
+        if (CheepMessage == null)
+        {
+            ErrorMessage = "Cheep message cannot be empty.";
+            CurrentPage = 0;
+            Cheeps = _service.GetMainPageCheeps();
+            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            return Page();
+        }
+        
+        if (CheepMessage.Length > 160)
+        {
+            ErrorMessage = "Cheep message cannot be longer than 160 characters.";
+            CurrentPage = 0;
+            Cheeps = _service.GetMainPageCheeps();
+            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            return Page();
+        }
+        
         string? name = User.Identity?.Name;
-        if (name == null) return RedirectToPage("/Public"); //TODO: Maybe error message for user here? (And below)
+        if (name == null)
+        {
+            ErrorMessage = "You must be logged in to post a cheep.";
+            CurrentPage = 0;
+            Cheeps = _service.GetMainPageCheeps();
+            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            return Page();
+        }
+        
         ChirpUser? user = _userManager.FindByNameAsync(name).GetAwaiter().GetResult();
-        if (user == null) return RedirectToPage("/Public");
+        if (user == null)
+        {
+            ErrorMessage = "User not found!";
+            CurrentPage = 0;
+            Cheeps = _service.GetMainPageCheeps();
+            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            return Page();
+        }
+        
         _service.PostCheep(CheepMessage, user.Id);
         return RedirectToPage("/Public");
     }
