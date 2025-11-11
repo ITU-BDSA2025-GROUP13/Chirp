@@ -26,7 +26,7 @@ namespace Chirp.Web
             {
                 options.SignIn.RequireConfirmedAccount = false; // TODO: Consider enabling email verification
                 options.SignIn.RequireConfirmedEmail = false;
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ0123456789-._@+/ ";
             })
             .AddEntityFrameworkStores<ChirpDbContext>();
 

@@ -9,6 +9,10 @@
     @if (User.Identity != null && User.Identity.IsAuthenticated)
     {
         <form method="post">
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div style="color: red; margin-bottom: 10px;">@Model.ErrorMessage</div>
+            }
             <textarea asp-for="CheepMessage" required placeholder="Post a Cheep!" rows="4" style="width: 100%; box-sizing: border-box"></textarea>
             <br>
             <input type="submit" value="Post">
