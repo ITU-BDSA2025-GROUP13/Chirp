@@ -43,7 +43,7 @@ public class PublicModel : PageModel
             HasNextPage = _service.GetMainPageCheeps(1).Any();
             return Page();
         }
-        
+
         if (CheepMessage.Length > 160)
         {
             ErrorMessage = "Cheep message cannot be longer than 160 characters.";
@@ -52,7 +52,7 @@ public class PublicModel : PageModel
             HasNextPage = _service.GetMainPageCheeps(1).Any();
             return Page();
         }
-        
+
         string? name = User.Identity?.Name;
         if (name == null)
         {
@@ -62,7 +62,7 @@ public class PublicModel : PageModel
             HasNextPage = _service.GetMainPageCheeps(1).Any();
             return Page();
         }
-        
+
         ChirpUser? user = _userManager.FindByNameAsync(name).GetAwaiter().GetResult();
         if (user == null)
         {
@@ -72,7 +72,7 @@ public class PublicModel : PageModel
             HasNextPage = _service.GetMainPageCheeps(1).Any();
             return Page();
         }
-        
+
         _service.PostCheep(CheepMessage, user.Id);
         return RedirectToPage("/Public");
     }
