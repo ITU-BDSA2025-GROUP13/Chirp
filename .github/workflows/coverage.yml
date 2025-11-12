@@ -59,7 +59,12 @@ jobs:
         run: |
           dotnet tool install --global dotnet-reportgenerator-globaltool || true
           export PATH="$PATH:$HOME/.dotnet/tools"
-          reportgenerator -reports:"**/TestResults/*/coverage.cobertura.xml" -targetdir:"CoverageReport" -reporttypes:"HtmlInline;TextSummary" -assemblyfilters:"-*Tests" -filefilters:"-**/Migrations/*;-**/DbInitializer.cs;-**.cshtml;-**/Areas/Identity/Pages/*"
+          # Ignore pages tested by playwright. We have no way to generate a report with playwright,
+          # so it makes no sense to include this in the report as it spuriously lowers coverage
+          # We do have some unit tests for methods in cshtml.cs, but they are difficult to implement with WebFactory
+          reportgenerator -reports:"**/TestResults/*/coverage.cobertura.xml" -targetdir:"CoverageReport" \
+            -reporttypes:"HtmlInline;TextSummary" -assemblyfilters:"-*Tests" \
+            -filefilters:"-**/Migrations/*;-**/DbInitializer.cs;-**.cshtml;-**/Areas/Identity/Pages/*;-**/Areas/Pages/*"
 
       - name: Upload Coverage Report
         if: always()
