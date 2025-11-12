@@ -15,7 +15,7 @@ namespace Chirp.Infrastructure.Services
         /// <param name="pagenum"></param>
         /// <returns>The cheeps associated with an author, or a emptyList if author doesn't exist</returns>
         public List<CheepDTO> GetCheepsFromAuthorName(string authorName, int pagenum = 0);
-        
+
         public List<CheepDTO> GetCheepsFromAuthorID(string authorID, int pagenum = 0);
         public List<CheepDTO> GetCheepsFromAuthorEmail(string authorEmail, int pagenum = 0);
         public string GetAuthorIDFromName(string authorName);

@@ -118,10 +118,10 @@ public class CheepRepositoryTests
         var mockContext = new Mock<IChirpDbContext>();
         var mockCheepSet = cheeps.BuildMockDbSet();
         mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
-        
+
         var repository = new CheepRepository(mockContext.Object);
 
-        Cheep? result = await repository.GetCheepById(0); 
+        Cheep? result = await repository.GetCheepById(0);
         Assert.Equivalent(result, cheepInQuestion);
     }
 
@@ -137,15 +137,15 @@ public class CheepRepositoryTests
         var mockCheepSet = cheeps.BuildMockDbSet();
         mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
         mockCheepSet.Setup(d => d.Remove(It.IsAny<Cheep>())).Callback<Cheep>(c => cheeps.Remove(c));
-        
+
         var repository = new CheepRepository(mockContext.Object);
 
-        Cheep? resultBeforeDeletion = await repository.GetCheepById(0); 
+        Cheep? resultBeforeDeletion = await repository.GetCheepById(0);
         Assert.Equivalent(resultBeforeDeletion, cheep);
 
         await repository.DeleteCheep(cheep);
 
-        Cheep? resultAfterDeletion = await repository.GetCheepById(0); 
+        Cheep? resultAfterDeletion = await repository.GetCheepById(0);
         Assert.Null(resultAfterDeletion);
     }
 }
