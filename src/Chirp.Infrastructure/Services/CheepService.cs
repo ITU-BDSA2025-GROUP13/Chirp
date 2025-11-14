@@ -92,5 +92,10 @@ namespace Chirp.Infrastructure.Services
             if (cheep == null) throw new Exception($"No such cheep exists {cheepID}");
             cheepRepo.DeleteCheep(cheep).GetAwaiter().GetResult();
         }
+
+        public void EditCheep(int cheepId, string newText)
+        {
+            cheepRepo.EditCheepById(cheepId, newText).GetAwaiter().GetResult();
+        }
     }
 }
