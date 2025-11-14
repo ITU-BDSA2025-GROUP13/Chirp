@@ -16,6 +16,7 @@ namespace Chirp.Infrastructure.DatabaseContext
         /// Gets or sets the collection of messages in the database.
         /// </summary>
         public DbSet<Cheep> Cheeps { get; set; } = null!;
+        public DbSet<ChirpUser> ChirpUsers { get; set; } = null!;
 
         /// <summary>
         /// Configures the database schema and entity relationships.
@@ -50,6 +51,18 @@ namespace Chirp.Infrastructure.DatabaseContext
             {
                 entity.Property(u => u.Id).ValueGeneratedOnAdd();
                 entity.HasIndex(u => u.UserName).IsUnique();
+                entity.HasMany(u => u.FollowsList).WithMany(u => u.FollowedByList)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "UserRelations",
+                        j => j.HasOne<ChirpUser>()
+                            .WithMany()
+                            .HasForeignKey("ChirpUserId")
+                            .OnDelete(DeleteBehavior.NoAction),
+                        j => j.HasOne<ChirpUser>()
+                            .WithMany()
+                            .HasForeignKey("ChirpUserId")
+                            .OnDelete(DeleteBehavior.NoAction)
+                    );
             });
         }
     }
