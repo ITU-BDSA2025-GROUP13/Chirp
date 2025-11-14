@@ -117,4 +117,29 @@ public class CheepServiceTests
         Assert.Equal(text2, result.First().Text);
         Assert.Equal(text1, result.Last().Text);
     }
+
+    [Fact]
+    public void EditCheep_WithValidCheepId_EditsCheepMessage()
+    {
+        string text1 = "original cheep";
+        string text2 = "edited cheep";
+
+        var author1 = new ChirpUser { Id = "1", UserName = "TestUser1", Email = "test1@test.com" };
+
+        var cheeps = new List<Cheep>();
+        var cheep = new Cheep { CheepId = 1, AuthorId = "1", Author = author1, Text = text1, TimeStamp = DateTime.Now.AddHours(-1) };
+        cheeps.Add(cheep);
+
+        var mockCheepRepo = new Mock<ICheepRepository>();
+
+        Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
+        UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+
+        mockCheepRepo
+            .Setup(c => c.EditCheepById(It.IsAny<int>(), It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
+
+        var service = new CheepService(mockCheepRepo.Object, userManager);
+        service.EditCheep(cheep.CheepId, text2);
+    }
 }

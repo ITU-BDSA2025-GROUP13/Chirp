@@ -24,19 +24,25 @@ namespace Chirp.Infrastructure.Repositories
         /// <returns>A task representing the asynchronous operation.</returns>
         /// <exception cref="Exception">Thrown when the author is not found in the database.</exception>
         Task InsertCheep(Cheep cheep);
-
         /// <summary>
         /// Deletes a cheep from the database asynchronously.
         /// </summary>
         /// <param name="cheep"></param>
         /// <returns></returns>
         Task DeleteCheep(Cheep cheep);
-
         /// <summary>
         /// Retrieves a cheep by its ID asynchronously.
         /// </summary>
         /// <param name="cheepID">The ID of the cheep to retrieve.</param>
         /// <returns>A task containing the cheep if found, or null if not found.</returns>
         Task<Cheep?> GetCheepById(int cheepID);
+        /// <summary>
+        /// Edit a cheep matching the id
+        /// </summary>
+        /// <param name="cheepId">The cheepId of the post to edit.</param>
+        /// <param name="newTest">The text to replace the old text with.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="Exception">Thrown when the cheepId does not match any existing cheep in the database.</exception>
+        Task EditCheepById(int cheepId, string newText);
     }
 }

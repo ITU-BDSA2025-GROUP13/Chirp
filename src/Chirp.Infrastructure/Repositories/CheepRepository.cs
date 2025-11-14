@@ -23,6 +23,20 @@ namespace Chirp.Infrastructure.Repositories
         #endregion
 
         #region UPDATE
+        public async Task EditCheepById(int cheepId, string newText)
+        {
+            Cheep? cheep = await dbContext.Cheeps
+                .FirstOrDefaultAsync(m => m.CheepId == cheepId);
+
+            if (cheep == null)
+            {
+                throw new DbUpdateException("Failed to find cheep");
+            }
+
+            cheep.Text = newText;
+            dbContext.Cheeps.Update(cheep);
+            await dbContext.SaveChangesAsync();
+        }
         #endregion
 
         #region GET
