@@ -1,4 +1,4 @@
 namespace Chirp.Infrastructure.Services
 {
-    public record CheepDTO(string Text, string DatePosted, string AuthorName, int CheepId, List<CheepDTO> Replies);
+    public record CheepDTO(string Text, string DatePosted, string AuthorName, int CheepId, Boolean isReply, List<CheepDTO> Replies);
 }

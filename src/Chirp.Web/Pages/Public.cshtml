@@ -27,43 +27,55 @@
         <ul id="messagelist" class="cheeps">
             @foreach (CheepDTO cheep in Model.Cheeps)
             {
-                <li>
-                    <flex-container style="display:flex; flex-direction: column; height: 100%;">
-                        <div style="display: flex; flex-direction: row; justify-content: space-between">
-                            <strong><a href="/user/@cheep.AuthorName">@cheep.AuthorName</a></strong>
-                            @if (User.Identity != null && User.Identity.IsAuthenticated)
-                            {
-                                if (cheep.AuthorName == User.Identity.Name)
+                @if (!cheep.isReply)
+                {
+                    <li>
+                        <flex-container style="display:flex; flex-direction: column; height: 100%;">
+                            <div style="display: flex; flex-direction: row; justify-content: space-between">
+                                <strong><a href="/user/@cheep.AuthorName">@cheep.AuthorName</a></strong>
+                                @if (User.Identity != null && User.Identity.IsAuthenticated)
                                 {
-                                    <form method="post" asp-page-handler="Delete" style="display: flex">
-                                        <input asp-for="CheepIdForDeletion" type="hidden" value="@cheep.CheepId">
-                                        <input type="submit" value="Delete" style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer;">
-                                    </form>
+                                    if (cheep.AuthorName == User.Identity.Name)
+                                    {
+                                        <form method="post" asp-page-handler="Delete" style="display: flex">
+                                            <input asp-for="CheepIdForDeletion" type="hidden" value="@cheep.CheepId">
+                                            <input type="submit" value="Delete" style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer;">
+                                        </form>
+                                    }
                                 }
-                            }
+                            </div>
+                            <div>@cheep.Text</div>
+                            <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                                <small>@cheep.DatePosted</small>
+                                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                {
+                                    <button class="textButton" onclick="ReplyToCheep(@cheep.CheepId)">Reply</button>
+                                }
+                            </div>
+                        </flex-container>
+                        <div id="reply-@cheep.CheepId" style="display: none;">
+                            <form method="post" asp-page-handler="Reply">
+                                <input asp-for="Reply.CheepID" type="hidden" value="@cheep.CheepId">
+                                <textarea required placeholder="Reply.." asp-for="Reply.Reply"></textarea>
+                                <input type="submit" value="Post">
+                            </form>
                         </div>
-                        <div>@cheep.Text</div>
-                        <div style="display: flex; flex-direction: row; justify-content: space-between;">
-                            <small>@cheep.DatePosted</small>
-                            @if (User.Identity != null && User.Identity.IsAuthenticated)
-                            {
-                                <button class="textButton" onclick="ReplyToCheep(@cheep.CheepId)">Reply</button>
-                            }
-                        </div>
-                    </flex-container>
-                    <div id="reply-@cheep.CheepId" style="display: none;">
-                        <form method="post" asp-page-handler="Reply">
-                            <input asp-for="Reply.CheepID" type="hidden" value="@cheep.CheepId">
-                            <textarea required placeholder="Reply.." asp-for="Reply.Reply"></textarea>
-                            <input type="submit" value="Post">
-                        </form>
-                    </div>
-                    @foreach (CheepDTO reply in cheep.Replies)
-                    {
-                        <div>@reply.Text</div>   
-                    }
-                    
-                </li>
+                        @if (cheep.Replies.Count > 0)
+                        {
+                            <hr>  
+                        } 
+                        @foreach (CheepDTO reply in cheep.Replies)
+                        {
+                            <div style="display: flex; flex-direction: row; justify-content: space-between">
+                                <div style="display: flex; flex-direction: row;">
+                                    <strong><a href="/user/@reply.AuthorName">@reply.AuthorName: </a></strong>
+                                    <div>@reply.Text</div>
+                                </div>
+                                <small>@cheep.DatePosted</small>
+                            </div>
+                        }
+                    </li>
+                }
             }
         </ul>
     }

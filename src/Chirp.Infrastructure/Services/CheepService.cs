@@ -46,6 +46,7 @@ namespace Chirp.Infrastructure.Services
                         cheep.TimeStamp.ToString(), 
                         cheep.Author.UserName ?? DeletedUser, 
                         cheep.CheepId, 
+                        cheep.ParentCheep != null,
                         ToDTO(cheep.Replies)
                     )
                 );
