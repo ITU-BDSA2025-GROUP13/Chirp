@@ -10,6 +10,7 @@ namespace Chirp.Infrastructure.DatabaseContext
         /// Gets or sets the collection of messages in the database.
         /// </summary>
         DbSet<Cheep> Cheeps { get; set; }
+        DbSet<ChirpUser> ChirpUsers { get; set; }
 
         /// <summary>
         /// Saves changes to the database.
