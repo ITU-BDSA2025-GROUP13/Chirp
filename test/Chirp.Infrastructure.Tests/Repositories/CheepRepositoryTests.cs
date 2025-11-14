@@ -1,5 +1,6 @@
 ﻿using Chirp.Core.Models;
 
+using Microsoft.AspNetCore.Identity;
 using Chirp.Infrastructure.DatabaseContext;
 using Chirp.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -147,5 +148,59 @@ public class CheepRepositoryTests
 
         Cheep? resultAfterDeletion = await repository.GetCheepById(0);
         Assert.Null(resultAfterDeletion);
+    }
+
+    [Fact]
+    public async Task EditCheep_WhenCalledCorrectly_ModifiesCheep()
+    {
+        string originalText = "Original message";
+        string editedText = "Edited message";
+
+        var author = new ChirpUser { Id = "1", UserName = "TestUser", Email = "test@test.com" };
+        var cheep = new Cheep { CheepId = 1, AuthorId = "1", Author = author, Text = originalText, TimeStamp = DateTime.Now.AddHours(-2) };
+        var authors = new List<ChirpUser> { author };
+        var cheeps = new List<Cheep> { cheep };
+
+        var mockContext = new Mock<IChirpDbContext>();
+
+        var mockAuthorSet = authors.BuildMockDbSet();
+
+        var mockCheepSet = cheeps.BuildMockDbSet();
+
+        mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
+
+        var cheepRepo = new CheepRepository(mockContext.Object);
+
+        await cheepRepo.EditCheepById(cheep.CheepId, editedText);
+
+        var result = await cheepRepo.GetMainPage(0);
+
+        Assert.Equal(result.First().Text, editedText);
+    }
+
+    [Fact]
+    public void EditCheep_WhenCalledWithNonexistentCheepId_Throws()
+    {
+        string originalText = "Original message";
+        string editedText = "Edited message";
+        int existingCheepId = 1;
+        int nonexistentCheepId = 2;
+
+        var author = new ChirpUser { Id = "1", UserName = "TestUser", Email = "test@test.com" };
+        var cheep = new Cheep { CheepId = existingCheepId, AuthorId = "1", Author = author, Text = originalText, TimeStamp = DateTime.Now.AddHours(-2) };
+        var authors = new List<ChirpUser> { author };
+        var cheeps = new List<Cheep> { cheep };
+
+        var mockContext = new Mock<IChirpDbContext>();
+
+        var mockAuthorSet = authors.BuildMockDbSet();
+
+        var mockCheepSet = cheeps.BuildMockDbSet();
+
+        mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
+
+        var cheepRepo = new CheepRepository(mockContext.Object);
+
+        Assert.Throws<DbUpdateException>(cheepRepo.EditCheepById(nonexistentCheepId, editedText).GetAwaiter().GetResult);
     }
 }
