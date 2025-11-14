@@ -18,9 +18,11 @@ public class PublicModel : PageModel
     [BindProperty]
     public string? CheepMessage { get; set; }
     public string? ErrorMessage { get; set; }
-
     [BindProperty]
     public int CheepIdForDeletion { get; set; }
+
+    [BindProperty] 
+    public CheepReply Reply { get; set; }
 
     public PublicModel(ICheepService service, UserManager<ChirpUser> userManager)
     {
@@ -86,4 +88,22 @@ public class PublicModel : PageModel
         _service.DeleteCheep(CheepIdForDeletion);
         return RedirectToPage("/Public");
     }
+
+    public ActionResult OnPostReply()
+    {
+        Console.WriteLine($"{Reply.CheepID}: {Reply.Reply}");
+        _service.AddReplyToCheep(Reply.CheepID, Reply.Reply);
+        return RedirectToPage("/Public");    
+    }
+    
+}
+
+/// <summary>
+/// <param name="CheepID">The ID of the Cheep that's replied to</param>
+/// <param name="Reply">The Reply to the Cheep</param>
+/// </summary>
+public class CheepReply
+{
+    public int CheepID  { get; set; }
+    public string Reply { get; set; }
 }
