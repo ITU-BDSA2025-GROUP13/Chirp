@@ -43,12 +43,12 @@
         ">
             @if (Model.HasPreviousPage)
             {
-                <a href="/user/@routeName/?page=@(Model.CurrentPage - 1)" style="font-size: 20px;">&larr;</a>
+                <a href="/user/@routeName/?currentpage=@(Model.CurrentPage - 1)" style="font-size: 20px;">&larr;</a>
             }
             <span style="font-size: 16px;">Page @Model.CurrentPage</span>
             @if (Model.HasNextPage)
             {
-                <a href="/user/@routeName/?page=@(Model.CurrentPage + 1)" style="font-size: 20px;">&rarr;</a>
+                <a href="/user/@routeName/?currentpage=@(Model.CurrentPage + 1)" style="font-size: 20px;">&rarr;</a>
             }
         </div>
     }
