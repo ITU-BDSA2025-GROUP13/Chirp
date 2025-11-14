@@ -178,7 +178,9 @@ public class IntegrationTests
             throw new InvalidOperationException("cheep service is not available.");
         }
         var pageModel = new UserTimelineModel(_cheepService);
-        pageModel.OnGet(_name3, 0);
+        pageModel.Author = _name3;
+        pageModel.CurrentPage = 0;
+        pageModel.OnGet();
         Assert.NotNull(pageModel.Cheeps);
         Assert.Single(pageModel.Cheeps);
         Assert.Equal(_name3, pageModel.Cheeps[0].AuthorName);
@@ -197,13 +199,15 @@ public class IntegrationTests
 
         var pageModel = new PublicModel(_cheepService, _userManager);
 
-        pageModel.OnGet(0);
+        pageModel.CurrentPage = 0;
+        pageModel.OnGet();
         var oldLength = pageModel.Cheeps.Count;
         var oldFirstCheep = pageModel.Cheeps.FirstOrDefault();
 
         _cheepService.PostCheep(text, "1");
 
-        pageModel.OnGet(0);
+        pageModel.CurrentPage = 0;
+        pageModel.OnGet();
         var newLength = pageModel.Cheeps.Count;
         var newFirstCheep = pageModel.Cheeps.First();
 
@@ -226,13 +230,15 @@ public class IntegrationTests
 
         var pageModel = new PublicModel(_cheepService, _userManager);
 
-        pageModel.OnGet(0);
+        pageModel.CurrentPage = 0;
+        pageModel.OnGet();
         var oldLength = pageModel.Cheeps.Count;
         var oldFirstCheep = pageModel.Cheeps.FirstOrDefault();
 
         _cheepService.PostCheep(text, "1");
 
-        pageModel.OnGet(0);
+        pageModel.CurrentPage = 0;
+        pageModel.OnGet();
         var newLength = pageModel.Cheeps.Count;
         var newFirstCheep = pageModel.Cheeps.First();
 

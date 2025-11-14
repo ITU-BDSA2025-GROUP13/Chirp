@@ -11,9 +11,11 @@ public class PublicModel : PageModel
     private readonly ICheepService _service;
     private readonly UserManager<ChirpUser> _userManager;
     public List<CheepDTO> Cheeps { get; set; }
-    public int CurrentPage { get; set; }
     public bool HasNextPage { get; set; }
     public bool HasPreviousPage => CurrentPage > 0;
+
+    [BindProperty(SupportsGet = true)]
+    public int CurrentPage { get; set; }
 
     [BindProperty]
     public string? CheepMessage { get; set; }
@@ -29,11 +31,10 @@ public class PublicModel : PageModel
         Cheeps = new List<CheepDTO>();
     }
 
-    public ActionResult OnGet([FromQuery] int page)
+    public ActionResult OnGet()
     {
-        CurrentPage = page;
-        Cheeps = _service.GetMainPageCheeps(page);
-        HasNextPage = _service.GetMainPageCheeps(page + 1).Any();
+        Cheeps = _service.GetMainPageCheeps(CurrentPage);
+        HasNextPage = _service.GetMainPageCheeps(CurrentPage + 1).Any();
         return Page();
     }
 
