@@ -23,7 +23,7 @@
     <h2> Public Timeline </h2>
     @if (Model.Cheeps.Any())
     {
-        <ul id="messagelist" class="cheeps";">
+        <ul id="messagelist" class="cheeps">
             @foreach (var cheep in Model.Cheeps)
             {
                 <li>
@@ -35,13 +35,24 @@
                             @cheep.Text
                             <small>&mdash; @cheep.DatePosted</small>
                         </p>
-                        @if (User.Identity != null && User.Identity.IsAuthenticated && @cheep.AuthorName == User.Identity.Name)
+                        @if (User.Identity is { IsAuthenticated: true })
                         {
-                            <form method="post" asp-page-handler="Delete" style="flex: 0 0 15%;">
-                                <input asp-for="CheepIdForDeletion" type="hidden" value="@cheep.CheepId">
-                                <input type="submit" value="Delete" style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer;">
-                            </form>
+                            @if (@cheep.AuthorName == User.Identity.Name)
+                            {
+                                <form method="post" asp-page-handler="Delete" style="flex: 0 0 15%;">
+                                    <input asp-for="CheepIdForDeletion" type="hidden" value="@cheep.CheepId">
+                                    <input type="submit" value="Delete" style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer;">
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;">
+                                    <input asp-for="ToggleFollowForUserId" type="hidden" value="@cheep.AuthorName">
+                                    <input type="submit" value="Follow" style="float:right; background:transparent; border-style:none; color:blue; cursor:pointer;">
+                                </form>
+                            }
                         }
+                        
                     </flex-container>
                 </li>
             }

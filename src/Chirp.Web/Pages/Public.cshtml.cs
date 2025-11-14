@@ -21,6 +21,8 @@ public class PublicModel : PageModel
 
     [BindProperty]
     public int CheepIdForDeletion { get; set; }
+    [BindProperty]
+    public string ToggleFollowForUserId { get; set; }
 
     public PublicModel(ICheepService service, UserManager<ChirpUser> userManager)
     {
@@ -84,6 +86,12 @@ public class PublicModel : PageModel
     public ActionResult OnPostDelete()
     {
         _service.DeleteCheep(CheepIdForDeletion);
+        return RedirectToPage("/Public");
+    }
+
+    public ActionResult OnPostFollow()
+    {
+        Console.WriteLine($"Follow this user: {User.Identity?.Name} -> {ToggleFollowForUserId}");
         return RedirectToPage("/Public");
     }
 }
