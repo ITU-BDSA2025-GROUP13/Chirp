@@ -43,8 +43,11 @@ namespace Chirp.Infrastructure.Repositories
         public async Task<IEnumerable<Cheep>> GetMainPage(int pagenum = 0)
         {
             return await dbContext.Cheeps
-                .Include(m => m.Author) //Joins Author's 
-                .OrderByDescending(m => m.TimeStamp)
+                .Include(c => c.Author)
+                .Include(c => c.Replies)
+                    .ThenInclude(r => r.Author)
+                .Include(c => c.ParentCheep)
+                .OrderByDescending(c => c.TimeStamp)
                 .Skip(pagenum * _readLimit)
                 .Take(_readLimit)
                 .ToListAsync();
@@ -53,8 +56,11 @@ namespace Chirp.Infrastructure.Repositories
         public async Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 0)
         {
             return await dbContext.Cheeps
-                .Where(m => m.AuthorId == author.Id) //Joins Author's 
-                .OrderByDescending(m => m.TimeStamp)
+                .Where(c => c.AuthorId == author.Id)
+                .Include(c => c.Replies)
+                    .ThenInclude(r => r.Author)
+                .Include(c => c.ParentCheep)
+                .OrderByDescending(c => c.TimeStamp)
                 .Skip(pagenum * _readLimit)
                 .Take(_readLimit)
                 .ToListAsync();
@@ -70,7 +76,10 @@ namespace Chirp.Infrastructure.Repositories
         public Task<Cheep?> GetCheepById(int cheepID)
         {
             return dbContext.Cheeps
-                .Include(m => m.Author)
+                .Include(c => c.Author)
+                .Include(c => c.Replies)
+                    .ThenInclude(r => r.Author)
+                .Include(c => c.ParentCheep)
                 .FirstOrDefaultAsync(c => c.CheepId == cheepID);
         }
         #endregion

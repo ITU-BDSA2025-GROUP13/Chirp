@@ -35,5 +35,13 @@ namespace Chirp.Core.Models
         /// Gets or sets the publication date of the message.
         /// </summary>
         public required DateTime TimeStamp { get; set; }
+
+        /// <summary>
+        /// This Cheeps parent, null = top-level Cheep
+        /// </summary>
+        public Cheep? ParentCheep { get; set; }
+
+        /// The replies to this Cheep 
+        public List<Cheep> Replies { get; set; } = [];
     }
 }
