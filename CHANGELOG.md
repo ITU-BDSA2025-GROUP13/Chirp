@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.1](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.3.0...v5.3.1) (2025-11-14)
+
+
+### Bug Fixes
+
+* next page in user timeline redirects to valid page ([6671e57](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/6671e57a241157fdb0f92d13ed9a4ca805f0706e))
+
 ## [5.3.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.2.0...v5.3.0) (2025-11-14)
 
 
