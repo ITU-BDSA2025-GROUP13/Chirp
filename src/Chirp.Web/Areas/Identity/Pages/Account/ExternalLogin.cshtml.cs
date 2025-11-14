@@ -2,21 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using Chirp.Core.Models;
 
 namespace Chirp.Web.Areas.Identity.Pages.Account
@@ -50,20 +44,7 @@ namespace Chirp.Web.Areas.Identity.Pages.Account
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [BindProperty]
-        public InputModel Input { get; set; }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string ProviderDisplayName { get; set; }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public string ReturnUrl { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -71,28 +52,6 @@ namespace Chirp.Web.Areas.Identity.Pages.Account
         /// </summary>
         [TempData]
         public string ErrorMessage { get; set; }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public class InputModel
-        {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
-
-            /// <summary>
-            ///     Username for the registered user
-            /// </summary>
-            [Required]
-            [StringLength(32, MinimumLength = 2, ErrorMessage = "Username must be between 2 and 32 characters")]
-            public string UserName { get; set; }
-        }
 
         public IActionResult OnGet() => RedirectToPage("./Login");
 
@@ -130,79 +89,129 @@ namespace Chirp.Web.Areas.Identity.Pages.Account
             {
                 return RedirectToPage("./Lockout");
             }
-            else
-            {
-                // If the user does not have an account, then ask the user to create an account.
-                ReturnUrl = returnUrl;
-                ProviderDisplayName = info.ProviderDisplayName;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
-                {
-                    Input = new InputModel
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
-                }
-                return Page();
-            }
-        }
+            ProviderDisplayName = info.ProviderDisplayName;
 
-        public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
-        {
-            returnUrl = returnUrl ?? Url.Content("~/");
-            // Get the information about the user from the external login provider
-            var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrWhiteSpace(email))
             {
-                ErrorMessage = "Error loading external login information during confirmation.";
+                ErrorMessage = $"{info.LoginProvider} did not provide an email address.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
-            if (ModelState.IsValid)
+            var existingUser = await _userManager.FindByEmailAsync(email);
+            if (existingUser != null)
             {
-                var user = CreateUser();
-
-                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-
-                var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
+                var existingLogins = await _userManager.GetLoginsAsync(existingUser);
+                var alreadyLinked = existingLogins.Any(login => login.LoginProvider == info.LoginProvider && login.ProviderKey == info.ProviderKey);
+                if (!alreadyLinked)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
+                    var addLoginToExisting = await _userManager.AddLoginAsync(existingUser, info);
+                    if (!addLoginToExisting.Succeeded)
                     {
-                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
-
-                        var userId = await _userManager.GetUserIdAsync(user);
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = userId, code = code },
-                            protocol: Request.Scheme);
-
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                        // If account confirmation is required, we need to show the link if we don't have a real email sender
-                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                        {
-                            return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
-                        }
-
-                        await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
-                        return LocalRedirect(returnUrl);
+                        ErrorMessage = string.Join(" ", addLoginToExisting.Errors.Select(e => e.Description));
+                        return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
                     }
                 }
-                foreach (var error in result.Errors)
+
+                if (_userManager.Options.SignIn.RequireConfirmedAccount && !await _userManager.IsEmailConfirmedAsync(existingUser))
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    await SendConfirmationEmailAsync(existingUser, email);
+                    return RedirectToPage("./RegisterConfirmation", new { Email = email });
+                }
+
+                await _signInManager.SignInAsync(existingUser, isPersistent: false, info.LoginProvider);
+                return LocalRedirect(returnUrl);
+            }
+
+            var userName = ResolveUserName(info, email);
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                ErrorMessage = $"{info.LoginProvider} did not provide a valid username.";
+                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+            }
+
+            var user = CreateUser();
+
+            await _userStore.SetUserNameAsync(user, userName, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
+
+            var createResult = await _userManager.CreateAsync(user);
+            if (!createResult.Succeeded)
+            {
+                ErrorMessage = string.Join(" ", createResult.Errors.Select(e => e.Description));
+                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+            }
+
+            var addLoginResult = await _userManager.AddLoginAsync(user, info);
+            if (!addLoginResult.Succeeded)
+            {
+                ErrorMessage = string.Join(" ", addLoginResult.Errors.Select(e => e.Description));
+                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+            }
+
+            _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+
+            await SendConfirmationEmailAsync(user, email);
+
+            if (_userManager.Options.SignIn.RequireConfirmedAccount)
+            {
+                return RedirectToPage("./RegisterConfirmation", new { Email = email });
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+            return LocalRedirect(returnUrl);
+        }
+
+        private async Task SendConfirmationEmailAsync(ChirpUser user, string email)
+        {
+            var userId = await _userManager.GetUserIdAsync(user);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Page(
+                "/Account/ConfirmEmail",
+                pageHandler: null,
+                values: new { area = "Identity", userId, code },
+                protocol: Request.Scheme);
+
+            await _emailSender.SendEmailAsync(email, "Confirm your email",
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+        }
+
+        private string ResolveUserName(ExternalLoginInfo info, string email)
+        {
+            // Prefer provider-specific login claim when available (e.g. GitHub)
+            var candidate = info.Principal.FindFirstValue("urn:github:login") ??
+                            info.Principal.FindFirstValue(ClaimTypes.Name) ??
+                            info.Principal.Identity?.Name;
+
+            if (string.IsNullOrWhiteSpace(candidate) && !string.IsNullOrWhiteSpace(email))
+            {
+                var atIndex = email.IndexOf('@');
+                candidate = atIndex > 0 ? email.Substring(0, atIndex) : email;
+            }
+
+            if (string.IsNullOrWhiteSpace(candidate))
+            {
+                return null;
+            }
+
+            candidate = candidate.Trim();
+
+            if (candidate.Length < 2 && !string.IsNullOrWhiteSpace(email))
+            {
+                var fallback = email.Split('@')[0];
+                if (!string.IsNullOrWhiteSpace(fallback))
+                {
+                    candidate = fallback;
                 }
             }
 
-            ProviderDisplayName = info.ProviderDisplayName;
-            ReturnUrl = returnUrl;
-            return Page();
+            if (candidate.Length > 32)
+            {
+                candidate = candidate.Substring(0, 32);
+            }
+
+            return candidate.Length >= 2 ? candidate : null;
         }
 
         private ChirpUser CreateUser()
