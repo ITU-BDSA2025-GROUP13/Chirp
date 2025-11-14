@@ -53,15 +53,11 @@ namespace Chirp.Infrastructure.DatabaseContext
                 entity.HasIndex(u => u.UserName).IsUnique();
                 entity.HasMany(u => u.FollowsList).WithMany(u => u.FollowedByList)
                     .UsingEntity<Dictionary<string, object>>(
-                        "UserRelations",
-                        j => j.HasOne<ChirpUser>()
-                            .WithMany()
-                            .HasForeignKey("ChirpUserId")
-                            .OnDelete(DeleteBehavior.NoAction),
-                        j => j.HasOne<ChirpUser>()
-                            .WithMany()
-                            .HasForeignKey("ChirpUserId")
-                            .OnDelete(DeleteBehavior.NoAction)
+                        "UserFollowedByList",
+                        j => j.HasOne<ChirpUser>().WithMany()
+                            .HasForeignKey("AId").OnDelete(DeleteBehavior.NoAction),
+                        j => j.HasOne<ChirpUser>().WithMany()
+                            .HasForeignKey("BId").OnDelete(DeleteBehavior.NoAction)
                     );
             });
         }
