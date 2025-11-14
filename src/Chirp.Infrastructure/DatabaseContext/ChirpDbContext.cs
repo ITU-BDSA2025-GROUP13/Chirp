@@ -42,7 +42,8 @@ namespace Chirp.Infrastructure.DatabaseContext
 
                 entity
                     .HasMany(c => c.Replies)
-                    .WithOne(c => c.ParentCheep);
+                    .WithOne(c => c.ParentCheep)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<ChirpUser>(entity =>
