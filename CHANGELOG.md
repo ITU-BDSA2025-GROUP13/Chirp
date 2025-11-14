@@ -1,5 +1,28 @@
 # Changelog
 
+## [5.3.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.2.0...v5.3.0) (2025-11-14)
+
+
+### Features
+
+* add backend support for deleting cheeps ([5686040](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/568604025b9a37d5dfe72195ca3316a150298951))
+* add github oauth ([4a56124](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/4a5612492c9f08ca9dbd1be6ef5b0e070a0d8ccd))
+* add login to Chirp.Web ([3b10c76](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/3b10c768896058762d74e87f1849bed866dfb928))
+* Add ui for cheep post ([9aa85e8](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/9aa85e84e9452d0193e4d4e013cbc8fecd2297ec))
+* extend ChirpDbContext to include identities ([0291a29](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/0291a29b02a05e498b2247cf077046358bf7f56f))
+* implement delete button in the ui ([7963081](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/7963081ff96457ea4613d0d1df566965357f79c0))
+* Login as Helge and Adrian ([1557e82](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/1557e823f3588c26458f6f6cf00e75aa8b1f5e19))
+* Post cheep ([a2d965d](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/a2d965d515eff390ee2fffca55ed704b7bd924b4))
+* support for danish usernames ([2924837](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/2924837225a2b05e5eefa4f594151ea4d6d936c1))
+
+
+### Bug Fixes
+
+* add padding and clean up logic ([801565d](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/801565d99ba2f3b3c35e8fc4d112c8805b74296b))
+* errorhandling for cheeps over 160 chars ([2924837](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/2924837225a2b05e5eefa4f594151ea4d6d936c1))
+* String primary key instead of int ([755f0e3](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/755f0e3adcc2ba6d91e2d2dcf917965503ce6081))
+* Username unique ([755f0e3](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/755f0e3adcc2ba6d91e2d2dcf917965503ce6081))
+
 ## [5.2.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.1.0...v5.2.0) (2025-11-01)
 
 
