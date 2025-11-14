@@ -26,24 +26,44 @@
         <ul id="messagelist" class="cheeps";">
             @foreach (var cheep in Model.Cheeps)
             {
-                <li>
-                    <flex-container style="display:flex; height: 100%;">
-                        <p style="flex: 0 0 85%; margin: 0;">
-                            <strong>
-                                <a href="/user/@cheep.AuthorName">@cheep.AuthorName</a>
-                            </strong>
-                            @cheep.Text
-                            <small>&mdash; @cheep.DatePosted</small>
-                        </p>
-                        @if (User.Identity != null && User.Identity.IsAuthenticated && @cheep.AuthorName == User.Identity.Name)
-                        {
-                            <form method="post" asp-page-handler="Delete" style="flex: 0 0 15%;">
-                                <input asp-for="CheepIdForDeletion" type="hidden" value="@cheep.CheepId">
-                                <input type="submit" value="Delete" style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer;">
-                            </form>
-                        }
-                    </flex-container>
-                </li>
+                <div id="cheep-@cheep.CheepId">
+                    <li>
+                        <flex-container style="display:flex; height: 100%;">
+                            <div style="flex: 0 0 85%; margin: 0;"> <p id="cheep_text" style="display: block;">
+                                    <strong>
+                                        <a href="/user/@cheep.AuthorName">@cheep.AuthorName</a>
+                                    </strong>
+                                    @cheep.Text
+                                    <small>&mdash; @cheep.DatePosted</small>
+                                </p>
+                                @if (User.Identity != null && User.Identity.IsAuthenticated && @cheep.AuthorName == User.Identity.Name)
+                                {
+                                    <form method="post" asp-page-handler="Edit"
+                                        style="display: none;" id="cheep_edit">
+                                        <input asp-for="EditedCheepText" type="text"
+                                            value="@cheep.Text" style="width: 100%;"
+                                            id="cheep_edit_input" required>
+                                        <input asp-for="CheepIdForEditing" type="hidden" value="@cheep.CheepId">
+                                        <input asp-for="CurrentPage" type="hidden" value="@Model.CurrentPage">
+                                        <input type="submit" value="Finish">
+                                    </form>
+                                }
+                            </div>
+                            @if (User.Identity != null && User.Identity.IsAuthenticated && @cheep.AuthorName == User.Identity.Name)
+                            {
+                                <div style="flex: 0 0 15%;">
+                                    <form method="post" asp-page-handler="Delete">
+                                        <input asp-for="CheepIdForDeletion" type="hidden" value="@cheep.CheepId">
+                                        <input type="submit" value="Delete" style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer;">
+                                    </form>
+                                    <button type="button" style="float:right; background:transparent; border-style:none; color:#50CC6E; cursor:pointer;" onclick="editCheep(@cheep.CheepId)">
+                                        Edit
+                                    </button>
+                                </div>
+                            }
+                        </flex-container>
+                    </li>
+                </div>
             }
         </ul>
     }

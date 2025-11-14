@@ -161,4 +161,38 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
 
         File.Delete(dbPath);
     }
+
+    [Fact]
+    public async Task User_Can_Post_And_Edit_Cheep()
+    {
+        string testEmail = $"testuser_{Guid.NewGuid()}@example.com";
+        string testPassword = "TestPassword123!";
+        string testUser = $"testuser_{Guid.NewGuid()}";
+        string message = "This is a message";
+        string editedMessage = "This is a edited message";
+
+        // Register
+        await Page.GotoAsync($"{_baseUrl}/Identity/Account/Register?ReturnUrl=%2FIdentity%2FAccount%2FLogout");
+        await Page.FillAsync("#Input_Email", testEmail);
+        await Page.FillAsync("#Input_UserName", testUser);
+        await Page.FillAsync("#Input_Password", testPassword);
+        await Page.FillAsync("#Input_ConfirmPassword", testPassword);
+        await Page.ClickAsync("button[type='submit']");
+
+        // Post cheep
+        await Page.GotoAsync($"{_baseUrl}/");
+        await Page.FillAsync("#CheepMessage", message);
+        await Page.ClickAsync("input[type='submit']");
+
+        // Assert message has been posted
+        await Expect(Page.GetByText(message)).ToBeVisibleAsync();
+
+        // Edit cheep
+        await Page.ClickAsync("button:text('Edit')");
+        await Page.FillAsync("#cheep_edit_input", editedMessage);
+        await Page.ClickAsync("input:text('Finish')");
+
+        // Assert message has been edited
+        await Expect(Page.GetByText(editedMessage)).ToBeVisibleAsync();
+    }
 }
