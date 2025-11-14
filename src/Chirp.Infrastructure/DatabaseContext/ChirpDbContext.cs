@@ -28,17 +28,22 @@ namespace Chirp.Infrastructure.DatabaseContext
             modelBuilder.Entity<Cheep>(entity =>
             {
                 entity.ToTable("message");
-                entity.HasKey(m => m.CheepId);
-                entity.Property(m => m.CheepId).HasColumnName("message_id").ValueGeneratedOnAdd(); // Autoincrement
-                entity.Property(m => m.AuthorId).HasColumnName("author_id");
-                entity.Property(m => m.Text).HasColumnName("text");
+                entity.HasKey(c => c.CheepId);
+                entity.Property(c => c.CheepId).HasColumnName("message_id").ValueGeneratedOnAdd(); // Autoincrement
+                entity.Property(c => c.AuthorId).HasColumnName("author_id");
+                entity.Property(c => c.Text).HasColumnName("text");
                 entity.ToTable(t => t.HasCheckConstraint("length_constraint", "length(text) <= 160"));
-                entity.Property(m => m.TimeStamp).HasColumnName("pub_date");
+                entity.Property(c => c.TimeStamp).HasColumnName("pub_date");
 
-                entity.HasOne(m => m.Author)
-                      .WithMany(m => m.Cheeps)
-                      .HasForeignKey(m => m.AuthorId)
+                entity.HasOne(c => c.Author)
+                      .WithMany(c => c.Cheeps)
+                      .HasForeignKey(c => c.AuthorId)
                       .OnDelete(DeleteBehavior.NoAction);
+
+                entity
+                    .HasMany(c => c.Replies)
+                    .WithOne(c => c.ParentCheep)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<ChirpUser>(entity =>

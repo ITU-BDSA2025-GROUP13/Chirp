@@ -248,4 +248,90 @@ public class IntegrationTests
         Assert.Equal(text, newFirstCheep.Text);
         Assert.NotEqual(oldFirstCheep?.Text, newFirstCheep.Text);
     }
+
+    [Fact]
+    public void GetCheepsWithReplies_FromMockedRepository_ReturnsRepliesInDescendingOrder()
+    {
+        string authorID = "1";
+        var author = new ChirpUser { Id = authorID, UserName = _name1, Email = "test@test.com" };
+
+        string newestReply = "Newest reply";
+        string middleReply = "Middle reply";
+        string oldestReply = "Oldest reply";
+
+        var parentCheep = new Cheep
+        {
+            CheepId = 1,
+            AuthorId = authorID,
+            Author = author,
+            Text = "Parent cheep",
+            TimeStamp = DateTime.Now.AddHours(-3),
+            ParentCheep = null,
+            Replies = new List<Cheep>()
+        };
+
+        var reply1 = new Cheep
+        {
+            CheepId = 2,
+            AuthorId = authorID,
+            Author = author,
+            Text = oldestReply,
+            TimeStamp = DateTime.Now.AddHours(-2),
+            ParentCheep = parentCheep,
+            Replies = new List<Cheep>()
+        };
+
+        var reply2 = new Cheep
+        {
+            CheepId = 3,
+            AuthorId = authorID,
+            Author = author,
+            Text = middleReply,
+            TimeStamp = DateTime.Now.AddHours(-1),
+            ParentCheep = parentCheep,
+            Replies = new List<Cheep>()
+        };
+
+        var reply3 = new Cheep
+        {
+            CheepId = 4,
+            AuthorId = authorID,
+            Author = author,
+            Text = newestReply,
+            TimeStamp = DateTime.Now,
+            ParentCheep = parentCheep,
+            Replies = new List<Cheep>()
+        };
+
+        parentCheep.Replies = new List<Cheep> { reply1, reply2, reply3 };
+        var cheeps = new List<Cheep> { parentCheep, reply1, reply2, reply3 };
+        author.Cheeps = cheeps;
+
+        var mockContext = new Mock<IChirpDbContext>();
+        var mockCheepSet = cheeps.BuildMockDbSet();
+        mockContext
+            .Setup(c => c.Cheeps)
+            .Returns(mockCheepSet.Object);
+        _cheepRepository = new CheepRepository(mockContext.Object);
+
+        Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
+        userStore
+            .Setup(x => x.FindByIdAsync(authorID, CancellationToken.None))
+            .ReturnsAsync(author);
+        userStore
+            .Setup(x => x.FindByNameAsync(_name1, CancellationToken.None))
+            .ReturnsAsync(author);
+        UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+        _userManager = userManager;
+        _cheepService = new CheepService(_cheepRepository, userManager);
+
+        var result = _cheepService.GetMainPageCheeps(0);
+        var parentCheepDTO = result.FirstOrDefault(c => c.CheepId == 1);
+        Assert.NotNull(parentCheepDTO); Assert.NotNull(parentCheepDTO.Replies);
+
+        Assert.Equal(3, parentCheepDTO.Replies.Count);
+        Assert.Equal(oldestReply, parentCheepDTO.Replies[0].Text);
+        Assert.Equal(middleReply, parentCheepDTO.Replies[1].Text);
+        Assert.Equal(newestReply, parentCheepDTO.Replies[2].Text);
+    }
 }

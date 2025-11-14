@@ -1,0 +1,77 @@
+﻿@using Chirp.Infrastructure.Services
+
+@model CheepDTO
+
+<li class="cheep" id="cheep-@Model.CheepId" style="margin-left:@(Model.ParentCheepID.HasValue ? "5px" : "0")">
+    <flex-container style="display:flex; flex-direction: column; height: 100%;">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <strong><a href="/user/@Model.AuthorName">@Model.AuthorName</a></strong>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                if (Model.AuthorName == User.Identity.Name)
+                { 
+                    <div style="flex: 0 0 15%;">
+                        <form method="post" asp-page-handler="Delete">
+                            <input name="CheepIdForDeletion" type="hidden" value="@Model.CheepId">
+                            <input type="submit" value="Delete" style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer;">
+                        </form>
+                        <button type="button" style="float:right; background:transparent; border-style:none; color:#50CC6E; cursor:pointer;" onclick="editCheep(@Model.CheepId)">
+                            Edit
+                        </button>
+                    </div>
+                }
+            }
+        </div>
+        <div>
+            <p id="cheep_text" style="display:block;">@Model.Text</p>
+            <div style="display: flex;">
+                <form method="post" asp-page-handler="Edit"
+                      style="display: none;" id="cheep_edit">
+                    <input name="EditedCheepText" type="text"
+                           value="@Model.Text" style="width: 100%;"
+                           id="cheep_edit_input" required>
+                    <input name="CheepIdForEditing" type="hidden" value="@Model.CheepId">
+                    
+                    <input type="submit" value="Finish">
+                </form>  
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+            <small>@Model.DatePosted</small>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <button class="textButton" onclick="toggleReply(@Model.CheepId)">Reply</button>    
+            }
+        </div>
+        <!--REPLY-->
+        <div class="reply-form" id="reply-form-@Model.CheepId" style="display:none; margin-top:6px;">
+            <form method="post" asp-page-handler="Reply">
+                <input type="hidden" name="Reply.CheepID" value="@Model.CheepId"/>
+                <textarea name="Reply.Reply" required placeholder="Reply..."></textarea>
+                <input type="submit" value="Post"/>
+            </form>
+        </div>
+
+        <!-- renders replies recursively -->
+        @if (Model.Replies.Any())
+        {
+            <ul class="cheep-children" style="list-style:none; padding-left:0;">
+                @foreach (var child in Model.Replies)
+                {
+                    @await Html.PartialAsync("_CheepPartial", child)
+                }
+            </ul>
+        }
+    </flex-container>
+</li>
+
+<style>
+    .textButton {
+        border: none;
+        background: none;
+        padding: 0;
+        color: #0a3069;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+</style>

@@ -79,6 +79,83 @@ public class CheepServiceTests
     }
 
     [Fact]
+    public void GetCheepsFromAuthorID_WithValidAuthorName_ReturnsAuthorsCheepsInDescendingOrder()
+    {
+        string text3 = "Newest cheep";
+        string text2 = "Older cheep";
+        string text1 = "Oldest cheep";
+
+        string name2 = "TestUser2";
+        string authorID = "2";
+        var author2 = new ChirpUser() { Id = authorID, UserName = name2, Email = "test2@test.com" };
+
+        var cheeps = new List<Cheep>
+        {
+            new Cheep { CheepId = 3, AuthorId = authorID, Author = author2, Text = text3, TimeStamp = DateTime.Now.AddHours(-3) },
+            new Cheep { CheepId = 2, AuthorId = authorID, Author = author2, Text = text2, TimeStamp = DateTime.Now.AddHours(-4) },
+            new Cheep { CheepId = 1, AuthorId = authorID, Author = author2, Text = text1, TimeStamp = DateTime.Now.AddHours(-5) }
+        };
+        author2.Cheeps = cheeps;
+
+        var mockCheepRepo = new Mock<ICheepRepository>();
+        mockCheepRepo
+            .Setup(c => c.GetAuthorPage(It.IsAny<ChirpUser>(), It.IsAny<int>()))
+            .ReturnsAsync(cheeps);
+
+        Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
+        userStore
+            .Setup(c => c.FindByIdAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(author2);
+        UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+
+        var service = new CheepService(mockCheepRepo.Object, userManager);
+
+        var result = service.GetCheepsFromAuthorID(authorID);
+        Assert.Equal(cheeps.Count, result.Count());
+        Assert.Equal(text3, result.First().Text);
+        Assert.Equal(text1, result.Last().Text);
+    }
+
+    [Fact]
+    public void GetCheepsFromAuthorEmail_WithValidAuthorName_ReturnsAuthorsCheepsInDescendingOrder()
+    {
+        string text3 = "Newest cheep";
+        string text2 = "Older cheep";
+        string text1 = "Oldest cheep";
+
+        string authorName = "TestUser2";
+        string authorID = "2";
+        string authorEmail = "test2@test.com";
+        var author2 = new ChirpUser() { Id = authorID, UserName = authorName, Email = authorEmail };
+
+        var cheeps = new List<Cheep>
+        {
+            new Cheep { CheepId = 3, AuthorId = authorID, Author = author2, Text = text3, TimeStamp = DateTime.Now.AddHours(-3) },
+            new Cheep { CheepId = 2, AuthorId = authorID, Author = author2, Text = text2, TimeStamp = DateTime.Now.AddHours(-4) },
+            new Cheep { CheepId = 1, AuthorId = authorID, Author = author2, Text = text1, TimeStamp = DateTime.Now.AddHours(-5) }
+        };
+        author2.Cheeps = cheeps;
+
+        var mockCheepRepo = new Mock<ICheepRepository>();
+        mockCheepRepo
+            .Setup(c => c.GetAuthorPage(It.IsAny<ChirpUser>(), It.IsAny<int>()))
+            .ReturnsAsync(cheeps);
+
+        Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
+        Mock<UserManager<ChirpUser>> userManager = new Mock<UserManager<ChirpUser>>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+        userManager
+            .Setup(um => um.FindByEmailAsync(It.IsAny<string>()))
+            .ReturnsAsync(author2);
+
+        var service = new CheepService(mockCheepRepo.Object, userManager.Object);
+
+        var result = service.GetCheepsFromAuthorEmail(authorEmail);
+        Assert.Equal(cheeps.Count, result.Count());
+        Assert.Equal(text3, result.First().Text);
+        Assert.Equal(text1, result.Last().Text);
+    }
+
+    [Fact]
     public void PostCheep_WithValidMessage_AddsCheepAndIsReturnedFirst()
     {
         string text2 = "Newest cheep";
@@ -116,6 +193,46 @@ public class CheepServiceTests
         Assert.Equal(2, result.Count());
         Assert.Equal(text2, result.First().Text);
         Assert.Equal(text1, result.Last().Text);
+    }
+
+    [Fact]
+    public void ReplyToCheep_WithExistingParent_InsertsReplyCheep_CapturedViaCallback()
+    {
+        int parentId = 1;
+        string replyText = "replyText";
+        ChirpUser author = new ChirpUser { Id = "1", UserName = "replyUser", Email = "reply@test.com" };
+
+        Cheep parentCheep = new Cheep
+        {
+            CheepId = parentId,
+            AuthorId = author.Id,
+            Author = author,
+            Text = "parentCheep",
+            TimeStamp = DateTime.Now.AddHours(-1)
+        };
+
+        Mock<ICheepRepository> mockCheepRepo = new Mock<ICheepRepository>();
+        mockCheepRepo
+            .Setup(r => r.GetCheepById(parentId))
+            .ReturnsAsync(parentCheep);
+
+        Cheep? inserted = null;
+        mockCheepRepo
+            .Setup(r => r.InsertCheep(It.IsAny<Cheep>()))
+            .Callback<Cheep>(c => inserted = c)
+            .Returns(Task.CompletedTask);
+
+        Mock<IUserStore<ChirpUser>> mockStore = new Mock<IUserStore<ChirpUser>>();
+        UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(mockStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+
+        CheepService service = new CheepService(mockCheepRepo.Object, userManager);
+        service.ReplyToCheep(parentId, replyText, author);
+
+        Assert.NotNull(inserted);
+        Assert.Equal(replyText, inserted!.Text);
+        Assert.Equal(author.Id, inserted.AuthorId);
+        Assert.Equal(author, inserted.Author);
+        Assert.Equal(parentCheep, inserted.ParentCheep);
     }
 
     [Fact]
