@@ -64,3 +64,6 @@ data/chirp.db-wal
 data/chirp.db-shm
 data/chirp.db
 src/Chirp.Web/chirp.db
+
+# Typescript scriptlets
+**/wwwroot/js/*
