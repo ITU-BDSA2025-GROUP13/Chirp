@@ -254,6 +254,21 @@ namespace Chirp.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("UserFollowedByList", b =>
+                {
+                    b.Property<string>("AId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("AId", "BId");
+
+                    b.HasIndex("BId");
+
+                    b.ToTable("UserFollowedByList");
+                });
+
             modelBuilder.Entity("Chirp.Core.Models.Cheep", b =>
                 {
                     b.HasOne("Chirp.Core.Models.ChirpUser", "Author")
@@ -323,9 +338,25 @@ namespace Chirp.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("Chirp.Core.Models.Cheep", b =>
                 {
                     b.Navigation("Replies");
+=======
+            modelBuilder.Entity("UserFollowedByList", b =>
+                {
+                    b.HasOne("Chirp.Core.Models.ChirpUser", null)
+                        .WithMany()
+                        .HasForeignKey("AId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Chirp.Core.Models.ChirpUser", null)
+                        .WithMany()
+                        .HasForeignKey("BId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+>>>>>>> bf83f17 (feat: deletion button now turns into follow button on chepes not written by the authenticated users themselves)
                 });
 
             modelBuilder.Entity("Chirp.Core.Models.ChirpUser", b =>
