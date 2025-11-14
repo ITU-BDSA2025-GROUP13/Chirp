@@ -24,6 +24,12 @@ public class PublicModel : PageModel
     [BindProperty]
     public int CheepIdForDeletion { get; set; }
 
+    [BindProperty]
+    public int CheepIdForEditing { get; set; }
+
+    [BindProperty]
+    public string? EditedCheepText { get; set; }
+
     public PublicModel(ICheepService service, UserManager<ChirpUser> userManager)
     {
         _service = service;
@@ -38,23 +44,28 @@ public class PublicModel : PageModel
         return Page();
     }
 
-    public ActionResult OnPost()
+    public bool IsValidMessage(string? message)
     {
-        if (CheepMessage == null)
+        if (message == null)
         {
             ErrorMessage = "Cheep message cannot be empty.";
-            CurrentPage = 0;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
-            return Page();
+            return false;
         }
-
-        if (CheepMessage.Length > 160)
+        else if (message.Length > 160)
         {
             ErrorMessage = "Cheep message cannot be longer than 160 characters.";
-            CurrentPage = 0;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            return false;
+        }
+        return true;
+    }
+
+    public ActionResult OnPost()
+    {
+        Cheeps = _service.GetMainPageCheeps();
+        HasNextPage = _service.GetMainPageCheeps(1).Any();
+
+        if (!IsValidMessage(CheepMessage))
+        {
             return Page();
         }
 
@@ -86,5 +97,19 @@ public class PublicModel : PageModel
     {
         _service.DeleteCheep(CheepIdForDeletion);
         return RedirectToPage("/Public");
+    }
+
+    public ActionResult OnPostEdit()
+    {
+        Cheeps = _service.GetMainPageCheeps(CurrentPage);
+        HasNextPage = _service.GetMainPageCheeps(CurrentPage + 1).Any();
+
+        if (!IsValidMessage(EditedCheepText))
+        {
+            return Page();
+        }
+
+        _service.EditCheep(CheepIdForEditing, EditedCheepText!);
+        return Page();
     }
 }
