@@ -29,8 +29,9 @@ namespace Chirp.Infrastructure.Repositories
         public async Task<IEnumerable<Cheep>> GetMainPage(int pagenum = 0)
         {
             return await dbContext.Cheeps
-                .Include(m => m.Author) //Joins Author's 
-                .OrderByDescending(m => m.TimeStamp)
+                .Include(c => c.Author) //Joins Author's
+                .Include(c => c.Replies)
+                .OrderByDescending(c => c.TimeStamp)
                 .Skip(pagenum * _readLimit)
                 .Take(_readLimit)
                 .ToListAsync();
@@ -39,8 +40,9 @@ namespace Chirp.Infrastructure.Repositories
         public async Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 0)
         {
             return await dbContext.Cheeps
-                .Where(m => m.AuthorId == author.Id) //Joins Author's 
-                .OrderByDescending(m => m.TimeStamp)
+                .Where(c => c.AuthorId == author.Id) //Joins Author's 
+                .Include(c => c.Replies)
+                .OrderByDescending(c => c.TimeStamp)
                 .Skip(pagenum * _readLimit)
                 .Take(_readLimit)
                 .ToListAsync();

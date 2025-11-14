@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Chirp.Infrastructure.Services
 @model Chirp.Web.Pages.PublicModel
 @{
     ViewData["Title"] = "Chirp!";
@@ -24,7 +25,7 @@
     @if (Model.Cheeps.Any())
     {
         <ul id="messagelist" class="cheeps">
-            @foreach (var cheep in Model.Cheeps)
+            @foreach (CheepDTO cheep in Model.Cheeps)
             {
                 <li>
                     <flex-container style="display:flex; flex-direction: column; height: 100%;">
@@ -57,6 +58,11 @@
                             <input type="submit" value="Post">
                         </form>
                     </div>
+                    @foreach (CheepDTO reply in cheep.Replies)
+                    {
+                        <div>@reply.Text</div>   
+                    }
+                    
                 </li>
             }
         </ul>
@@ -99,7 +105,7 @@
 <script>
     function ReplyToCheep(cheepID) {
         var replySection = document.getElementById("reply-" + cheepID);
-        if (replySection.style.display === 'none') { replySection.style.display = 'block'; }
-        else { replySection.style.display = 'none'; }
+        if (replySection.style.display === "none") { replySection.style.display = "block"; }
+        else { replySection.style.display = "none"; }
     }
 </script>

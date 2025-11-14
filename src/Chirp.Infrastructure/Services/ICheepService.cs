@@ -1,3 +1,5 @@
+using Chirp.Core.Models;
+
 namespace Chirp.Infrastructure.Services
 {
     public interface ICheepService
@@ -21,5 +23,12 @@ namespace Chirp.Infrastructure.Services
         public string GetAuthorIDFromName(string authorName);
         public void PostCheep(string text, string authorID);
         public void DeleteCheep(int cheepID);
+        
+        /// <summary>
+        /// Replies to a Cheep
+        /// </summary>
+        /// <param name="cheepID">The cheep that is replied to</param>
+        /// <param name="reply">The text in the reply</param>
+        public void ReplyToCheep(int cheepID, string reply, ChirpUser replyAuthorID);
     }
 }

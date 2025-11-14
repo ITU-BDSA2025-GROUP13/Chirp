@@ -91,8 +91,27 @@ public class PublicModel : PageModel
 
     public ActionResult OnPostReply()
     {
-        Console.WriteLine($"{Reply.CheepID}: {Reply.Reply}");
-        _service.AddReplyToCheep(Reply.CheepID, Reply.Reply);
+        string? name = User.Identity?.Name;
+        if (name == null)
+        {
+            ErrorMessage = "You must be logged in to post a cheep.";
+            CurrentPage = 0;
+            Cheeps = _service.GetMainPageCheeps();
+            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            return Page();
+        }
+        
+        ChirpUser? user = _userManager.FindByNameAsync(name).GetAwaiter().GetResult();
+        if (user == null)
+        {
+            ErrorMessage = "User not found!";
+            CurrentPage = 0;
+            Cheeps = _service.GetMainPageCheeps();
+            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            return Page();
+        }
+        
+        _service.ReplyToCheep(Reply.CheepID, Reply.Reply, user);
         return RedirectToPage("/Public");    
     }
     

@@ -10,19 +10,7 @@ namespace Chirp.Infrastructure.Services
         public List<CheepDTO> GetMainPageCheeps(int page = 0)
         {
             List<Cheep> cheeps = cheepRepo.GetMainPage(page).GetAwaiter().GetResult().ToList();
-            List<CheepDTO> DTOCheeps = new List<CheepDTO>();
-            foreach (Cheep cheep in cheeps)
-            {
-                DTOCheeps.Add(
-                    new CheepDTO(
-                        cheep.Text,
-                        cheep.TimeStamp.ToString(),
-                        cheep.Author.UserName ?? DeletedUser,
-                        cheep.CheepId
-                    )
-                );
-            }
-            return DTOCheeps;
+            return ToDTO(cheeps);
         }
         public List<CheepDTO> GetCheepsFromAuthorName(string authorName, int pagenum = 0)
         {
@@ -54,10 +42,11 @@ namespace Chirp.Infrastructure.Services
             {
                 DTOCheeps.Add(
                     new CheepDTO(
-                        cheep.Text,
-                        cheep.TimeStamp.ToString(),
-                        cheep.Author.UserName ?? DeletedUser,
-                        cheep.CheepId
+                        cheep.Text, 
+                        cheep.TimeStamp.ToString(), 
+                        cheep.Author.UserName ?? DeletedUser, 
+                        cheep.CheepId, 
+                        ToDTO(cheep.Replies)
                     )
                 );
             }
@@ -91,6 +80,21 @@ namespace Chirp.Infrastructure.Services
             Cheep? cheep = cheepRepo.GetCheepById(cheepID).GetAwaiter().GetResult();
             if (cheep == null) throw new Exception($"No such cheep exists {cheepID}");
             cheepRepo.DeleteCheep(cheep).GetAwaiter().GetResult();
+        }
+
+        public void ReplyToCheep(int cheepID, string reply, ChirpUser author)
+        {
+            Cheep? parentCheep = cheepRepo.GetCheepById(cheepID).GetAwaiter().GetResult();
+            if (parentCheep == null)  throw new Exception($"No such cheep exists {cheepID}");
+            
+            Cheep cheep = new Cheep {
+                AuthorId = author.Id,
+                Author = author,
+                Text = reply,
+                TimeStamp = DateTime.Now,
+                ParentCheep = parentCheep
+            };
+            cheepRepo.InsertCheep(cheep).GetAwaiter().GetResult();
         }
     }
 }
