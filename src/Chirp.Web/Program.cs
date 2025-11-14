@@ -51,7 +51,9 @@ namespace Chirp.Web
             appBuilder.Services.AddRazorPages();
 
             appBuilder.Services.AddScoped<ICheepRepository, CheepRepository>();
+            appBuilder.Services.AddScoped<IChirpUserRepository, ChirpUserRepository>();
             appBuilder.Services.AddScoped<ICheepService, CheepService>();
+            appBuilder.Services.AddScoped<IChirpUserService, ChirpUserService>();
             appBuilder.Services.AddScoped<IChirpDbContext>(provider =>
                 provider.GetRequiredService<ChirpDbContext>());
 
