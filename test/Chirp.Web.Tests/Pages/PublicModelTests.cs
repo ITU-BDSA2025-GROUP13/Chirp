@@ -36,7 +36,8 @@ public class PublicModelTests
         UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
         var model = new PublicModel(mockService.Object, userManager);
 
-        var result = model.OnGet(1);
+        model.CurrentPage = 1;
+        var result = model.OnGet();
 
         Assert.IsType<PageResult>(result);
         mockService.Verify(s => s.GetMainPageCheeps(1), Times.Once);
@@ -59,7 +60,8 @@ public class PublicModelTests
         UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
         var model = new PublicModel(mockService.Object, userManager);
 
-        var result = model.OnGet(0);
+        model.CurrentPage = 0;
+        var result = model.OnGet();
 
         Assert.IsType<PageResult>(result);
         mockService.Verify(s => s.GetMainPageCheeps(0), Times.Once);
@@ -76,7 +78,8 @@ public class PublicModelTests
         UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
         var model = new PublicModel(mockService.Object, userManager);
 
-        var result = model.OnGet(5);
+        model.CurrentPage = 5;
+        var result = model.OnGet();
 
         Assert.IsType<PageResult>(result);
         Assert.Empty(model.Cheeps);

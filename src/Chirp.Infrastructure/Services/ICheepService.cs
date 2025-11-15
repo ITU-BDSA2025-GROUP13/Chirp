@@ -21,5 +21,6 @@ namespace Chirp.Infrastructure.Services
         public string GetAuthorIDFromName(string authorName);
         public void PostCheep(string text, string authorID);
         public void DeleteCheep(int cheepID);
+        public void EditCheep(int cheepID, String newText);
     }
 }

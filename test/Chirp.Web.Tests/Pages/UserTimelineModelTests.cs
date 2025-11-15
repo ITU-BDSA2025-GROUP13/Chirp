@@ -33,7 +33,9 @@ public class UserTimelineModelTests
            .Returns(expectedCheeps);
         var model = new UserTimelineModel(mockService.Object);
 
-        var result = model.OnGet(user, 0);
+        model.Author = user;
+        model.CurrentPage = 0;
+        var result = model.OnGet();
 
         Assert.IsType<PageResult>(result);
         mockService.Verify(s => s.GetCheepsFromAuthorName(user, 0), Times.Once);
@@ -54,7 +56,9 @@ public class UserTimelineModelTests
            .Returns(expectedCheeps);
         var model = new UserTimelineModel(mockService.Object);
 
-        var result = model.OnGet(anotherUser, 0);
+        model.Author = anotherUser;
+        model.CurrentPage = 0;
+        var result = model.OnGet();
 
         Assert.IsType<PageResult>(result);
         mockService.Verify(s => s.GetCheepsFromAuthorName(anotherUser, 0), Times.Once);
@@ -70,7 +74,9 @@ public class UserTimelineModelTests
                   .Returns(new List<CheepDTO>());
         var model = new UserTimelineModel(mockService.Object);
 
-        var result = model.OnGet("NonExistent", 1);
+        model.Author = "NonExistent";
+        model.CurrentPage = 0;
+        var result = model.OnGet();
 
         Assert.IsType<PageResult>(result);
         Assert.Empty(model.Cheeps);
@@ -91,7 +97,9 @@ public class UserTimelineModelTests
         var model = new UserTimelineModel(mockService.Object);
 
 
-        var result = model.OnGet(user, 0);
+        model.Author = user;
+        model.CurrentPage = 0;
+        var result = model.OnGet();
 
         Assert.IsType<PageResult>(result);
         Assert.Single(model.Cheeps);

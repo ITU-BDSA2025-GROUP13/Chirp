@@ -11,9 +11,11 @@ public class PublicModel : PageModel
     private readonly ICheepService _service;
     private readonly UserManager<ChirpUser> _userManager;
     public List<CheepDTO> Cheeps { get; set; }
-    public int CurrentPage { get; set; }
     public bool HasNextPage { get; set; }
     public bool HasPreviousPage => CurrentPage > 0;
+
+    [BindProperty(SupportsGet = true)]
+    public int CurrentPage { get; set; }
 
     [BindProperty]
     public string? CheepMessage { get; set; }
@@ -22,6 +24,12 @@ public class PublicModel : PageModel
     [BindProperty]
     public int CheepIdForDeletion { get; set; }
 
+    [BindProperty]
+    public int CheepIdForEditing { get; set; }
+
+    [BindProperty]
+    public string? EditedCheepText { get; set; }
+
     public PublicModel(ICheepService service, UserManager<ChirpUser> userManager)
     {
         _service = service;
@@ -29,31 +37,35 @@ public class PublicModel : PageModel
         Cheeps = new List<CheepDTO>();
     }
 
-    public ActionResult OnGet([FromQuery] int page)
+    public ActionResult OnGet()
     {
-        CurrentPage = page;
-        Cheeps = _service.GetMainPageCheeps(page);
-        HasNextPage = _service.GetMainPageCheeps(page + 1).Any();
+        Cheeps = _service.GetMainPageCheeps(CurrentPage);
+        HasNextPage = _service.GetMainPageCheeps(CurrentPage + 1).Any();
         return Page();
+    }
+
+    public bool IsValidMessage(string? message)
+    {
+        if (message == null)
+        {
+            ErrorMessage = "Cheep message cannot be empty.";
+            return false;
+        }
+        else if (message.Length > 160)
+        {
+            ErrorMessage = "Cheep message cannot be longer than 160 characters.";
+            return false;
+        }
+        return true;
     }
 
     public ActionResult OnPost()
     {
-        if (CheepMessage == null)
-        {
-            ErrorMessage = "Cheep message cannot be empty.";
-            CurrentPage = 0;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
-            return Page();
-        }
+        Cheeps = _service.GetMainPageCheeps();
+        HasNextPage = _service.GetMainPageCheeps(1).Any();
 
-        if (CheepMessage.Length > 160)
+        if (!IsValidMessage(CheepMessage))
         {
-            ErrorMessage = "Cheep message cannot be longer than 160 characters.";
-            CurrentPage = 0;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
             return Page();
         }
 
@@ -85,5 +97,19 @@ public class PublicModel : PageModel
     {
         _service.DeleteCheep(CheepIdForDeletion);
         return RedirectToPage("/Public");
+    }
+
+    public ActionResult OnPostEdit()
+    {
+        Cheeps = _service.GetMainPageCheeps(CurrentPage);
+        HasNextPage = _service.GetMainPageCheeps(CurrentPage + 1).Any();
+
+        if (!IsValidMessage(EditedCheepText))
+        {
+            return Page();
+        }
+
+        _service.EditCheep(CheepIdForEditing, EditedCheepText!);
+        return Page();
     }
 }
