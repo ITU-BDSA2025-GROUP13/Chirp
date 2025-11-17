@@ -5,11 +5,27 @@ namespace Chirp.Infrastructure.Repositories
     public interface IChirpUserRepository
     {
         /// <summary>
-        /// Updates userA to include userB in their FollowList
+        /// Adds userA to include userB in their FollowList
         /// </summary>  
-        /// <param name="userA"></param>
-        /// <param name="userB"></param>
-        /// <returns></returns>
-        Task UpdateFollowerList(ChirpUser userA, ChirpUser userB);
+        /// <param name="userA">The follower</param>
+        /// <param name="userB">The followed</param>
+        /// <returns>Nothing of value</returns>
+        Task AddToFollowerList(ChirpUser userA, ChirpUser userB);
+
+        /// <summary>
+        /// Remove userB from userA's FollowsList
+        /// </summary>
+        /// <param name="userA">The follower</param>
+        /// <param name="userB">The followed</param>
+        /// <returns>Nothing of value</returns>
+        Task RemoveFromFollowerList(ChirpUser userA, ChirpUser userB);
+
+        /// <summary>
+        /// Returns true if userA has a relation with userB (e.g. Does A follow B?)
+        /// </summary>
+        /// <param name="userA">The follower</param>
+        /// <param name="userB">The followed</param>
+        /// <returns>true if A follows B, otherwise false</returns>
+        bool ContainsRelation(ChirpUser userA, ChirpUser userB);
     }
 }
