@@ -3,12 +3,14 @@ using Chirp.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Build.Framework;
 
 namespace Chirp.Web.Pages;
 
 public class PublicModel : PageModel
 {
     private readonly ICheepService _service;
+    private readonly IChirpUserService _chirpUserService;
     private readonly UserManager<ChirpUser> _userManager;
     public List<CheepDTO> Cheeps { get; set; }
     public bool HasNextPage { get; set; }
@@ -23,7 +25,7 @@ public class PublicModel : PageModel
     [BindProperty]
     public int CheepIdForDeletion { get; set; }
     [BindProperty]
-    public string ToggleFollowForUserId { get; set; }
+    public string? ToggleFollowForUserId { get; set; }
 
     [BindProperty]
     public CheepReply? Reply { get; set; }
@@ -34,10 +36,11 @@ public class PublicModel : PageModel
     [BindProperty]
     public string? EditedCheepText { get; set; }
 
-    public PublicModel(ICheepService service, UserManager<ChirpUser> userManager)
+    public PublicModel(ICheepService service, IChirpUserService chirpUserService, UserManager<ChirpUser> userManager)
     {
         _service = service;
         _userManager = userManager;
+        _chirpUserService = chirpUserService;
         Cheeps = new List<CheepDTO>();
     }
 
@@ -105,8 +108,9 @@ public class PublicModel : PageModel
 
     public ActionResult OnPostFollow()
     {
-        Console.WriteLine($"Follow this user: {User.Identity?.Name} -> {ToggleFollowForUserId}");
-        
+        if (User.Identity?.Name != null && ToggleFollowForUserId != null)
+            _chirpUserService.ToggleUserFollowing(User.Identity.Name, ToggleFollowForUserId);
+
         return RedirectToPage("/Public");
     }
 

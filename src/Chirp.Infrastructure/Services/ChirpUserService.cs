@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace Chirp.Infrastructure.Services;
 
-public class ChirpUserService(UserManager<ChirpUser> userManager) : IChirpUserService
+public class ChirpUserService(IChirpUserRepository chirpUserRepo, UserManager<ChirpUser> userManager) : IChirpUserService
 {
     /// <summary>
     /// UserA wants to follow UserB from a Cheep.
@@ -24,14 +24,15 @@ public class ChirpUserService(UserManager<ChirpUser> userManager) : IChirpUserSe
             return;
         }
 
-        if (userA.FollowsList.Contains(userB))
+        if (chirpUserRepo.ContainsRelation(userA, userB))
         {
-            Console.WriteLine($"User {userA.UserName} already follows {userB.UserName}");
+            Console.WriteLine($"Add follower: {userA.UserName} -> {userB.UserName}");
+            _ = chirpUserRepo.RemoveFromFollowerList(userA, userB);
         }
         else
         {
-            Console.WriteLine($"User {userA.UserName} does not follow {userB.UserName}");
+            Console.WriteLine($"Remove follower: {userA.UserName} -> {userB.UserName}");
+            _ = chirpUserRepo.AddToFollowerList(userA, userB);
         }
-        //chirpUserRepo.UpdateFollowerList(userA, userB);
     }
 }

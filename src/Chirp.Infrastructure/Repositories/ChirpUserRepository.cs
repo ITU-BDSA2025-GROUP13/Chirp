@@ -14,33 +14,41 @@ namespace Chirp.Infrastructure.Repositories
 
         #region UPDATE
 
-        public async Task UpdateFollowerList(ChirpUser userA, ChirpUser userB)
+        public async Task AddToFollowerList(ChirpUser userA, ChirpUser userB)
         {
+            await dbContext.ChirpUsers
+                .Entry(userA)
+                .Collection(u => u.FollowsList)
+                .LoadAsync();
+
             userA.FollowsList.Add(userB);
-            userB.FollowedByList.Add(userA);
+
             await dbContext.SaveChangesAsync();
         }
-        
+
         public async Task RemoveFromFollowerList(ChirpUser userA, ChirpUser userB)
         {
-            //await dbContext.ChirpUsers.Entry(userA).Collection(u => u.FollowsList).LoadAsync();
+            await dbContext.ChirpUsers
+                .Entry(userA)
+                .Collection(u => u.FollowsList)
+                .LoadAsync();
+
             userA.FollowsList.Remove(userB);
-            userB.FollowedByList.Remove(userA);
+
             await dbContext.SaveChangesAsync();
         }
-        
+
         #endregion
 
         #region GET
 
         public bool ContainsRelation(ChirpUser userA, ChirpUser userB)
         {
-            if (userA.FollowsList.Contains(userB))
-            {
-                
-            }
+            return dbContext.ChirpUsers
+                .Where(u => u.Id == userA.Id)
+                .Any(u => u.FollowsList.Any(f => f.Id == userB.Id));
         }
-        
+
         #endregion
     }
 }
