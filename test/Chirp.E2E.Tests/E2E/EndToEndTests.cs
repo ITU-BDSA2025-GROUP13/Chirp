@@ -146,22 +146,6 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
         Console.WriteLine("✓ Login successful");
     }
 
-    /// <summary>
-    /// Clean up database after tests have run
-    /// </summary>
-    public void Dispose()
-    {
-        try
-        {
-            _serverProcess?.Kill(entireProcessTree: true);
-            _serverProcess?.WaitForExit();
-            _serverProcess?.Dispose();
-        }
-        catch { }
-
-        File.Delete(dbPath);
-    }
-
     [Fact]
     public async Task User_Can_Post_And_Edit_Cheep()
     {
@@ -194,5 +178,21 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
 
         // Assert message has been edited
         await Expect(Page.GetByText(editedMessage)).ToBeVisibleAsync();
+    }
+ 
+    /// <summary>
+    /// Clean up database after tests have run
+    /// </summary>
+    public void Dispose()
+    {
+        try
+        {
+            _serverProcess?.Kill(entireProcessTree: true);
+            _serverProcess?.WaitForExit();
+            _serverProcess?.Dispose();
+        }
+        catch { }
+
+        File.Delete(dbPath);
     }
 }
