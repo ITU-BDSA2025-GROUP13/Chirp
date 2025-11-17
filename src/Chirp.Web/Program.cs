@@ -82,7 +82,7 @@ namespace Chirp.Web
                 chirpContext.Database.Migrate();
                 DbInitializer.SeedDatabase(chirpContext, userManager);
             }
-
+            Console.WriteLine("Running...");
             app.Run();
         }
 
