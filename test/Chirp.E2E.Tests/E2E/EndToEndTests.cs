@@ -1,52 +1,28 @@
 ﻿using Chirp.Web;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Playwright.Xunit;
-using System.Diagnostics;
 using System.Net;
 using System.Text.RegularExpressions;
 
 namespace Chirp.Integration.Tests.E2E;
 
-public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Program>>, IDisposable
+[Collection("Playwright collection")]
+public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Program>>
 {
-    private static Process? _serverProcess;
-    private static readonly string dbPath = $"{Path.GetTempPath()}/chirp/e2eTest.db";
-    private static readonly string _baseUrl = "http://localhost:5273";
+    private readonly ChirpEndToEndPlaywrightFixture _fixture;
+    private readonly string _baseUrl;
     private readonly WebApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
 
-    public EndToEndTests(WebApplicationFactory<Program> factory)
+    public EndToEndTests(WebApplicationFactory<Program> factory, ChirpEndToEndPlaywrightFixture fixture)
     {
+        _fixture = fixture;
+        _baseUrl = fixture._baseUrl;
         _factory = factory;
         _client = _factory.CreateClient(new WebApplicationFactoryClientOptions
         {
             AllowAutoRedirect = false
         });
-
-        StartServer();
-    }
-
-    private static void StartServer()
-    {
-        var projectDir = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "..", "src", "Chirp.Web"));
-
-        var startInfo = new ProcessStartInfo
-        {
-            FileName = "dotnet",
-            Arguments = $"run --no-build --urls {_baseUrl}",
-            WorkingDirectory = projectDir,
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            CreateNoWindow = true
-        };
-
-        startInfo.Environment["CHIRPDBPATH"] = dbPath;
-        startInfo.Environment["ASPNETCORE_ENVIRONMENT"] = "Testing";
-
-        _serverProcess = Process.Start(startInfo);
-
-        Thread.Sleep(5000);
     }
 
     [Fact]
@@ -178,21 +154,5 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
 
         // Assert message has been edited
         await Expect(Page.GetByText(editedMessage)).ToBeVisibleAsync();
-    }
- 
-    /// <summary>
-    /// Clean up database after tests have run
-    /// </summary>
-    public void Dispose()
-    {
-        try
-        {
-            _serverProcess?.Kill(entireProcessTree: true);
-            _serverProcess?.WaitForExit();
-            _serverProcess?.Dispose();
-        }
-        catch { }
-
-        File.Delete(dbPath);
     }
 }

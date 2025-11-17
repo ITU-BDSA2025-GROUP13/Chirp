@@ -24,7 +24,7 @@ jobs:
         run: dotnet build --no-restore
 
       - name: Ensure browsers are installed
-        run: pwsh test/Chirp.Integration.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
+        run: pwsh test/Chirp.E2E.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
 
       - name: Ensure testsuite exists for all projects
         run: |
