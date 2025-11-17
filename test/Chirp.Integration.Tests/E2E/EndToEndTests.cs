@@ -10,9 +10,8 @@ namespace Chirp.Integration.Tests.E2E;
 public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Program>>, IDisposable
 {
     private static Process? _serverProcess;
-    private static bool _serverStarted = false;
     private static readonly string dbPath = $"{Path.GetTempPath()}/chirp/e2eTest.db";
-    private readonly string _baseUrl = "http://localhost:5273";
+    private static readonly string _baseUrl = "http://localhost:5273";
     private readonly WebApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
 
@@ -24,11 +23,7 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
             AllowAutoRedirect = false
         });
 
-        if (!_serverStarted)
-        {
-            StartServer();
-            _serverStarted = true;
-        }
+        StartServer();
     }
 
     private static void StartServer()
@@ -38,7 +33,7 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
         var startInfo = new ProcessStartInfo
         {
             FileName = "dotnet",
-            Arguments = "run --no-build --urls http://localhost:5273",
+            Arguments = $"run --no-build --urls {_baseUrl}",
             WorkingDirectory = projectDir,
             UseShellExecute = false,
             RedirectStandardOutput = true,
@@ -156,6 +151,14 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
     /// </summary>
     public void Dispose()
     {
+        try
+        {
+            _serverProcess?.Kill(entireProcessTree: true);
+            _serverProcess?.WaitForExit();
+            _serverProcess?.Dispose();
+        }
+        catch { }
+
         File.Delete(dbPath);
     }
 }
