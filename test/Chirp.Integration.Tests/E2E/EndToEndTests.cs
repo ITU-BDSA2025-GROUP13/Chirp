@@ -7,10 +7,11 @@ using System.Text.RegularExpressions;
 
 namespace Chirp.Integration.Tests.E2E;
 
-public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Program>>
+public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Program>>, IDisposable
 {
     private static Process? _serverProcess;
     private static bool _serverStarted = false;
+    private static readonly string dbPath = $"{Path.GetTempPath()}/chirp/e2eTest.db";
     private readonly string _baseUrl = "http://localhost:5273";
     private readonly WebApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
@@ -45,7 +46,7 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
             CreateNoWindow = true
         };
 
-        startInfo.Environment["CHIRPDBPATH"] = $"{Path.GetTempPath()}/chirp/e2eTest.db";
+        startInfo.Environment["CHIRPDBPATH"] = dbPath;
         startInfo.Environment["ASPNETCORE_ENVIRONMENT"] = "Testing";
 
         _serverProcess = Process.Start(startInfo);
@@ -110,9 +111,9 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
     [Fact]
     public async Task User_CanRegister_Login_And_Logout()
     {
-        string testEmail = $"testuser_{Guid.NewGuid()}@example.com";
+        string testEmail = $"testuser@example.com";
         string testPassword = "TestPassword123!";
-        string testUser = $"testuser_{Guid.NewGuid()}";
+        string testUser = $"testuser";
 
         // Register
         await Page.GotoAsync($"{_baseUrl}/Identity/Account/Register?ReturnUrl=%2FIdentity%2FAccount%2FLogout");
@@ -148,5 +149,13 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
         var PostLoginContent = await Page.ContentAsync();
         Assert.True(PostLoginContent.Contains("Logout") || PostLoginContent.Contains("logout") || PostLoginContent.Contains("Click here to Logout"));
         Console.WriteLine("✓ Login successful");
+    }
+
+    /// <summary>
+    /// Clean up database after tests have run
+    /// </summary>
+    public void Dispose()
+    {
+        File.Delete(dbPath);
     }
 }
