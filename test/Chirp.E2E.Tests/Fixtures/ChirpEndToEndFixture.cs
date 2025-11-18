@@ -28,8 +28,22 @@ public class ChirpEndToEndPlaywrightFixture : IDisposable
 
         _serverProcess = Process.Start(startInfo) ?? throw new Exception("Failed to start Chirp.Web");
 
-        // HACK: Wait for Chirp.Web to be ready
-        Thread.Sleep(5000);
+        // Wait for Chirp.Web to be ready
+        using (HttpClient client = new HttpClient())
+        {
+            int allowedAttempts = 10;
+            for (int i = 0; i < allowedAttempts; ++i)
+            {
+                try
+                {
+                    var response = client.GetAsync($"{_baseUrl}/").GetAwaiter().GetResult();
+                    if (response.IsSuccessStatusCode) return;
+                }
+                catch { }
+                Thread.Sleep(1000);
+            }
+            throw new Exception("Failed to start Chirp.Web");
+        }
     }
 
     /// <summary>
