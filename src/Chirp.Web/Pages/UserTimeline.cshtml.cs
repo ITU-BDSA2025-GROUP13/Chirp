@@ -3,6 +3,8 @@ using Chirp.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Chirp.Web.Pages;
 
@@ -45,6 +47,9 @@ public class UserTimelineModel : PageModel
     [BindProperty]
     public string? EditedCheepText { get; set; }
 
+    // Liking
+    [BindProperty]
+    public int CheepIdForLike { get; set; }
 
     public UserTimelineModel(ICheepService service, IChirpUserService chirpUserService, UserManager<ChirpUser> userManager)
     {
@@ -59,7 +64,7 @@ public class UserTimelineModel : PageModel
         if (User.Identity?.Name != null)
         {
             var followedUsers = _service.GetListOfNamesOfFollowedUsers(User.Identity.Name);
-            FollowCache.Instance.SetFollowedUsers(User.Identity.Name, followedUsers);
+            CheepDataCache.Instance.SetFollowedUsers(User.Identity.Name, followedUsers);
         }
 
         if (Author == User.Identity?.Name)
@@ -76,6 +81,8 @@ public class UserTimelineModel : PageModel
 
     public ActionResult OnPostDelete()
     {
+        HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
+
         _service.DeleteCheep(CheepIdForDeletion);
         return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
@@ -83,8 +90,12 @@ public class UserTimelineModel : PageModel
     public ActionResult OnPostFollow()
     {
         if (User.Identity?.Name != null && ToggleFollowForUserId != null)
+        {
             _chirpUserService.ToggleUserFollowing(User.Identity.Name, ToggleFollowForUserId);
+        }
 
+        Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
+        LoadLikedCheeps();
         return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
 
@@ -159,5 +170,61 @@ public class UserTimelineModel : PageModel
             return false;
         }
         return true;
+    }
+
+    private void LoadLikedCheeps()
+    {
+        if (User?.Identity != null && User.Identity.IsAuthenticated)
+        {
+            string? name = User.Identity.Name;
+            if (name != null)
+            {
+                ChirpUser? user = _userManager.Users
+                    .Include(u => u.LikedCheeps)
+                    .FirstOrDefault(u => u.UserName == name);
+                if (user != null)
+                {
+                    CheepDataCache.Instance.SetLikedCheeps(name, user.LikedCheeps.Select(c => c.CheepId).ToHashSet());
+                }
+            }
+        }
+    }
+
+    public ActionResult OnPostLike()
+    {
+        HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
+
+        string? name = User.Identity?.Name;
+        if (name == null)
+        {
+            ErrorMessage = "You must be logged in to like a cheep.";
+            Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
+            LoadLikedCheeps();
+            return Page();
+        }
+
+        ChirpUser? user = _userManager.Users
+            .Include(u => u.LikedCheeps)
+            .FirstOrDefault(u => u.UserName == name);
+        if (user == null)
+        {
+            ErrorMessage = "User not found!";
+            Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
+            LoadLikedCheeps();
+            return Page();
+        }
+
+        if (user.LikedCheeps.Any(c => c.CheepId == CheepIdForLike))
+        {
+            _service.UnLikeCheep(CheepIdForLike, user.Id);
+        }
+        else
+        {
+            _service.LikeCheep(CheepIdForLike, user.Id);
+        }
+
+        Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
+        LoadLikedCheeps();
+        return Page();
     }
 }
