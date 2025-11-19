@@ -22,6 +22,66 @@ namespace Chirp.Infrastructure.Repositories
         }
         #endregion
 
+        #region LIKE
+        public async Task LikeCheep(int cheepId, string userId)
+        {
+            Cheep? cheep = await dbContext.Cheeps
+                    .Include(m => m.UsersWhoLiked)
+                    .FirstOrDefaultAsync(m => m.CheepId == cheepId);
+
+            ChirpUser? user = await dbContext.ChirpUsers
+                    .Include(u => u.LikedCheeps)
+                    .FirstOrDefaultAsync(m => m.Id == userId);
+
+            if (cheep == null)
+            {
+                throw new DbUpdateException("Failed to find cheep");
+            }
+
+            if (user == null)
+            {
+                throw new DbUpdateException("Failed to find user");
+            }
+
+            if (cheep.AuthorId == null) throw new ArgumentNullException($"AuthorID is null");
+            if (user.Id == null) throw new ArgumentNullException($"ID is null");
+
+            cheep.UsersWhoLiked.Add(user);
+            user.LikedCheeps.Add(cheep);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UnLikeCheep(int cheepId, string userId)
+        {
+            Cheep? cheep = await dbContext.Cheeps
+                    .Include(m => m.UsersWhoLiked)
+                    .FirstOrDefaultAsync(m => m.CheepId == cheepId);
+
+            ChirpUser? user = await dbContext.ChirpUsers
+                    .Include(u => u.LikedCheeps)
+                    .FirstOrDefaultAsync(m => m.Id == userId);
+
+            if (cheep == null)
+            {
+                throw new DbUpdateException("Failed to find cheep");
+            }
+
+            if (user == null)
+            {
+                throw new DbUpdateException("Failed to find user");
+            }
+
+            if (cheep.AuthorId == null) throw new ArgumentNullException($"AuthorID is null");
+            if (user.Id == null) throw new ArgumentNullException($"ID is null");
+
+            cheep.UsersWhoLiked.Remove(user);
+            user.LikedCheeps.Remove(cheep);
+
+            await dbContext.SaveChangesAsync();
+        }
+        #endregion
+
         #region UPDATE
         public async Task EditCheepById(int cheepId, string newText)
         {
@@ -61,6 +121,8 @@ namespace Chirp.Infrastructure.Repositories
             return await dbContext.Cheeps
                 .Include(m => m.Author)
                 .Where(m => fList.Contains(m.Author))
+                .Include(m => m.Author) //Joins Author's 
+                .Include(m => m.UsersWhoLiked) //Joins users who liked
                 .OrderByDescending(m => m.TimeStamp)
                 .Skip(pagenum * _readLimit)
                 .Take(_readLimit)
@@ -85,9 +147,12 @@ namespace Chirp.Infrastructure.Repositories
             return await dbContext.Cheeps
                 .Where(c => c.AuthorId == author.Id)
                 .Include(c => c.Replies)
-                    .ThenInclude(r => r.Author)
+                .ThenInclude(r => r.Author)
                 .Include(c => c.ParentCheep)
                 .OrderByDescending(c => c.TimeStamp)
+                .Include(m => m.UsersWhoLiked) //Joins users who liked
+                .Where(m => m.AuthorId == author.Id)
+                .OrderByDescending(m => m.TimeStamp)
                 .Skip(pagenum * _readLimit)
                 .Take(_readLimit)
                 .ToListAsync();

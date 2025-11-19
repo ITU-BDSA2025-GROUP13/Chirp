@@ -52,5 +52,7 @@ namespace Chirp.Infrastructure.Services
         /// <param name="reply">The text in the reply</param>
         public void ReplyToCheep(int cheepID, string reply, ChirpUser replyAuthorID);
         public void EditCheep(int cheepID, String newText);
+        public void LikeCheep(int cheepId, string userId);
+        public void UnLikeCheep(int cheepId, string userId);
     }
 }

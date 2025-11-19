@@ -31,8 +31,8 @@ public class UserTimelineModelTests
         var mockUserService = new Mock<IChirpUserService>();
         var expectedCheeps = new List<CheepDTO>
         {
-            new("User message 1", "2023-01-01", user, 0, null, new List<CheepDTO>()),
-            new("User message 2", "2023-01-02", user, 1, null, new List<CheepDTO>())
+            new("User message 1", "2023-01-01", user, 0, null, new List<CheepDTO>(), "0"),
+            new("User message 2", "2023-01-02", user, 1, null, new List<CheepDTO>(), "0")
         };
 
         mockCheepService.Setup(s => s.GetCheepsFromAuthorName(It.IsAny<string>(), It.IsAny<int>()))
@@ -56,7 +56,7 @@ public class UserTimelineModelTests
         var mockUserService = new Mock<IChirpUserService>();
         var expectedCheeps = new List<CheepDTO>
         {
-            new("First page user message", "2023-01-01", "AnotherUser", 0, null, new List<CheepDTO>())
+            new("First page user message", "2023-01-01", "AnotherUser", 0, null, new List<CheepDTO>(), "0")
         };
 
         mockCheepService.Setup(s => s.GetCheepsFromAuthorName(It.IsAny<string>(), It.IsAny<int>()))
@@ -98,7 +98,7 @@ public class UserTimelineModelTests
         var mockUserService = new Mock<IChirpUserService>();
         var expectedCheeps = new List<CheepDTO>
         {
-            new("Special user message", "2023-01-01", user, 0, null, new List<CheepDTO>())
+            new("Special user message", "2023-01-01", user, 0, null, new List<CheepDTO>(), "0")
         };
 
         mockCheepService.Setup(s => s.GetCheepsFromAuthorName(It.IsAny<string>(), It.IsAny<int>()))

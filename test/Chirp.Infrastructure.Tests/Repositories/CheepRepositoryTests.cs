@@ -203,4 +203,67 @@ public class CheepRepositoryTests
 
         Assert.Throws<DbUpdateException>(cheepRepo.EditCheepById(nonexistentCheepId, editedText).GetAwaiter().GetResult);
     }
+
+    [Fact]
+    public async Task LikeCheep_WhenCalled_AddsUserToUsersWhoLiked()
+    {
+        var author = new ChirpUser { Id = "1", UserName = "Author", Email = "author@test.com" };
+        var liker = new ChirpUser { Id = "2", UserName = "Liker", Email = "liker@test.com", LikedCheeps = new List<Cheep>() };
+        var cheep = new Cheep
+        {
+            CheepId = 1,
+            AuthorId = "1",
+            Author = author,
+            Text = "Test cheep",
+            TimeStamp = DateTime.Now,
+            UsersWhoLiked = new List<ChirpUser>()
+        };
+        var cheeps = new List<Cheep> { cheep };
+        var users = new List<ChirpUser> { author, liker };
+
+        var mockContext = new Mock<IChirpDbContext>();
+        var mockCheepSet = cheeps.BuildMockDbSet();
+        var mockUserSet = users.BuildMockDbSet();
+        mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
+        mockContext.Setup(c => c.ChirpUsers).Returns(mockUserSet.Object);
+
+        var repository = new CheepRepository(mockContext.Object);
+
+        await repository.LikeCheep(cheep.CheepId, liker.Id);
+
+        Assert.Contains(liker, cheep.UsersWhoLiked);
+        Assert.Contains(cheep, liker.LikedCheeps);
+    }
+
+    [Fact]
+    public async Task UnlikeCheep_WhenCalled_RemovesUserFromUsersWhoLiked()
+    {
+        var author = new ChirpUser { Id = "1", UserName = "Author", Email = "author@test.com" };
+        var liker = new ChirpUser { Id = "2", UserName = "Liker", Email = "liker@test.com", LikedCheeps = new List<Cheep>() };
+        var cheep = new Cheep
+        {
+            CheepId = 1,
+            AuthorId = "1",
+            Author = author,
+            Text = "Test cheep",
+            TimeStamp = DateTime.Now,
+            UsersWhoLiked = new List<ChirpUser> { liker }
+        };
+        liker.LikedCheeps.Add(cheep);
+        var cheeps = new List<Cheep> { cheep };
+        var users = new List<ChirpUser> { author, liker };
+
+        var mockContext = new Mock<IChirpDbContext>();
+        var mockCheepSet = cheeps.BuildMockDbSet();
+        var mockUserSet = users.BuildMockDbSet();
+        mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
+        mockContext.Setup(c => c.ChirpUsers).Returns(mockUserSet.Object);
+
+        var repository = new CheepRepository(mockContext.Object);
+
+        await repository.UnLikeCheep(cheep.CheepId, liker.Id);
+
+        Assert.DoesNotContain(liker, cheep.UsersWhoLiked);
+        Assert.DoesNotContain(cheep, liker.LikedCheeps);
+    }
 }
