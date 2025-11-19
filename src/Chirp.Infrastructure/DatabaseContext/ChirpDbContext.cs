@@ -45,6 +45,9 @@ namespace Chirp.Infrastructure.DatabaseContext
                     .HasMany(c => c.Replies)
                     .WithOne(c => c.ParentCheep)
                     .OnDelete(DeleteBehavior.Cascade);
+                    
+                entity.HasMany(u => u.UsersWhoLiked)
+                      .WithMany(u => u.LikedCheeps);
             });
 
             modelBuilder.Entity<ChirpUser>(entity =>
@@ -60,6 +63,9 @@ namespace Chirp.Infrastructure.DatabaseContext
                         j => j.HasOne<ChirpUser>().WithMany()
                             .HasForeignKey("BId").OnDelete(DeleteBehavior.NoAction)
                     );
+
+                entity.HasMany(u => u.LikedCheeps)
+                      .WithMany(u => u.UsersWhoLiked);
             });
         }
     }

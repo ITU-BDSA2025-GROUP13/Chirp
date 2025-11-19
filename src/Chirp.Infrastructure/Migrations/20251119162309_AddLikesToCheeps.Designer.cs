@@ -3,6 +3,7 @@ using System;
 using Chirp.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chirp.Infrastructure.Migrations
 {
     [DbContext(typeof(ChirpDbContext))]
-    partial class ChirpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251119162309_AddLikesToCheeps")]
+    partial class AddLikesToCheeps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -44,9 +47,6 @@ namespace Chirp.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("author_id");
 
-                    b.Property<int?>("ParentCheepCheepId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(160)
@@ -60,8 +60,6 @@ namespace Chirp.Infrastructure.Migrations
                     b.HasKey("CheepId");
 
                     b.HasIndex("AuthorId");
-
-                    b.HasIndex("ParentCheepCheepId");
 
                     b.ToTable("message", null, t =>
                         {
@@ -269,21 +267,6 @@ namespace Chirp.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("UserFollowedByList", b =>
-                {
-                    b.Property<string>("AId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("BId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("AId", "BId");
-
-                    b.HasIndex("BId");
-
-                    b.ToTable("UserFollowedByList");
-                });
-                
             modelBuilder.Entity("CheepChirpUser", b =>
                 {
                     b.HasOne("Chirp.Core.Models.Cheep", null)
@@ -307,14 +290,7 @@ namespace Chirp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Chirp.Core.Models.Cheep", "ParentCheep")
-                        .WithMany("Replies")
-                        .HasForeignKey("ParentCheepCheepId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.Navigation("Author");
-
-                    b.Navigation("ParentCheep");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -365,26 +341,6 @@ namespace Chirp.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Chirp.Core.Models.Cheep", b =>
-                {
-                    b.Navigation("Replies");
-                });
-                
-            modelBuilder.Entity("UserFollowedByList", b =>
-                {
-                    b.HasOne("Chirp.Core.Models.ChirpUser", null)
-                        .WithMany()
-                        .HasForeignKey("AId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Chirp.Core.Models.ChirpUser", null)
-                        .WithMany()
-                        .HasForeignKey("BId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
