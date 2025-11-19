@@ -12,11 +12,11 @@ public class FollowCacheTests
         var followedUsers = new[] { "alice", "bob" };
 
         // Act
-        FollowCache.Instance.SetFollowedUsers(follower, followedUsers);
+        CheepDataCache.Instance.SetFollowedUsers(follower, followedUsers);
 
         // Assert
-        Assert.True(FollowCache.Instance.IsFollowing(follower, "alice"));
-        Assert.True(FollowCache.Instance.IsFollowing(follower, "bob"));
+        Assert.True(CheepDataCache.Instance.UserIsFollowing(follower, "alice"));
+        Assert.True(CheepDataCache.Instance.UserIsFollowing(follower, "bob"));
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class FollowCacheTests
         var follower = Guid.NewGuid().ToString();
 
         // Act
-        var result = FollowCache.Instance.IsFollowing(follower, "charlie");
+        var result = CheepDataCache.Instance.UserIsFollowing(follower, "charlie");
 
         // Assert
         Assert.False(result);

@@ -11,6 +11,12 @@ namespace Chirp.Web.Tests.Pages;
 
 public class UserTimelineModelTests
 {
+    private UserManager<ChirpUser> CreateMockUserManager()
+    {
+        var userStore = new Mock<IUserStore<ChirpUser>>();
+        return new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+    }
+
     [Fact]
     public void UserTimelineModel_WhenConstructed_InitializesEmptyCheepList()
     {

@@ -11,7 +11,7 @@
                 <strong><a href="/user/@Model.AuthorName">@Model.AuthorName</a></strong>
                 @if (User.Identity is { IsAuthenticated: true } && User.Identity.Name != null && @Model.AuthorName != User.Identity.Name)
                 {
-                    @if (FollowCache.Instance.IsFollowing(User.Identity.Name, @Model.AuthorName)) 
+                    @if (CheepDataCache.Instance.UserIsFollowing(User.Identity.Name, @Model.AuthorName)) 
                     {
                         <!-- Unfollow Button -->
                         <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;">
@@ -29,7 +29,31 @@
                     }
                 }
             </div>
-            <small>@Model.DatePosted</small>
+            <small>&mdash; @Model.DatePosted</small>
+            <small>&mdash; @Model.Likes</small>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <div style="flex: 0 0 10%; margin: 0;">
+                    <form method="post" asp-page-handler="Like"
+                        style="flex: 0 0 15%;">
+                        <input name="CheepIdForLike" type="hidden" value="@Model.CheepId" ,>
+                        <input type="submit" value="Like" style="float:right; background:transparent; border-style:none; color:#50CC6E; cursor:pointer;">
+                    </form>
+                </div>
+            }
+            <form method="post" asp-page-handler="Like" style="flex: 0 0 15%;">
+                <input name="CheepIdForLike" type="hidden" value="@Model.CheepId">
+                @if (CheepDataCache.Instance.UserHasLiked(User.Identity.Name, Model.CheepId))
+                {
+                <input type="submit" value="👎 Unlike"
+                    style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer; font-weight:bold;">
+                }
+                else
+                {
+                <input type="submit" value="👍 Like"
+                    style="float:right; background:transparent; border-style:none; color:#50CC6E; cursor:pointer;">
+                }
+            </form>
         </div>
         <div>
             <p id="cheep_text" style="display:block;">@Model.Text</p>

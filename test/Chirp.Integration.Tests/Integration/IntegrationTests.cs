@@ -210,8 +210,13 @@ public class IntegrationTests
         {
             throw new InvalidOperationException("cheep service or chirp user service is not available.");
         }
+<<<<<<< HEAD
         var pageModel = CreateUserTimelineModel(_cheepService, _chirpUserService, _name3);
 
+=======
+        var pageModel = new UserTimelineModel(_cheepService, _userManager);
+        pageModel.Author = _name3;
+>>>>>>> 2698422 (feat: add likes to ui)
         pageModel.CurrentPage = 0;
         pageModel.OnGet();
         Assert.NotNull(pageModel.Cheeps);
