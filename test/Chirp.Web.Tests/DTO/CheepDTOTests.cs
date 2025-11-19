@@ -8,12 +8,13 @@ public class CheepDTOTests
     public void CheepDTOTest()
     {
         var cheepDto = new CheepDTO(
-            "Test message",
-            "2023-01-01 12:00:00",
-            "TestAuthor",
-            0,
-            1,
-            new List<CheepDTO>()
+            Text: "Test message",
+            DatePosted: "2023-01-01 12:00:00",
+            AuthorName: "TestAuthor",
+            CheepId: 0,
+            ParentCheepID: 1,
+            Replies: new List<CheepDTO>(),
+            Likes: "0"
         );
 
         Assert.Equal("Test message", cheepDto.Text);
@@ -27,12 +28,13 @@ public class CheepDTOTests
     public void CheepDTOEmptyStringsTest()
     {
         var cheepDto = new CheepDTO(
-            "",
-            "",
-            "",
-            0,
-            1,
-            new List<CheepDTO>()
+            Text: "",
+            DatePosted: "",
+            AuthorName: "",
+            CheepId: 0,
+            ParentCheepID: 1,
+            Replies: new List<CheepDTO>(),
+            Likes: "0"
         );
 
         Assert.Empty(cheepDto.Text);
@@ -48,12 +50,13 @@ public class CheepDTOTests
         var longAuthor = new string('b', 100);
 
         var cheepDto = new CheepDTO(
-            longText,
-            longDate,
-            longAuthor,
-            0,
-            1,
-            new List<CheepDTO>()
+            Text: longText,
+            DatePosted: longDate,
+            AuthorName: longAuthor,
+            CheepId: 0,
+            ParentCheepID: 1,
+            Replies: new List<CheepDTO>(),
+            Likes: "0"
         );
 
         Assert.Equal(500, cheepDto.Text.Length);
@@ -65,21 +68,23 @@ public class CheepDTOTests
     public void CheepDTOToStringTest()
     {
         var replyDTO = new CheepDTO(
-            "Hello World",
-            "2023-01-01",
-            "TestUser",
-            0,
-            1,
-            new List<CheepDTO>()
+            Text: "Hello World",
+            DatePosted: "2023-01-01",
+            AuthorName: "TestUser",
+            CheepId: 0,
+            ParentCheepID: 1,
+            Replies: new List<CheepDTO>(),
+            Likes: "0"
         );
 
         var cheepDto = new CheepDTO(
-            "Hello World",
-            "2023-01-01",
-            "TestUser",
-            0,
-            1,
-            new List<CheepDTO> { replyDTO }
+            Text: "Hello World",
+            DatePosted: "2023-01-01",
+            AuthorName: "TestUser",
+            CheepId: 0,
+            ParentCheepID: 1,
+            Replies: new List<CheepDTO> { replyDTO },
+            Likes: "0"
         );
 
         var result = cheepDto.ToString();

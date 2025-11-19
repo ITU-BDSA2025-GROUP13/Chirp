@@ -51,7 +51,8 @@ namespace Chirp.Infrastructure.Services
                         cheep.Author.UserName ?? DeletedUser,
                         cheep.CheepId,
                         cheep.ParentCheep?.CheepId,
-                        ToDTO(cheep.Replies)
+                        ToDTO(cheep.Replies),
+                        cheep.UsersWhoLiked.Count.ToString()
                     )
                 );
             }
@@ -115,7 +116,8 @@ namespace Chirp.Infrastructure.Services
                 AuthorId = authorID,
                 Author = author,
                 Text = text,
-                TimeStamp = DateTime.Now
+                TimeStamp = DateTime.Now,
+                UsersWhoLiked = new List<ChirpUser>()
             };
             cheepRepo.InsertCheep(cheep).GetAwaiter().GetResult();
         }
@@ -153,6 +155,16 @@ namespace Chirp.Infrastructure.Services
             ChirpUser? author = userManager.FindByNameAsync(authorName).GetAwaiter().GetResult();
             if (author == null) throw new Exception($"No such author exists with name {authorName}");
             return ToDTO(cheepRepo.GetAllAuthorCheeps(author).GetAwaiter().GetResult());
+        }
+
+        public void LikeCheep(int cheepId, string userId)
+        {
+            cheepRepo.LikeCheep(cheepId, userId).GetAwaiter().GetResult();
+        }
+
+        public void UnLikeCheep(int cheepId, string userId)
+        {
+            cheepRepo.UnLikeCheep(cheepId, userId).GetAwaiter().GetResult();
         }
     }
 }
