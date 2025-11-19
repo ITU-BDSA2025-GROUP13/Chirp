@@ -41,7 +41,18 @@ namespace Chirp.Core.Models
         /// </summary>
         public Cheep? ParentCheep { get; set; }
 
+        /// <summary>
         /// The replies to this Cheep 
+        /// </summary>
         public List<Cheep> Replies { get; set; } = [];
+        
+        /// //TODO this might be needed if performance takes a hit
+        /// public int Likes { get; set; } = 0;
+
+        /// <summary>
+        /// list of users who have liked this cheep.
+        /// </summary>
+        public ICollection<ChirpUser> UsersWhoLiked { get; set; } = new List<ChirpUser>();
     }
 }
+
