@@ -87,6 +87,7 @@ namespace Chirp.Web
         /// <summary>
         /// Returns the path to the database as specified by CHIRPDBPATH
         /// or falls back to /tmp/chirp.db
+        /// Also creates the parent directory of the database
         /// </summary>
         /// <returns>
         /// $CHIRPDBPATH or $TMPDIR/chirp.db
@@ -107,8 +108,6 @@ namespace Chirp.Web
                 {
                     Directory.CreateDirectory(dbDir);
                 }
-
-                File.Create(dbPath);
             }
             return dbPath;
         }
