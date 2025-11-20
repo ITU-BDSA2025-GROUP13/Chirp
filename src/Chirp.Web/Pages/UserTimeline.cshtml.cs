@@ -7,6 +7,7 @@ namespace Chirp.Web.Pages;
 public class UserTimelineModel : PageModel
 {
     private readonly ICheepService _service;
+    private readonly IChirpUserService _chirpUserService;
     public List<CheepDTO> Cheeps { get; set; }
     public bool HasNextPage { get; set; }
     public bool HasPreviousPage => CurrentPage > 0;
@@ -20,6 +21,10 @@ public class UserTimelineModel : PageModel
 
     [BindProperty]
     public int CheepIdForDeletion { get; set; }
+    [BindProperty]
+    public string? ToggleFollowForUserId { get; set; }
+
+    public List<string>? FollowCache { get; set; }
 
     [BindProperty]
     public int CheepIdForEditing { get; set; }
@@ -27,14 +32,25 @@ public class UserTimelineModel : PageModel
     [BindProperty]
     public string? EditedCheepText { get; set; }
 
-    public UserTimelineModel(ICheepService service)
+    
+    public UserTimelineModel(ICheepService service, IChirpUserService chirpUserService)
     {
         _service = service;
+        _chirpUserService = chirpUserService;
         Cheeps = new List<CheepDTO>();
     }
 
     public ActionResult OnGet()
     {
+        if (User.Identity?.Name != null)
+        {
+            FollowCache = _service.GetListOfFollowerNames(User.Identity.Name);
+        }
+        else
+        {
+            FollowCache = new List<string>();
+        }
+
         Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
         HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
         return Page();
@@ -43,6 +59,14 @@ public class UserTimelineModel : PageModel
     public ActionResult OnPostDelete()
     {
         _service.DeleteCheep(CheepIdForDeletion);
+        return RedirectToPage("/Public");
+    }
+
+    public ActionResult OnPostFollow()
+    {
+        if (User.Identity?.Name != null && ToggleFollowForUserId != null)
+            _chirpUserService.ToggleUserFollowing(User.Identity.Name, ToggleFollowForUserId);
+
         return RedirectToPage("/Public");
     }
 

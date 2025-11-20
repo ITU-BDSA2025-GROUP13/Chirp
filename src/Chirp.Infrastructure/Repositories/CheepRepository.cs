@@ -53,6 +53,33 @@ namespace Chirp.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Cheep>> GetPrivateTimelineCheeps(ChirpUser user, int pagenum = 0)
+        {
+            List<ChirpUser> fList = await GetListOfFollowers(user);
+            fList.Add(user); // add own cheeps to private timeline
+
+            return await dbContext.Cheeps
+                .Include(m => m.Author)
+                .Where(m => fList.Contains(m.Author))
+                .OrderByDescending(m => m.TimeStamp)
+                .Skip(pagenum * _readLimit)
+                .Take(_readLimit)
+                .ToListAsync();
+        }
+
+        public async Task<List<ChirpUser>> GetListOfFollowers(ChirpUser user)
+        {
+            await dbContext.ChirpUsers
+                .Entry(user)
+                .Collection(u => u.FollowsList)
+                .LoadAsync();
+
+            // might not be necessary, but keeping it just in case.
+            await dbContext.SaveChangesAsync();
+
+            return user.FollowsList;
+        }
+
         public async Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 0)
         {
             return await dbContext.Cheeps
