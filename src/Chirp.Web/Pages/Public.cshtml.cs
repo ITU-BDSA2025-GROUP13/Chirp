@@ -3,7 +3,6 @@ using Chirp.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Build.Framework;
 
 namespace Chirp.Web.Pages;
 
@@ -26,6 +25,8 @@ public class PublicModel : PageModel
     public int CheepIdForDeletion { get; set; }
     [BindProperty]
     public string? ToggleFollowForUserId { get; set; }
+    public List<string>? FollowCache { get; set; }
+
 
     [BindProperty]
     public CheepReply? Reply { get; set; }
@@ -46,6 +47,14 @@ public class PublicModel : PageModel
 
     public ActionResult OnGet()
     {
+        if (User.Identity?.Name != null)
+        {
+            FollowCache = _service.GetListOfFollowerNames(User.Identity.Name);
+        }
+        else
+        {
+            FollowCache = new List<string>();
+        }
         Cheeps = _service.GetMainPageCheeps(CurrentPage);
         HasNextPage = _service.GetMainPageCheeps(CurrentPage + 1).Any();
         return Page();

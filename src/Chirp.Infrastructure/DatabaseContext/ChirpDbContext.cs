@@ -51,6 +51,7 @@ namespace Chirp.Infrastructure.DatabaseContext
             {
                 entity.Property(u => u.Id).ValueGeneratedOnAdd();
                 entity.HasIndex(u => u.UserName).IsUnique();
+                // Both FollowsList and FollowedByList are both required, otherwise Migration will fail for some reason
                 entity.HasMany(u => u.FollowsList).WithMany(u => u.FollowedByList)
                     .UsingEntity<Dictionary<string, object>>(
                         "UserFollowedByList",

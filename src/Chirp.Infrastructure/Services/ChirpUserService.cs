@@ -1,8 +1,6 @@
 using Chirp.Core.Models;
 using Chirp.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Chirp.Infrastructure.Services;
 
@@ -26,12 +24,12 @@ public class ChirpUserService(IChirpUserRepository chirpUserRepo, UserManager<Ch
 
         if (chirpUserRepo.ContainsRelation(userA, userB))
         {
-            Console.WriteLine($"Add follower: {userA.UserName} -> {userB.UserName}");
+            Console.WriteLine($"Remove follower: {userA.UserName} -> {userB.UserName}");
             _ = chirpUserRepo.RemoveFromFollowerList(userA, userB);
         }
         else
         {
-            Console.WriteLine($"Remove follower: {userA.UserName} -> {userB.UserName}");
+            Console.WriteLine($"Add follower: {userA.UserName} -> {userB.UserName}");
             _ = chirpUserRepo.AddToFollowerList(userA, userB);
         }
     }

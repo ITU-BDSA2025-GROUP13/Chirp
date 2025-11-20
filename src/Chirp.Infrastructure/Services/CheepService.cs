@@ -10,7 +10,24 @@ namespace Chirp.Infrastructure.Services
         public List<CheepDTO> GetMainPageCheeps(int page = 0)
         {
             List<Cheep> cheeps = cheepRepo.GetMainPage(page).GetAwaiter().GetResult().ToList();
+<<<<<<< HEAD
             return ToDTO(cheeps);
+=======
+            List<CheepDTO> DTOCheeps = new List<CheepDTO>();
+            foreach (Cheep cheep in cheeps)
+            {
+                DTOCheeps.Add(
+                    new CheepDTO(
+                        cheep.Text,
+                        cheep.TimeStamp.ToString(),
+                        cheep.Author.UserName ?? DeletedUser,
+                        cheep.CheepId
+                    )
+                );
+            }
+
+            return DTOCheeps;
+>>>>>>> 7d454c7 (feat: following now has UI elements and backend was updated slightly.)
         }
         public List<CheepDTO> GetCheepsFromAuthorName(string authorName, int pagenum = 0)
         {
@@ -55,6 +72,55 @@ namespace Chirp.Infrastructure.Services
             return DTOCheeps;
         }
 
+<<<<<<< HEAD
+=======
+        public async Task<List<ChirpUser>> GetListOfFollowers(string username)
+        {
+            ChirpUser? user = userManager.FindByNameAsync(username).GetAwaiter().GetResult();
+            if (user == null)
+            {
+                return new List<ChirpUser>();
+            }
+            return await cheepRepo.GetListOfFollowers(user);
+        }
+        public List<string> GetListOfFollowerNames(string username)
+        {
+            List<ChirpUser> userlist = GetListOfFollowers(username).GetAwaiter().GetResult();
+            if (!userlist.Any())
+            {
+                return new List<string>();
+            }
+
+            List<string> followerNames = new List<string>();
+            foreach (ChirpUser following in userlist)
+            {
+                if (following.UserName != null)
+                {
+                    followerNames.Add(following.UserName);
+                }
+            }
+
+            return followerNames;
+        }
+
+        public List<CheepDTO> GetOwnPrivateTimeline(string username, int pagenum = 0)
+        {
+            ChirpUser? user = userManager.FindByNameAsync(username).GetAwaiter().GetResult();
+
+            if (user == null) return [];
+
+            IEnumerable<Cheep> cheeps = cheepRepo.GetPrivateTimelineCheeps(user, 0).GetAwaiter().GetResult();
+            return ToDTO(cheeps);
+        }
+
+        public string GetAuthorIDFromName(string authorName)
+        {
+            ChirpUser? author = userManager.FindByNameAsync(authorName).GetAwaiter().GetResult();
+            if (author == null) throw new Exception($"No such author exists with name {authorName}");
+            return author.Id;
+        }
+
+>>>>>>> 7d454c7 (feat: following now has UI elements and backend was updated slightly.)
         public void PostCheep(string text, string authorID)
         {
             ChirpUser? author = userManager.FindByIdAsync(authorID).GetAwaiter().GetResult();
