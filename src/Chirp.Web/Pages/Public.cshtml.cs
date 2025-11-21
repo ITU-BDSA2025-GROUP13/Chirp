@@ -130,12 +130,20 @@ public class PublicModel : PageModel
         if (!IsValidMessage(EditedCheepText))
         {
             Cheeps = _service.GetMainPageCheeps(CurrentPage);
-            return Page();
+            if (CurrentPage == 0)
+            {
+                return RedirectToPage("/Public");
+            }
+            return RedirectToPage($"/Public?page={CurrentPage}");
         }
 
         _service.EditCheep(CheepIdForEditing, EditedCheepText!);
         Cheeps = _service.GetMainPageCheeps(CurrentPage);
-        return Page();
+        if (CurrentPage == 0)
+        {
+            return RedirectToPage("/Public");
+        }
+        return RedirectToPage($"/Public?page={CurrentPage}");
     }
 
     public ActionResult OnPostReply()

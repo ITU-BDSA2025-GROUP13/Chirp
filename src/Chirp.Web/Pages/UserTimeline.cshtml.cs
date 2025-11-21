@@ -83,12 +83,21 @@ public class UserTimelineModel : PageModel
         if (!IsValidMessage(EditedCheepText))
         {
             Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
-            return Page();
+            if (CurrentPage == 0)
+            {
+                return LocalRedirect($"/user/{Author}");
+            }
+            return LocalRedirect($"/user/{Author}?page={CurrentPage}");
         }
 
         _service.EditCheep(CheepIdForEditing, EditedCheepText!);
         Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
-        return Page();
+        if (CurrentPage == 0)
+        {
+            return LocalRedirect($"/user/{Author}");
+        }
+        return LocalRedirect($"/user/{Author}?page={CurrentPage}");
+
     }
 
     public bool IsValidMessage(string? message)
