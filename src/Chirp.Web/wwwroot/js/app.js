@@ -1,4 +1,17 @@
 /**
+ * Toggles the reply UI
+ * @param cheepId - the ID to query for
+ */
+function toggleReply(cheepId) {
+    const element = document.getElementById('reply-form-' + cheepId);
+    if (!element)
+        return;
+    if (element.style.display === 'none' || element.style.display === '')
+        element.style.display = 'block';
+    else
+        element.style.display = 'none';
+}
+/**
  * @param {string} cheepId - the cheepId to query for
  */
 function editCheep(cheepId) {

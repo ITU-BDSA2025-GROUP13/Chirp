@@ -9,30 +9,36 @@ public class UserTimelineModel : PageModel
     private readonly ICheepService _service;
     private readonly IChirpUserService _chirpUserService;
     public List<CheepDTO> Cheeps { get; set; }
+    public string? ErrorMessage { get; set; }
+
+    // Pagination
     public bool HasNextPage { get; set; }
     public bool HasPreviousPage => CurrentPage > 0;
-    public string? ErrorMessage { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public int CurrentPage { get; set; }
 
+    // Author?
     [BindProperty(SupportsGet = true)]
     public string Author { get; set; } = null!;
 
+    // Deleting
     [BindProperty]
     public int CheepIdForDeletion { get; set; }
+    
+    // Following
     [BindProperty]
     public string? ToggleFollowForUserId { get; set; }
 
-    public List<string>? FollowCache { get; set; }
 
+    // Editing
     [BindProperty]
     public int CheepIdForEditing { get; set; }
-
+    
     [BindProperty]
     public string? EditedCheepText { get; set; }
 
-    
+
     public UserTimelineModel(ICheepService service, IChirpUserService chirpUserService)
     {
         _service = service;
@@ -44,12 +50,10 @@ public class UserTimelineModel : PageModel
     {
         if (User.Identity?.Name != null)
         {
-            FollowCache = _service.GetListOfFollowerNames(User.Identity.Name);
+            var followedUsers = _service.GetListOfNamesOfFollowedUsers(User.Identity.Name);
+            FollowCache.Instance.SetFollowedUsers(User.Identity.Name, followedUsers);
         }
-        else
-        {
-            FollowCache = new List<string>();
-        }
+        
         if (Author == User.Identity?.Name)
         {
             Cheeps = _service.GetOwnPrivateTimeline(Author, CurrentPage);
@@ -65,7 +69,7 @@ public class UserTimelineModel : PageModel
     public ActionResult OnPostDelete()
     {
         _service.DeleteCheep(CheepIdForDeletion);
-        return RedirectToPage("/Public");
+        return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
 
     public ActionResult OnPostFollow()
@@ -73,7 +77,7 @@ public class UserTimelineModel : PageModel
         if (User.Identity?.Name != null && ToggleFollowForUserId != null)
             _chirpUserService.ToggleUserFollowing(User.Identity.Name, ToggleFollowForUserId);
 
-        return RedirectToPage("/Public");
+        return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
 
     public ActionResult OnPostEdit()

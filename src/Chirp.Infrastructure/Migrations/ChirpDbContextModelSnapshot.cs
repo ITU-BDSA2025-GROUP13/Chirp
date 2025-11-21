@@ -338,11 +338,11 @@ namespace Chirp.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("Chirp.Core.Models.Cheep", b =>
                 {
                     b.Navigation("Replies");
-=======
+                });
+                
             modelBuilder.Entity("UserFollowedByList", b =>
                 {
                     b.HasOne("Chirp.Core.Models.ChirpUser", null)
@@ -356,7 +356,6 @@ namespace Chirp.Infrastructure.Migrations
                         .HasForeignKey("BId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
->>>>>>> bf83f17 (feat: deletion button now turns into follow button on chepes not written by the authenticated users themselves)
                 });
 
             modelBuilder.Entity("Chirp.Core.Models.ChirpUser", b =>

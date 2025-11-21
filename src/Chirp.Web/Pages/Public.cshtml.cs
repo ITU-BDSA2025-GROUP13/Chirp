@@ -12,22 +12,26 @@ public class PublicModel : PageModel
     private readonly IChirpUserService _chirpUserService;
     private readonly UserManager<ChirpUser> _userManager;
     public List<CheepDTO> Cheeps { get; set; }
+
+    // Pagination
     public bool HasNextPage { get; set; }
     public bool HasPreviousPage => CurrentPage > 0;
 
     [BindProperty(SupportsGet = true)]
     public int CurrentPage { get; set; }
 
+    // Posting
     [BindProperty]
     public string? CheepMessage { get; set; }
     public string? ErrorMessage { get; set; }
+
+    // Deleting
     [BindProperty]
     public int CheepIdForDeletion { get; set; }
     [BindProperty]
     public string? ToggleFollowForUserId { get; set; }
-    public List<string>? FollowCache { get; set; }
 
-
+    // Replying
     [BindProperty]
     public CheepReply? Reply { get; set; }
 
@@ -49,12 +53,10 @@ public class PublicModel : PageModel
     {
         if (User.Identity?.Name != null)
         {
-            FollowCache = _service.GetListOfFollowerNames(User.Identity.Name);
+            var followedUsers = _service.GetListOfNamesOfFollowedUsers(User.Identity.Name);
+            FollowCache.Instance.SetFollowedUsers(User.Identity.Name, followedUsers);
         }
-        else
-        {
-            FollowCache = new List<string>();
-        }
+
         Cheeps = _service.GetMainPageCheeps(CurrentPage);
         HasNextPage = _service.GetMainPageCheeps(CurrentPage + 1).Any();
         return Page();
@@ -168,7 +170,7 @@ public class PublicModel : PageModel
             return Page();
         }
 
-        if (Reply == null || Reply.Reply == null)
+        if (Reply == null || Reply.Text == null)
         {
             ErrorMessage = "Reply not found!";
             CurrentPage = 0;
@@ -177,7 +179,7 @@ public class PublicModel : PageModel
             return Page();
         }
 
-        _service.ReplyToCheep(Reply.CheepID, Reply.Reply, user);
+        _service.ReplyToCheep(Reply.CheepID, Reply.Text, user);
         return RedirectToPage("/Public");
     }
 }
@@ -189,5 +191,5 @@ public class PublicModel : PageModel
 public class CheepReply
 {
     public int CheepID { get; set; }
-    public string? Reply { get; set; }
+    public string? Text { get; set; }
 }

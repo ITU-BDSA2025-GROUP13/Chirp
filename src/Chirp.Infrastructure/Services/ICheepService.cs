@@ -30,7 +30,7 @@ namespace Chirp.Infrastructure.Services
         /// </summary>
         /// <param name="username">Given user to check following relations</param>
         /// <returns>List of usernames</returns>
-        public List<string> GetListOfFollowerNames(string username);
+        public List<string> GetListOfNamesOfFollowedUsers(string username);
 
         /// <summary>
         /// Returns at most N Cheeps from author. Will create a new author on request if no author exist.

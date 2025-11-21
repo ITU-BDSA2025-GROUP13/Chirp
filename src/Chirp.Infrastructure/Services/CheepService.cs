@@ -10,31 +10,16 @@ namespace Chirp.Infrastructure.Services
         public List<CheepDTO> GetMainPageCheeps(int page = 0)
         {
             List<Cheep> cheeps = cheepRepo.GetMainPage(page).GetAwaiter().GetResult().ToList();
-<<<<<<< HEAD
             return ToDTO(cheeps);
-=======
-            List<CheepDTO> DTOCheeps = new List<CheepDTO>();
-            foreach (Cheep cheep in cheeps)
-            {
-                DTOCheeps.Add(
-                    new CheepDTO(
-                        cheep.Text,
-                        cheep.TimeStamp.ToString(),
-                        cheep.Author.UserName ?? DeletedUser,
-                        cheep.CheepId
-                    )
-                );
-            }
-
-            return DTOCheeps;
->>>>>>> 7d454c7 (feat: following now has UI elements and backend was updated slightly.)
         }
+
         public List<CheepDTO> GetCheepsFromAuthorName(string authorName, int pagenum = 0)
         {
             ChirpUser? author = userManager.FindByNameAsync(authorName).GetAwaiter().GetResult();
             if (author == null) return [];
             return ToDTO(cheepRepo.GetAuthorPage(author, pagenum).GetAwaiter().GetResult());
         }
+
         public List<CheepDTO> GetCheepsFromAuthorID(string authorID, int pagenum = 0)
         {
             ChirpUser? author = userManager.FindByIdAsync(authorID.ToString()).GetAwaiter().GetResult();
@@ -43,6 +28,7 @@ namespace Chirp.Infrastructure.Services
             return ToDTO(cheepRepo.GetAuthorPage(author, pagenum).GetAwaiter().GetResult());
 
         }
+
         public List<CheepDTO> GetCheepsFromAuthorEmail(string authorEmail, int pagenum = 0)
         {
             ChirpUser? author = userManager.FindByEmailAsync(authorEmail).GetAwaiter().GetResult();
@@ -72,8 +58,6 @@ namespace Chirp.Infrastructure.Services
             return DTOCheeps;
         }
 
-<<<<<<< HEAD
-=======
         public async Task<List<ChirpUser>> GetListOfFollowers(string username)
         {
             ChirpUser? user = userManager.FindByNameAsync(username).GetAwaiter().GetResult();
@@ -83,7 +67,8 @@ namespace Chirp.Infrastructure.Services
             }
             return await cheepRepo.GetListOfFollowers(user);
         }
-        public List<string> GetListOfFollowerNames(string username)
+
+        public List<string> GetListOfNamesOfFollowedUsers(string username)
         {
             List<ChirpUser> userlist = GetListOfFollowers(username).GetAwaiter().GetResult();
             if (!userlist.Any())
@@ -120,7 +105,6 @@ namespace Chirp.Infrastructure.Services
             return author.Id;
         }
 
->>>>>>> 7d454c7 (feat: following now has UI elements and backend was updated slightly.)
         public void PostCheep(string text, string authorID)
         {
             ChirpUser? author = userManager.FindByIdAsync(authorID).GetAwaiter().GetResult();
