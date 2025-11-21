@@ -57,5 +57,11 @@ namespace Chirp.Infrastructure.Repositories
         /// <returns>A task representing the asynchronous operation.</returns>
         /// <exception cref="Exception">Thrown when the cheepId does not match any existing cheep in the database.</exception>
         Task EditCheepById(int cheepId, string newText);
+        /// <summary>
+        /// Retrieves a collection of all cheeps posted by a given author ordered by publication date (newest first).
+        /// </summary>
+        /// <param name="author">The author of the cheeps to retrieve.</param>
+        /// <returns>A task containing the author with their cheeps, or null if the author is not found.</returns>
+        Task<IEnumerable<Cheep>> GetAllAuthorCheeps(ChirpUser author);
     }
 }

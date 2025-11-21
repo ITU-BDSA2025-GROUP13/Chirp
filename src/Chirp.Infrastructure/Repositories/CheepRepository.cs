@@ -109,6 +109,14 @@ namespace Chirp.Infrastructure.Repositories
                 .Include(c => c.ParentCheep)
                 .FirstOrDefaultAsync(c => c.CheepId == cheepID);
         }
+
+        public async Task<IEnumerable<Cheep>> GetAllAuthorCheeps(ChirpUser author)
+        {
+            return await dbContext.Cheeps
+                .Where(m => m.AuthorId == author.Id) 
+                .OrderByDescending(m => m.TimeStamp)
+                .ToListAsync();
+        }
         #endregion
     }
 }
