@@ -76,6 +76,7 @@ public class UserTimelineModel : PageModel
 
         Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
         HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
+        LoadLikedCheeps();
         return Page();
     }
 
@@ -110,6 +111,7 @@ public class UserTimelineModel : PageModel
             {
                 return LocalRedirect($"/user/{Author}");
             }
+            LoadLikedCheeps();
             return LocalRedirect($"/user/{Author}?page={CurrentPage}");
         }
 
@@ -153,6 +155,7 @@ public class UserTimelineModel : PageModel
             return Page();
         }
 
+        LoadLikedCheeps();
         _service.ReplyToCheep(Reply.CheepID, Reply.Text, user);
         return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }

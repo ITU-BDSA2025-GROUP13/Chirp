@@ -63,6 +63,7 @@ public class PublicModel : PageModel
 
         Cheeps = _service.GetMainPageCheeps(CurrentPage);
         HasNextPage = _service.GetMainPageCheeps(CurrentPage + 1).Any();
+        LoadLikedCheeps();
         return Page();
     }
 
@@ -88,6 +89,7 @@ public class PublicModel : PageModel
 
         if (!IsValidMessage(CheepMessage))
         {
+            LoadLikedCheeps();
             return Page();
         }
 
@@ -98,6 +100,7 @@ public class PublicModel : PageModel
             CurrentPage = 0;
             Cheeps = _service.GetMainPageCheeps();
             HasNextPage = _service.GetMainPageCheeps(1).Any();
+            LoadLikedCheeps();
             return Page();
         }
 
@@ -108,6 +111,7 @@ public class PublicModel : PageModel
             CurrentPage = 0;
             Cheeps = _service.GetMainPageCheeps();
             HasNextPage = _service.GetMainPageCheeps(1).Any();
+            LoadLikedCheeps();
             return Page();
         }
 
@@ -145,6 +149,7 @@ public class PublicModel : PageModel
             {
                 return RedirectToPage("/Public");
             }
+            LoadLikedCheeps();
             return RedirectToPage($"/Public?page={CurrentPage}");
         }
 
