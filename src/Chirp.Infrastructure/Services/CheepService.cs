@@ -109,7 +109,7 @@ namespace Chirp.Infrastructure.Services
 
             if (user == null) return [];
 
-            IEnumerable<Cheep> cheeps = cheepRepo.GetPrivateTimelineCheeps(user, 0).GetAwaiter().GetResult();
+            IEnumerable<Cheep> cheeps = cheepRepo.GetPrivateTimelineCheeps(user, pagenum).GetAwaiter().GetResult();
             return ToDTO(cheeps);
         }
 
