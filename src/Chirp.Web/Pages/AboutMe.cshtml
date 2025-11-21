@@ -12,20 +12,36 @@
         <h2>About Me</h2>
         <span>This is all the information stored about your <em>Chirp!</em> user:</span>
         <ul style="margin: 0 0 0 0; padding: 0 0 0 2em; line-height: 2;">
-            <li><b>Username</b>: @User.Identity.Name</li>
-            <li><b>E-mail</b>: @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value</li>
-            <li><b>Posted cheeps:</b> <a style="color: #000000;" href="/user/@User.Identity.Name">view timeline</a></li>
+            <li><b>Username</b>: @Model.Username</li>
+            <li><b>E-mail</b>: @Model.Email</li>
         </ul>
         <details style="margin: 0; padding: 0.4em 0 0 1.1em;" open>
-            <summary style=""><b>Followed users:</b></summary>
+            <summary style=""><b>Posted Cheeps:</b></summary>
             <ul style="margin-top: 0.2em; line-height: 1.8; list-style:none; padding-left: 1.5em;">
-                <li>PlaceHolderUser1</li>
-                <li>PlaceHolderUser2</li>
-                <li>PlaceHolderUser3</li>
+                @foreach (var cheep in @Model.Cheeps) 
+                {
+                    <li>
+                        <a style="color: #000000;" href="/user/@Model.Username">
+                            @Model.Username:
+                            @cheep.Text.Substring(0, Math.Min(16, cheep.Text.Length))... 
+                            @cheep.DatePosted
+                        </a>
+                    </li>
+                }
+            </ul>
+        </details>
+        <details style="margin: 0; padding: 0.4em 0 0 1.1em;" open>
+            <summary style=""><b>Followed Users:</b></summary>
+            <ul style="margin-top: 0.2em; line-height: 1.8; list-style:none; padding-left: 1.5em;">
+                @foreach (string username in @Model.FollowedUsers) {
+                    <li>@username</li>
+                }
             </ul>
         </details>
 
         <p>To download all your personal data, press the button below:</p>
-        <button style="margin-bottom: 0.5em">Download ZIP</button>
+        <form method="post">
+            <button type="submit" asp-page-handler="DownloadUserData" style="margin-bottom: 0.5em">Download ZIP</button>
+        </form>
     }
 </div>

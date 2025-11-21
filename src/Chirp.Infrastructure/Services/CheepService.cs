@@ -147,5 +147,12 @@ namespace Chirp.Infrastructure.Services
         {
             cheepRepo.EditCheepById(cheepId, newText).GetAwaiter().GetResult();
         }
+
+        public List<CheepDTO> GetAllCheepsFromAuthorName(string authorName)
+        {
+            ChirpUser? author = userManager.FindByNameAsync(authorName).GetAwaiter().GetResult();
+            if (author == null) throw new Exception($"No such author exists with name {authorName}");
+            return ToDTO(cheepRepo.GetAllAuthorCheeps(author).GetAwaiter().GetResult());
+        }
     }
 }
