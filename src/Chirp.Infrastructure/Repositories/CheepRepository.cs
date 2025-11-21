@@ -45,7 +45,7 @@ namespace Chirp.Infrastructure.Repositories
             return await dbContext.Cheeps
                 .Include(c => c.Author)
                 .Include(c => c.Replies)
-                    .ThenInclude(r => r.Author)
+                .ThenInclude(r => r.Author)
                 .Include(c => c.ParentCheep)
                 .OrderByDescending(c => c.TimeStamp)
                 .Skip(pagenum * _readLimit)

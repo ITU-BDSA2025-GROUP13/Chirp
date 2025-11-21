@@ -1,7 +1,11 @@
-function toggleReply(cheepId: number) {
+/**
+ * Toggles the reply UI
+ * @param cheepId - the ID to query for
+ */
+function toggleReply(cheepId: number): void {
     const element = document.getElementById('reply-form-' + cheepId);
     if (!element) return;
-    if (element.style.display === 'none' || element.style.display === '') element.style.display = 'block'
+    if (element.style.display === 'none' || element.style.display === '') element.style.display = 'block';
     else element.style.display = 'none';
 }
 /**
