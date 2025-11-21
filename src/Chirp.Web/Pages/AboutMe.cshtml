@@ -1,0 +1,31 @@
+﻿@page "/user/{author}/about"
+@using System.Security.Claims
+@model Chirp.Web.Pages.AboutMeModel
+@{
+    ViewData["Title"] = "Chirp!";
+    Layout = "Shared/_Layout";
+}
+
+<div>
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <h2>About Me</h2>
+        <span>This is all the information stored about your <em>Chirp!</em> user:</span>
+        <ul style="margin-top:0; padding-left: 2em; line-height:1.8;">
+            <li><b>Username</b>: @User.Identity.Name</li>
+            <li><b>E-mail</b>: @User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value</li>
+            <li><b>Posted cheeps:</b> <a style="color: #000000;" href="/user/@User.Identity.Name">view timeline</a></li>
+            <li>
+                <span><b>Followed users:</b></span>
+                <ul style="padding-left: 1.5em; line-height:1.5;">
+                    <li>PlaceHolderUser1</li>
+                    <li>PlaceHolderUser2</li>
+                    <li>PlaceHolderUser3</li>
+                </ul>
+            </li>
+        </ul>
+
+        <p>To download all your personal data, press the button below:</p>
+        <button style="margin-bottom: 0.5em">Download ZIP</button>
+    }
+</div>

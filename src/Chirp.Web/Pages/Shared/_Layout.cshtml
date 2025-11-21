@@ -18,7 +18,9 @@
             |
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                <a class="navigation_button" href="/user/@(User.Identity.Name)">My timeline</a>    
+                <a class="navigation_button" href="/user/@(User.Identity.Name)">My Timeline</a>    
+                <a>|</a>
+                <a class="navigation_button" href="/user/@(User.Identity.Name)/about">About Me</a>
                 <a>|</a>
                 <a class="navigation_button" href="/Identity/Account/Logout">Logout [@(User.Identity.Name)]</a>
             }
