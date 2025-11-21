@@ -50,6 +50,12 @@ public class UserTimelineModel : PageModel
         {
             FollowCache = new List<string>();
         }
+        if (Author == User.Identity?.Name)
+        {
+            Cheeps = _service.GetOwnPrivateTimeline(Author, CurrentPage);
+            HasNextPage = _service.GetOwnPrivateTimeline(Author, CurrentPage + 1).Any();
+            return Page();
+        }
 
         Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
         HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
