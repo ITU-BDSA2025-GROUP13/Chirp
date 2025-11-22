@@ -1,11 +1,35 @@
 ﻿@using Chirp.Infrastructure.Services
+@using System.Drawing
 
 @model CheepDTO
 
 <li class="cheep" id="cheep-@Model.CheepId" style="margin-left:@(Model.ParentCheepID.HasValue ? "5px" : "0")">
     <flex-container style="display:flex; flex-direction: column; height: 100%;">
+
         <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <strong><a href="/user/@Model.AuthorName">@Model.AuthorName</a></strong>
+            <div style="display: flex; flex-direction: row;">
+                <strong><a href="/user/@Model.AuthorName">@Model.AuthorName</a></strong>
+                @if (User.Identity is { IsAuthenticated: true } && User.Identity.Name != null && @Model.AuthorName != User.Identity.Name)
+                {
+                    @if (FollowCache.Instance.IsFollowing(User.Identity.Name, @Model.AuthorName)) 
+                    {
+                        <!-- Unfollow Button -->
+                        <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;">
+                            <input name="ToggleFollowForUserId" type="hidden" value="@Model.AuthorName">
+                            <input type="submit" value="Unfollow" style="padding-left: 0.5em; float: left; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer; font-size: 14px; font-weight: normal;">
+                        </form>
+                    }
+                    else
+                    {
+                        <!-- Follow Button -->
+                        <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;">
+                            <input name="ToggleFollowForUserId" type="hidden" value="@Model.AuthorName">
+                            <input type="submit" value="Follow" style="padding-left: 0.5em; loat: left; background:transparent; border-style:none; color:#59b63d; cursor:pointer; font-size: 14px; font-weight: normal;">
+                        </form>
+                    }
+                }
+            </div>
+            <small>@Model.DatePosted</small>
         </div>
         <div>
             <p id="cheep_text" style="display:block;">@Model.Text</p>
@@ -17,48 +41,29 @@
                 </form>  
             </div>
         </div>
-        @if (User.Identity is { IsAuthenticated: true } && User.Identity.Name != null)
-        {
-            @if (@Model.AuthorName == User.Identity.Name)
+
+        <div style="flex: 0 0 15%;">
+            @if (User.Identity is { IsAuthenticated: true } && User.Identity.Name != null)
             {
-                <!-- Edit Button -->
-                <div style="flex: 0 0 15%;">
+                @if (@Model.AuthorName == User.Identity.Name)
+                {
+                    <!-- Delete Button -->
                     <form method="post" asp-page-handler="Delete" style="flex: 0 0 15%;">
                         <input name="CheepIdForDeletion" type="hidden" value="@Model.CheepId">
-                        <input type="submit" value="Delete" style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer;">
+                        <input type="submit" value="Delete" style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer; font-size: 14px; font-weight: normal;">
                     </form>
-                    <button type="button" style="float:right; background:transparent; border-style:none; color:#50CC6E; cursor:pointer;" onclick="editCheep(@Model.CheepId)">
+
+                    <!-- Edit Button -->
+                    <button type="button" class="textButton" onclick="editCheep(@Model.CheepId)" style="color:#b266df;">
                         Edit
                     </button>
-                </div>
-            }
-            else
-            {
-                <!-- Follow/Unfollow Button -->
-                @if (FollowCache.Instance.IsFollowing(User.Identity.Name, @Model.AuthorName)) 
-                {
-                    <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%User.Identity.Name;">
-                        <input name="ToggleFollowForUserId" type="hidden" value="@Model.AuthorName">
-                        <input type="submit" value="Unfollow" style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer;">
-                    </form>
                 }
-                else
-                {
-                    <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;">
-                        <input name="ToggleFollowForUserId" type="hidden" value="@Model.AuthorName">
-                        <input type="submit" value="Follow" style="float:right; background:transparent; border-style:none; color:blue; cursor:pointer;">
-                    </form>
-                }
-            }
-        }
-        <!-- Reply -->
-        <div style="display: flex; flex-direction: row; justify-content: space-between;">
-            <small>@Model.DatePosted</small>
-            @if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
+                <!-- Reply Button -->
                 <button class="textButton" onclick="toggleReply(@Model.CheepId)">Reply</button>    
             }
         </div>
+
+        <!-- Reply Form -->
         <div class="reply-form" id="reply-form-@Model.CheepId" style="display:none; margin-top:6px;">
             <form method="post" asp-page-handler="Reply">
                 <input type="hidden" name="Reply.CheepID" value="@Model.CheepId"/>
@@ -67,7 +72,7 @@
             </form>
         </div>
 
-        <!-- Renders replies recursively -->
+        <!-- Replies -->
         @if (Model.Replies.Any())
         {
             <ul class="cheep-children" style="list-style:none; padding-left:0;">
@@ -82,11 +87,14 @@
 
 <style>
     .textButton {
-        border: none;
-        background: none;
-        padding: 0;
-        color: #0a3069;
-        text-decoration: underline;
-        cursor: pointer;
+        float:right; 
+        background:transparent; 
+        border-style:none; 
+        color:#297eb6; 
+        cursor:pointer;
+        font-size: 14px;
+        font-weight: normal;
+        padding: 1px 3px;
+        font-family: 'Trebuchet MS', sans-serif;
     }
 </style>
