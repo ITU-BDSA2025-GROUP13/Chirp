@@ -1,9 +1,12 @@
-﻿using Chirp.Core.Models;
+﻿using System.Security.Claims;
+using Chirp.Core.Models;
 using Chirp.Infrastructure.DatabaseContext;
 using Chirp.Infrastructure.Repositories;
 using Chirp.Infrastructure.Services;
 using Chirp.Web.Pages;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using MockQueryable.Moq;
 using Moq;
 
@@ -12,8 +15,10 @@ namespace Chirp.Integration.Tests.Integration;
 public class IntegrationTests
 {
     private ICheepRepository? _cheepRepository;
-    private UserManager<ChirpUser> _userManager;
+    private IChirpUserRepository? _chirpUserRepository;
+    private UserManager<ChirpUser>? _userManager;
     private ICheepService? _cheepService;
+    private IChirpUserService? _chirpUserService;
 
     readonly string _text1 = "Oldest cheep";
     readonly string _text2 = "Older cheep";
@@ -47,8 +52,14 @@ public class IntegrationTests
         author.Cheeps = cheeps;
         var mockContext = new Mock<IChirpDbContext>();
         var mockCheepSet = cheeps.BuildMockDbSet();
+        var mockUserSet = authors.BuildMockDbSet();
+
+        mockContext.Setup(c => c.ChirpUsers).Returns(mockUserSet.Object);
         mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
+        
         _cheepRepository = new CheepRepository(mockContext.Object);
+        _chirpUserRepository = new ChirpUserRepository(mockContext.Object);
+
         Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
         userStore
             .Setup(x => x.FindByIdAsync(authorID, CancellationToken.None))
@@ -57,17 +68,19 @@ public class IntegrationTests
         userStore
             .Setup(x => x.FindByNameAsync(_name1, CancellationToken.None))
             .ReturnsAsync(author);
+
         _userManager = userManager;
         _cheepService = new CheepService(_cheepRepository, userManager);
+        _chirpUserService = new ChirpUserService(_chirpUserRepository, _userManager);
     }
 
     [Fact]
     public void GetCheeps_FromMockedRepository_ReturnsAllCheepsInDescendingOrder()
     {
         IntegrationTestsServiceAndRepo();
-        if (_cheepService is null)
+        if (_cheepService is null || _chirpUserService is null)
         {
-            throw new InvalidOperationException("cheep service is not available.");
+            throw new InvalidOperationException("cheep service or chirp user service is not available.");
         }
         if (cheeps is null)
         {
@@ -165,20 +178,34 @@ public class IntegrationTests
             .Setup(c => c.GetAuthorPage(karlFortniteWithCheeps, It.IsAny<int>()))
             .ReturnsAsync(() => karlFortniteWithCheeps.Cheeps);
 
+        mockCheepRepo
+            .Setup(c => c.GetListOfFollowers(It.IsAny<ChirpUser>()))
+            .ReturnsAsync(new List<ChirpUser>());
+
+        mockCheepRepo
+            .Setup(c => c.GetPrivateTimelineCheeps(It.IsAny<ChirpUser>(), It.IsAny<int>()))
+            .ReturnsAsync(new List<Cheep>());
+
+        mockCheepRepo
+            .Setup(c => c.GetPrivateTimelineCheeps(karlFortniteWithCheeps, It.IsAny<int>()))
+            .ReturnsAsync(() => karlFortniteWithCheeps.Cheeps);
+
         UserManager<ChirpUser> userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
         _cheepService = new CheepService(mockCheepRepo.Object, userManager);
+        _userManager = userManager;
+        _chirpUserService = Mock.Of<IChirpUserService>();
     }
 
     [Fact]
     public void UserTimelineModelOnGet_WithMockedService_PopulatesCheepsForSpecificUser()
     {
         IntegrationTestsUIAndService();
-        if (_cheepService is null)
+        if (_cheepService is null || _chirpUserService is null)
         {
-            throw new InvalidOperationException("cheep service is not available.");
+            throw new InvalidOperationException("cheep service or chirp user service is not available.");
         }
-        var pageModel = new UserTimelineModel(_cheepService);
-        pageModel.Author = _name3;
+        var pageModel = CreateUserTimelineModel(_cheepService, _chirpUserService, _name3);
+
         pageModel.CurrentPage = 0;
         pageModel.OnGet();
         Assert.NotNull(pageModel.Cheeps);
@@ -192,12 +219,12 @@ public class IntegrationTests
     {
         string text = "New test cheep";
         IntegrationTestsUIAndService();
-        if (_cheepService is null)
+        if (_cheepService is null || _chirpUserService is null)
         {
-            throw new InvalidOperationException("cheep service is not available.");
+            throw new InvalidOperationException("cheep service or chirp user service is not available.");
         }
 
-        var pageModel = new PublicModel(_cheepService, _userManager);
+    var pageModel = CreatePublicModel(_cheepService, _chirpUserService, _userManager);
 
         pageModel.CurrentPage = 0;
         pageModel.OnGet();
@@ -223,12 +250,12 @@ public class IntegrationTests
     {
         string text = "New test cheep";
         IntegrationTestsUIAndService();
-        if (_cheepService is null)
+        if (_cheepService is null || _chirpUserService is null)
         {
-            throw new InvalidOperationException("cheep service is not available.");
+            throw new InvalidOperationException("cheep service or chirp user service is not available.");
         }
 
-        var pageModel = new PublicModel(_cheepService, _userManager);
+    var pageModel = CreatePublicModel(_cheepService, _chirpUserService, _userManager);
 
         pageModel.CurrentPage = 0;
         pageModel.OnGet();
@@ -333,5 +360,49 @@ public class IntegrationTests
         Assert.Equal(oldestReply, parentCheepDTO.Replies[0].Text);
         Assert.Equal(middleReply, parentCheepDTO.Replies[1].Text);
         Assert.Equal(newestReply, parentCheepDTO.Replies[2].Text);
+    }
+
+    private static UserTimelineModel CreateUserTimelineModel(ICheepService cheepService, IChirpUserService chirpUserService, string? userName = null)
+    {
+        var model = new UserTimelineModel(cheepService, chirpUserService)
+        {
+            PageContext = new PageContext
+            {
+                HttpContext = new DefaultHttpContext()
+            }
+        };
+
+        model.PageContext.HttpContext.User = userName != null
+            ? new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userName) }, "TestAuth"))
+            : new ClaimsPrincipal(new ClaimsIdentity());
+
+        if (!string.IsNullOrEmpty(userName))
+        {
+            model.Author = userName;
+        }
+
+        return model;
+    }
+
+    private static PublicModel CreatePublicModel(ICheepService cheepService, IChirpUserService chirpUserService, UserManager<ChirpUser>? userManager, string? userName = null)
+    {
+        if (userManager == null)
+        {
+            throw new ArgumentNullException(nameof(userManager));
+        }
+
+        var model = new PublicModel(cheepService, chirpUserService, userManager)
+        {
+            PageContext = new PageContext
+            {
+                HttpContext = new DefaultHttpContext()
+            }
+        };
+
+        model.PageContext.HttpContext.User = userName != null
+            ? new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userName) }, "TestAuth"))
+            : new ClaimsPrincipal(new ClaimsIdentity());
+
+        return model;
     }
 }
