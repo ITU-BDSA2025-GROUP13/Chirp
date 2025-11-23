@@ -1,0 +1,109 @@
+﻿using Chirp.Core.Models;
+using Chirp.Infrastructure.DatabaseContext;
+using Chirp.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+namespace Chirp.Infrastructure.Tests.Repositories;
+
+public class ChirpUserRepositoryTests
+{
+	[Fact]
+	public async Task AddToFollowerList_WhenUsersExist_PersistsRelation()
+	{
+		await using var context = CreateInMemoryContext();
+		var repository = new ChirpUserRepository(context);
+
+		var userA = CreateUser("user-a");
+		var userB = CreateUser("user-b");
+
+		await context.ChirpUsers.AddRangeAsync(userA, userB);
+		await context.SaveChangesAsync();
+
+		await repository.AddToFollowerList(userA, userB);
+
+		context.ChangeTracker.Clear();
+
+		var persistedFollower = await context.ChirpUsers
+			.Include(u => u.FollowsList)
+			.SingleAsync(u => u.Id == userA.Id);
+
+		Assert.Single(persistedFollower.FollowsList);
+		Assert.Equal(userB.Id, persistedFollower.FollowsList.Single().Id);
+	}
+
+	[Fact]
+	public async Task RemoveFromFollowerList_WhenRelationExists_RemovesRelation()
+	{
+		await using var context = CreateInMemoryContext();
+		var repository = new ChirpUserRepository(context);
+
+		var userA = CreateUser("user-a");
+		var userB = CreateUser("user-b");
+
+		await context.ChirpUsers.AddRangeAsync(userA, userB);
+		await context.SaveChangesAsync();
+
+		await repository.AddToFollowerList(userA, userB);
+		context.ChangeTracker.Clear();
+
+		var trackedFollower = await context.ChirpUsers
+			.Include(u => u.FollowsList)
+			.SingleAsync(u => u.Id == userA.Id);
+		var trackedFollowee = await context.ChirpUsers.SingleAsync(u => u.Id == userB.Id);
+
+		await repository.RemoveFromFollowerList(trackedFollower, trackedFollowee);
+
+		context.ChangeTracker.Clear();
+
+		var followerAfterRemoval = await context.ChirpUsers
+			.Include(u => u.FollowsList)
+			.SingleAsync(u => u.Id == userA.Id);
+
+		Assert.Empty(followerAfterRemoval.FollowsList);
+	}
+
+	[Fact]
+	public async Task ContainsRelation_WhenCalled_ReturnsExpectedResult()
+	{
+		await using var context = CreateInMemoryContext();
+		var repository = new ChirpUserRepository(context);
+
+		var userA = CreateUser("user-a");
+		var userB = CreateUser("user-b");
+		var userC = CreateUser("user-c");
+
+		await context.ChirpUsers.AddRangeAsync(userA, userB, userC);
+		await context.SaveChangesAsync();
+
+		await repository.AddToFollowerList(userA, userB);
+		context.ChangeTracker.Clear();
+
+		var follower = await context.ChirpUsers.SingleAsync(u => u.Id == userA.Id);
+		var followed = await context.ChirpUsers.SingleAsync(u => u.Id == userB.Id);
+		var notFollowed = await context.ChirpUsers.SingleAsync(u => u.Id == userC.Id);
+
+		Assert.True(repository.ContainsRelation(follower, followed));
+		Assert.False(repository.ContainsRelation(follower, notFollowed));
+	}
+
+	private static ChirpDbContext CreateInMemoryContext()
+	{
+		var options = new DbContextOptionsBuilder<ChirpDbContext>()
+			.UseInMemoryDatabase(Guid.NewGuid().ToString())
+			.Options;
+
+		var context = new ChirpDbContext(options);
+		context.Database.EnsureCreated();
+		return context;
+	}
+
+	private static ChirpUser CreateUser(string userName)
+	{
+		return new ChirpUser
+		{
+			Id = Guid.NewGuid().ToString(),
+			UserName = userName,
+			Email = $"{userName}@example.com"
+		};
+	}
+}
