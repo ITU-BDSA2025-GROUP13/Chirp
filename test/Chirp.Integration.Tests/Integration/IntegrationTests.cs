@@ -364,7 +364,8 @@ public class IntegrationTests
 
     private static UserTimelineModel CreateUserTimelineModel(ICheepService cheepService, IChirpUserService chirpUserService, string? userName = null)
     {
-        var model = new UserTimelineModel(cheepService, chirpUserService)
+        var mockUserManager = new Mock<UserManager<ChirpUser>>(Mock.Of<IUserStore<ChirpUser>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        var model = new UserTimelineModel(cheepService, chirpUserService, mockUserManager.Object)
         {
             PageContext = new PageContext
             {

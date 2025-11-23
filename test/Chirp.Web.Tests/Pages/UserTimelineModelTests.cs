@@ -1,7 +1,9 @@
 using System.Security.Claims;
+using Chirp.Core.Models;
 using Chirp.Infrastructure.Services;
 using Chirp.Web.Pages;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 
@@ -113,7 +115,8 @@ public class UserTimelineModelTests
 
     private static UserTimelineModel CreateModel(Mock<ICheepService> cheepServiceMock, Mock<IChirpUserService> userServiceMock, string? userName = null)
     {
-        var model = new UserTimelineModel(cheepServiceMock.Object, userServiceMock.Object)
+        var mockUserManager = new Mock<UserManager<ChirpUser>>(Mock.Of<IUserStore<ChirpUser>>(), null!, null!, null!, null!, null!, null!, null!, null!);
+        var model = new UserTimelineModel(cheepServiceMock.Object, userServiceMock.Object, mockUserManager.Object)
         {
             PageContext = new PageContext
             {
