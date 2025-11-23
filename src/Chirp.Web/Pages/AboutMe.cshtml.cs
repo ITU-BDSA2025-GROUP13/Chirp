@@ -8,7 +8,7 @@ using System.Text.Json;
 namespace Chirp.Web.Pages
 {
     public class AboutMeModel(ICheepService cheepService, IChirpUserService chirpUserService) : PageModel
-    {   
+    {
         private readonly ICheepService _cheepService = cheepService;
         private readonly IChirpUserService _chirpUserService = chirpUserService;
         public string Username { get; private set; } = "";
