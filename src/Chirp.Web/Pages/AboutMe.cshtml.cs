@@ -7,9 +7,10 @@ using System.Text.Json;
 
 namespace Chirp.Web.Pages
 {
-    public class AboutMeModel(ICheepService service) : PageModel
+    public class AboutMeModel(ICheepService cheepService, IChirpUserService chirpUserService) : PageModel
     {   
-        private readonly ICheepService _service = service;
+        private readonly ICheepService _cheepService = cheepService;
+        private readonly IChirpUserService _chirpUserService = chirpUserService;
         public string Username { get; private set; } = "";
         public string Email { get; private set; } = "";
         public List<CheepDTO> Cheeps { get; private set; } = [];
@@ -21,14 +22,8 @@ namespace Chirp.Web.Pages
         {
             Username = User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "";
             Email = User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? "";
-            Cheeps = _service.GetAllCheepsFromAuthorName(Username);
-            FollowedUsers = new()
-            {
-                "Username1",
-                "Username2",
-                "Username3",
-                "Username4",
-            };
+            Cheeps = _cheepService.GetAllCheepsFromAuthorName(Username);
+            FollowedUsers = _chirpUserService.GetFollowedUsernames(Username);
         }
 
         public IActionResult OnPostDownloadUserData()

@@ -7,6 +7,24 @@ namespace Chirp.Infrastructure.Services;
 public class ChirpUserService(IChirpUserRepository chirpUserRepo, UserManager<ChirpUser> userManager) : IChirpUserService
 {
     /// <summary>
+    /// Get a list of usernames that the provided user is following.
+    /// </summary>
+    /// <param name="username">The username of the user whose followed list is requested.</param>
+    /// <returns>List of usernames that the user is following.</returns>
+    public List<string> GetFollowedUsernames(string username)
+    {
+        ChirpUser? user = userManager.FindByNameAsync(username).GetAwaiter().GetResult();
+        if (user == null)
+        {
+            Console.WriteLine("User not found during GetFollowedUsernames()");
+            return new List<string>();
+        }
+
+        List<ChirpUser> followedUsers = chirpUserRepo.GetFollowedUsers(user);
+        return followedUsers.Select(u => u.UserName ?? "").Where(name => !string.IsNullOrEmpty(name)).ToList();
+    }
+
+    /// <summary>
     /// UserA wants to follow UserB from a Cheep.
     /// Cheeps author is found and then a relation is created.
     /// </summary>

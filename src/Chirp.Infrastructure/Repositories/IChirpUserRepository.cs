@@ -27,5 +27,12 @@ namespace Chirp.Infrastructure.Repositories
         /// <param name="userB">The followed</param>
         /// <returns>true if A follows B, otherwise false</returns>
         bool ContainsRelation(ChirpUser userA, ChirpUser userB);
+
+        /// <summary>
+        /// Get a list of users that the provided user is following.
+        /// </summary>
+        /// <param name="user">The user whose followed list is requested.</param>
+        /// <returns>List of users that the user is following.</returns>
+        List<ChirpUser> GetFollowedUsers(ChirpUser user);
     }
 }

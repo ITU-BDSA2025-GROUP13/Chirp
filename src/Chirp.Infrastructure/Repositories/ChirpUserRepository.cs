@@ -49,6 +49,15 @@ namespace Chirp.Infrastructure.Repositories
                 .Any(u => u.FollowsList.Any(f => f.Id == userB.Id));
         }
 
+        public List<ChirpUser> GetFollowedUsers(ChirpUser user)
+        {
+            var trackedUser = dbContext.ChirpUsers
+                .Include(u => u.FollowsList)
+                .SingleOrDefault(u => u.Id == user.Id);
+
+            return trackedUser?.FollowsList.ToList() ?? new List<ChirpUser>();
+        }
+
         #endregion
     }
 }
