@@ -86,6 +86,33 @@ public class ChirpUserRepositoryTests
         Assert.False(repository.ContainsRelation(follower, notFollowed));
     }
 
+    [Fact]
+    public async Task GetFollowedUsers_WhenRelationsExist_ReturnsFollowedUsers()
+    {
+        await using var context = CreateInMemoryContext();
+        var repository = new ChirpUserRepository(context);
+
+        var follower = CreateUser("follower");
+        var followedA = CreateUser("followed-a");
+        var followedB = CreateUser("followed-b");
+
+        await context.ChirpUsers.AddRangeAsync(follower, followedA, followedB);
+        await context.SaveChangesAsync();
+
+        await repository.AddToFollowerList(follower, followedA);
+        await repository.AddToFollowerList(follower, followedB);
+
+        context.ChangeTracker.Clear();
+
+        var persistedFollower = await context.ChirpUsers.SingleAsync(u => u.Id == follower.Id);
+
+        var followedUsers = repository.GetFollowedUsers(persistedFollower);
+
+        Assert.Equal(2, followedUsers.Count);
+        Assert.Contains(followedUsers, u => u.Id == followedA.Id);
+        Assert.Contains(followedUsers, u => u.Id == followedB.Id);
+    }
+
     private static ChirpDbContext CreateInMemoryContext()
     {
         var options = new DbContextOptionsBuilder<ChirpDbContext>()
