@@ -1,4 +1,8 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 using Chirp.Core.Models;
 using Chirp.Infrastructure.DatabaseContext;
 using Chirp.Infrastructure.Repositories;
@@ -7,6 +11,8 @@ using Chirp.Web.Pages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 
@@ -360,6 +366,75 @@ public class IntegrationTests
         Assert.Equal(oldestReply, parentCheepDTO.Replies[0].Text);
         Assert.Equal(middleReply, parentCheepDTO.Replies[1].Text);
         Assert.Equal(newestReply, parentCheepDTO.Replies[2].Text);
+    }
+
+    [Fact]
+    public async Task ToggleUserFollowing_WhenCalled_TogglesFollowRelation()
+    {
+        using var connection = new SqliteConnection("DataSource=:memory:");
+        connection.Open();
+
+        var options = new DbContextOptionsBuilder<ChirpDbContext>()
+            .UseSqlite(connection)
+            .Options;
+
+        using var context = new ChirpDbContext(options);
+        context.Database.EnsureCreated();
+
+        var follower = new ChirpUser
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserName = "Follower",
+            Email = "follower@example.com"
+        };
+
+        var followee = new ChirpUser
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserName = "Followee",
+            Email = "followee@example.com"
+        };
+
+        context.ChirpUsers.AddRange(follower, followee);
+        context.SaveChanges();
+
+        var repository = new ChirpUserRepository(context);
+
+        var userStore = new Mock<IUserStore<ChirpUser>>();
+        userStore
+            .Setup(s => s.FindByNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((string userName, CancellationToken _) =>
+            {
+                return context.ChirpUsers
+                    .AsEnumerable()
+                    .Single(u => string.Equals(u.UserName, userName, StringComparison.OrdinalIgnoreCase));
+            });
+
+        var userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+        var service = new ChirpUserService(repository, userManager);
+
+        service.ToggleUserFollowing(follower.UserName!, followee.UserName!);
+        await Task.Delay(10);
+
+        context.ChangeTracker.Clear();
+
+        var followerAfterToggle = await context.ChirpUsers
+            .Include(u => u.FollowsList)
+            .SingleAsync(u => u.Id == follower.Id);
+
+        Assert.Single(followerAfterToggle.FollowsList);
+        Assert.Equal(followee.Id, followerAfterToggle.FollowsList.Single().Id);
+
+        service.ToggleUserFollowing(follower.UserName!, followee.UserName!);
+        await Task.Delay(10);
+
+        context.ChangeTracker.Clear();
+
+        var followerAfterSecondToggle = await context.ChirpUsers
+            .Include(u => u.FollowsList)
+            .SingleAsync(u => u.Id == follower.Id);
+
+        Assert.Empty(followerAfterSecondToggle.FollowsList);
     }
 
     private static UserTimelineModel CreateUserTimelineModel(ICheepService cheepService, IChirpUserService chirpUserService, string? userName = null)
