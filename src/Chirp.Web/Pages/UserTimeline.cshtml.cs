@@ -1,4 +1,6 @@
+using Chirp.Core.Models;
 using Chirp.Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -8,6 +10,7 @@ public class UserTimelineModel : PageModel
 {
     private readonly ICheepService _service;
     private readonly IChirpUserService _chirpUserService;
+    private readonly UserManager<ChirpUser> _userManager;
     public List<CheepDTO> Cheeps { get; set; }
     public string? ErrorMessage { get; set; }
 
@@ -30,6 +33,10 @@ public class UserTimelineModel : PageModel
     [BindProperty]
     public string? ToggleFollowForUserId { get; set; }
 
+    // Replying
+    [BindProperty]
+    public CheepReply? Reply { get; set; }
+
 
     // Editing
     [BindProperty]
@@ -39,10 +46,11 @@ public class UserTimelineModel : PageModel
     public string? EditedCheepText { get; set; }
 
 
-    public UserTimelineModel(ICheepService service, IChirpUserService chirpUserService)
+    public UserTimelineModel(ICheepService service, IChirpUserService chirpUserService, UserManager<ChirpUser> userManager)
     {
         _service = service;
         _chirpUserService = chirpUserService;
+        _userManager = userManager;
         Cheeps = new List<CheepDTO>();
     }
 
@@ -101,7 +109,41 @@ public class UserTimelineModel : PageModel
             return LocalRedirect($"/user/{Author}");
         }
         return LocalRedirect($"/user/{Author}?page={CurrentPage}");
+    }
 
+    public ActionResult OnPostReply()
+    {
+        string? name = User.Identity?.Name;
+        if (name == null)
+        {
+            ErrorMessage = "You must be logged in to post a cheep.";
+            CurrentPage = 0;
+            Cheeps = _service.GetMainPageCheeps();
+            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            return Page();
+        }
+
+        ChirpUser? user = _userManager.FindByNameAsync(name).GetAwaiter().GetResult();
+        if (user == null)
+        {
+            ErrorMessage = "User not found! Try logging out and in again.";
+            CurrentPage = 0;
+            Cheeps = _service.GetMainPageCheeps();
+            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            return Page();
+        }
+
+        if (Reply == null || Reply.Text == null)
+        {
+            ErrorMessage = "Reply not found!";
+            CurrentPage = 0;
+            Cheeps = _service.GetMainPageCheeps();
+            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            return Page();
+        }
+
+        _service.ReplyToCheep(Reply.CheepID, Reply.Text, user);
+        return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
 
     public bool IsValidMessage(string? message)
