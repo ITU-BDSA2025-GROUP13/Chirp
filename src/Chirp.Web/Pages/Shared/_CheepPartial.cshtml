@@ -43,23 +43,26 @@
         </div>
 
         <div style="flex: 0 0 15%;">
+
             @if (User.Identity is { IsAuthenticated: true } && User.Identity.Name != null)
             {
-                @if (@Model.AuthorName == User.Identity.Name)
-                {
-                    <!-- Delete Button -->
-                    <form method="post" asp-page-handler="Delete" style="flex: 0 0 15%;">
-                        <input name="CheepIdForDeletion" type="hidden" value="@Model.CheepId">
-                        <input type="submit" value="Delete" style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer; font-size: 14px; font-weight: normal;">
-                    </form>
+                <div style="float: right;">
+                    @if (@Model.AuthorName == User.Identity.Name)
+                    {
+                        <!-- Delete Button -->
+                        <form method="post" asp-page-handler="Delete" style="flex: 0 0 15%; display: inline;">
+                            <input name="CheepIdForDeletion" type="hidden" value="@Model.CheepId">
+                            <input type="submit" value="Delete" style="background:transparent; border-style:none; color:#CC6E6E; cursor:pointer; font-size: 14px; font-weight: normal;">
+                        </form>
 
-                    <!-- Edit Button -->
-                    <button type="button" class="textButton" onclick="editCheep(@Model.CheepId)" style="color:#b266df;">
-                        Edit
-                    </button>
-                }
-                <!-- Reply Button -->
-                <button class="textButton" onclick="toggleReply(@Model.CheepId)">Reply</button>    
+                        <!-- Edit Button -->
+                        <button type="button" class="textButton" onclick="editCheep(@Model.CheepId)" style="color:#b266df;">
+                            Edit
+                        </button>
+                    }
+                    <!-- Reply Button -->
+                    <button class="textButton" onclick="toggleReply(@Model.CheepId)">Reply</button>    
+                </div>
             }
         </div>
 
@@ -87,7 +90,6 @@
 
 <style>
     .textButton {
-        float:right; 
         background:transparent; 
         border-style:none; 
         color:#297eb6; 
