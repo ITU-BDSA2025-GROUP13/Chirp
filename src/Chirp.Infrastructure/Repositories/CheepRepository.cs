@@ -113,7 +113,7 @@ namespace Chirp.Infrastructure.Repositories
         public async Task<IEnumerable<Cheep>> GetAllAuthorCheeps(ChirpUser author)
         {
             return await dbContext.Cheeps
-                .Where(m => m.AuthorId == author.Id) 
+                .Where(m => m.AuthorId == author.Id)
                 .OrderByDescending(m => m.TimeStamp)
                 .ToListAsync();
         }
