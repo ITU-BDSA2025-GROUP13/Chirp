@@ -28,7 +28,7 @@ public class UserTimelineModel : PageModel
     // Deleting
     [BindProperty]
     public int CheepIdForDeletion { get; set; }
-    
+
     // Following
     [BindProperty]
     public string? ToggleFollowForUserId { get; set; }
@@ -41,7 +41,7 @@ public class UserTimelineModel : PageModel
     // Editing
     [BindProperty]
     public int CheepIdForEditing { get; set; }
-    
+
     [BindProperty]
     public string? EditedCheepText { get; set; }
 
@@ -61,7 +61,7 @@ public class UserTimelineModel : PageModel
             var followedUsers = _service.GetListOfNamesOfFollowedUsers(User.Identity.Name);
             FollowCache.Instance.SetFollowedUsers(User.Identity.Name, followedUsers);
         }
-        
+
         if (Author == User.Identity?.Name)
         {
             Cheeps = _service.GetOwnPrivateTimeline(Author, CurrentPage);

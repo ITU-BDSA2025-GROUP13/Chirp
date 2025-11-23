@@ -62,7 +62,7 @@ public class IntegrationTests
 
         mockContext.Setup(c => c.ChirpUsers).Returns(mockUserSet.Object);
         mockContext.Setup(c => c.Cheeps).Returns(mockCheepSet.Object);
-        
+
         _cheepRepository = new CheepRepository(mockContext.Object);
         _chirpUserRepository = new ChirpUserRepository(mockContext.Object);
 
@@ -230,7 +230,7 @@ public class IntegrationTests
             throw new InvalidOperationException("cheep service or chirp user service is not available.");
         }
 
-    var pageModel = CreatePublicModel(_cheepService, _chirpUserService, _userManager);
+        var pageModel = CreatePublicModel(_cheepService, _chirpUserService, _userManager);
 
         pageModel.CurrentPage = 0;
         pageModel.OnGet();
@@ -261,7 +261,7 @@ public class IntegrationTests
             throw new InvalidOperationException("cheep service or chirp user service is not available.");
         }
 
-    var pageModel = CreatePublicModel(_cheepService, _chirpUserService, _userManager);
+        var pageModel = CreatePublicModel(_cheepService, _chirpUserService, _userManager);
 
         pageModel.CurrentPage = 0;
         pageModel.OnGet();

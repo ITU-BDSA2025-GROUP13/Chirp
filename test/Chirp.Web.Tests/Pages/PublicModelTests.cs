@@ -16,7 +16,7 @@ public class PublicModelTests
     {
         var mockCheepService = new Mock<ICheepService>();
         var mockUserService = new Mock<IChirpUserService>();
-    var model = CreateModel(mockCheepService, mockUserService);
+        var model = CreateModel(mockCheepService, mockUserService);
 
         Assert.NotNull(model.Cheeps);
         Assert.Empty(model.Cheeps);
@@ -34,7 +34,7 @@ public class PublicModelTests
         };
 
         mockCheepService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>())).Returns(expectedCheeps);
-    var model = CreateModel(mockCheepService, mockUserService);
+        var model = CreateModel(mockCheepService, mockUserService);
 
         model.CurrentPage = 1;
         var result = model.OnGet();
@@ -57,7 +57,7 @@ public class PublicModelTests
 
         mockCheepService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>()))
            .Returns(expectedCheeps);
-    var model = CreateModel(mockCheepService, mockUserService);
+        var model = CreateModel(mockCheepService, mockUserService);
         model.CurrentPage = 0;
         var result = model.OnGet();
 
@@ -73,7 +73,7 @@ public class PublicModelTests
         var mockCheepService = new Mock<ICheepService>();
         mockCheepService.Setup(s => s.GetMainPageCheeps(It.IsAny<int>())).Returns(new List<CheepDTO>());
         var mockUserService = new Mock<IChirpUserService>();
-    var model = CreateModel(mockCheepService, mockUserService);
+        var model = CreateModel(mockCheepService, mockUserService);
 
         model.CurrentPage = 5;
         var result = model.OnGet();
@@ -82,23 +82,23 @@ public class PublicModelTests
         Assert.Empty(model.Cheeps);
     }
 
-        private static PublicModel CreateModel(Mock<ICheepService> cheepService, Mock<IChirpUserService> userService, string? userName = null)
+    private static PublicModel CreateModel(Mock<ICheepService> cheepService, Mock<IChirpUserService> userService, string? userName = null)
+    {
+        var userStore = new Mock<IUserStore<ChirpUser>>();
+        var userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+
+        var model = new PublicModel(cheepService.Object, userService.Object, userManager)
         {
-            var userStore = new Mock<IUserStore<ChirpUser>>();
-            var userManager = new UserManager<ChirpUser>(userStore.Object, null!, null!, null!, null!, null!, null!, null!, null!);
-
-            var model = new PublicModel(cheepService.Object, userService.Object, userManager)
+            PageContext = new PageContext
             {
-                PageContext = new PageContext
-                {
-                    HttpContext = new DefaultHttpContext()
-                }
-            };
+                HttpContext = new DefaultHttpContext()
+            }
+        };
 
-            model.PageContext.HttpContext.User = userName != null
-                ? new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userName) }, "TestAuth"))
-                : new ClaimsPrincipal(new ClaimsIdentity());
+        model.PageContext.HttpContext.User = userName != null
+            ? new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, userName) }, "TestAuth"))
+            : new ClaimsPrincipal(new ClaimsIdentity());
 
-            return model;
-        }
+        return model;
+    }
 }
