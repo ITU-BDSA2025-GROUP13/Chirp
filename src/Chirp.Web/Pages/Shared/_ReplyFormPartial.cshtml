@@ -1,4 +1,5 @@
 @using Chirp.Infrastructure.Services
+@using Chirp.Web.Constants
 
 @model CheepDTO
 
@@ -7,6 +8,7 @@
         name="Reply.Text"
         class="reply-textarea"
         id="reply-textarea-@Model.CheepId"
+        maxlength="@Constants.MaxCheepLength"
         placeholder="Reply..."></textarea>
     <input type="hidden" name="Reply.CheepID" value="@Model.CheepId">
     <input type="submit" value="Post">
