@@ -100,7 +100,7 @@ namespace Chirp.Infrastructure.Repositories
         #endregion
 
         #region GET
-        public async Task<IEnumerable<Cheep>> GetMainPage(int pagenum = 0)
+        public async Task<IEnumerable<Cheep>> GetMainPage(int pagenum = 1)
         {
             return await dbContext.Cheeps
                 .Include(c => c.Author)
@@ -111,7 +111,7 @@ namespace Chirp.Infrastructure.Repositories
                 .ThenInclude(r => r.UsersWhoLiked)
                 .Include(c => c.ParentCheep)
                 .OrderByDescending(c => c.TimeStamp)
-                .Skip(pagenum * _readLimit)
+                .Skip((pagenum - 1) * _readLimit)
                 .Take(_readLimit)
                 .ToListAsync();
         }

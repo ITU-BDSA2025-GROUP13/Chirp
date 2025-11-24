@@ -16,7 +16,7 @@ public class PublicModel : PageModel
 
     // Pagination
     public bool HasNextPage { get; set; }
-    public bool HasPreviousPage => CurrentPage > 0;
+    public bool HasPreviousPage => CurrentPage > 1;
 
     [BindProperty(SupportsGet = true)]
     public int CurrentPage { get; set; }
@@ -51,6 +51,7 @@ public class PublicModel : PageModel
         _userManager = userManager;
         _chirpUserService = chirpUserService;
         Cheeps = new List<CheepDTO>();
+        CurrentPage = 1;
     }
 
     public ActionResult OnGet()
@@ -96,7 +97,7 @@ public class PublicModel : PageModel
         if (name == null)
         {
             ErrorMessage = "You must be logged in to post a cheep.";
-            CurrentPage = 0;
+            CurrentPage = 1;
             Cheeps = _service.GetMainPageCheeps();
             HasNextPage = _service.GetMainPageCheeps(1).Any();
             return RedirectToCurrent();
@@ -106,7 +107,7 @@ public class PublicModel : PageModel
         if (user == null)
         {
             ErrorMessage = "User not found!";
-            CurrentPage = 0;
+            CurrentPage = 1;
             Cheeps = _service.GetMainPageCheeps();
             HasNextPage = _service.GetMainPageCheeps(1).Any();
             return RedirectToCurrent();
@@ -155,7 +156,7 @@ public class PublicModel : PageModel
         if (name == null)
         {
             ErrorMessage = "You must be logged in to post a cheep.";
-            CurrentPage = 0;
+            CurrentPage = 1;
             Cheeps = _service.GetMainPageCheeps();
             HasNextPage = _service.GetMainPageCheeps(1).Any();
             return RedirectToCurrent();
@@ -165,7 +166,7 @@ public class PublicModel : PageModel
         if (user == null)
         {
             ErrorMessage = "User not found! Try logging out and in again.";
-            CurrentPage = 0;
+            CurrentPage = 1;
             Cheeps = _service.GetMainPageCheeps();
             HasNextPage = _service.GetMainPageCheeps(1).Any();
             return RedirectToCurrent();
@@ -174,7 +175,7 @@ public class PublicModel : PageModel
         if (Reply == null || Reply.Text == null)
         {
             ErrorMessage = "Reply not found!";
-            CurrentPage = 0;
+            CurrentPage = 1;
             Cheeps = _service.GetMainPageCheeps();
             HasNextPage = _service.GetMainPageCheeps(1).Any();
             return RedirectToCurrent();
