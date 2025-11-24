@@ -102,7 +102,11 @@ namespace Chirp.Infrastructure.Repositories
         #region GET
         public async Task<IEnumerable<Cheep>> GetMainPage(int pagenum = 1)
         {
-            return await dbContext.Cheeps
+            int skip = pagenum < 1 ? 0 : (pagenum - 1) * _readLimit;
+
+            List<Cheep> cheeps = await dbContext.Cheeps
+                .AsNoTracking()
+                .Where(c => c.ParentCheep == null)
                 .Include(c => c.Author)
                 .Include(c => c.Replies)
                 .ThenInclude(r => r.Author)
@@ -111,25 +115,41 @@ namespace Chirp.Infrastructure.Repositories
                 .ThenInclude(r => r.UsersWhoLiked)
                 .Include(c => c.ParentCheep)
                 .OrderByDescending(c => c.TimeStamp)
-                .Skip((pagenum - 1) * _readLimit)
+                .Skip(skip)
                 .Take(_readLimit)
                 .ToListAsync();
+
+            await PopulateRepliesRecursiveAsync(cheeps);
+
+            return cheeps;
         }
 
-        public async Task<IEnumerable<Cheep>> GetPrivateTimelineCheeps(ChirpUser user, int pagenum = 0)
+        public async Task<IEnumerable<Cheep>> GetPrivateTimelineCheeps(ChirpUser user, int pagenum = 1)
         {
             List<ChirpUser> fList = await GetListOfFollowers(user);
             fList.Add(user); // add own cheeps to private timeline
 
-            return await dbContext.Cheeps
+            List<string> authorIds = fList
+                .Select(f => f.Id)
+                .ToList();
+
+            int skip = pagenum < 1 ? 0 : (pagenum - 1) * _readLimit;
+
+            List<Cheep> cheeps = await dbContext.Cheeps
+                .AsNoTracking()
+                .Where(m => authorIds.Contains(m.AuthorId) && m.ParentCheep == null)
                 .Include(m => m.Author)
                 .Where(m => fList.Contains(m.Author))
                 .Include(m => m.Author) //Joins Author's 
                 .Include(m => m.UsersWhoLiked) //Joins users who liked
                 .OrderByDescending(m => m.TimeStamp)
-                .Skip(pagenum * _readLimit)
+                .Skip(skip)
                 .Take(_readLimit)
                 .ToListAsync();
+
+            await PopulateRepliesRecursiveAsync(cheeps);
+
+            return cheeps;
         }
 
         public async Task<List<ChirpUser>> GetListOfFollowers(ChirpUser user)
@@ -145,20 +165,24 @@ namespace Chirp.Infrastructure.Repositories
             return user.FollowsList;
         }
 
-        public async Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 0)
+        public async Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 1)
         {
-            return await dbContext.Cheeps
-                .Where(c => c.AuthorId == author.Id)
-                .Include(c => c.Replies)
-                .ThenInclude(r => r.Author)
-                .Include(c => c.ParentCheep)
-                .OrderByDescending(c => c.TimeStamp)
+            int skip = pagenum < 1 ? 0 : (pagenum - 1) * _readLimit;
+
+            List<Cheep> cheeps = await dbContext.Cheeps
+                .AsNoTracking()
+                .Where(c => c.AuthorId == author.Id && c.ParentCheep == null)
+                .Include(c => c.Author)
                 .Include(m => m.UsersWhoLiked) //Joins users who liked
                 .Where(m => m.AuthorId == author.Id)
                 .OrderByDescending(m => m.TimeStamp)
-                .Skip(pagenum * _readLimit)
+                .Skip(skip)
                 .Take(_readLimit)
                 .ToListAsync();
+
+            await PopulateRepliesRecursiveAsync(cheeps);
+
+            return cheeps;
         }
 
         public Task DeleteCheep(Cheep cheep)
@@ -181,10 +205,74 @@ namespace Chirp.Infrastructure.Repositories
         public async Task<IEnumerable<Cheep>> GetAllAuthorCheeps(ChirpUser author)
         {
             return await dbContext.Cheeps
+                .AsNoTracking()
                 .Where(m => m.AuthorId == author.Id)
+                .Include(m => m.Author)
                 .OrderByDescending(m => m.TimeStamp)
                 .ToListAsync();
         }
         #endregion
+
+        private async Task PopulateRepliesRecursiveAsync(List<Cheep> rootCheeps)
+        {
+            if (!rootCheeps.Any())
+            {
+                return;
+            }
+
+            Dictionary<int, Cheep> lookup = new Dictionary<int, Cheep>();
+            List<Cheep> parentsToProcess = new List<Cheep>();
+            foreach (Cheep root in rootCheeps)
+            {
+                lookup[root.CheepId] = root;
+                root.Replies ??= new List<Cheep>();
+                parentsToProcess.Add(root);
+            }
+
+            while (parentsToProcess.Any())
+            {
+                List<int> parentIds = parentsToProcess.Select(c => c.CheepId).ToList();
+                parentsToProcess = new List<Cheep>();
+
+                List<Cheep> replies = await dbContext.Cheeps
+                    .Where(c => c.ParentCheep != null && parentIds.Contains(c.ParentCheep.CheepId))
+                    .AsNoTracking()
+                    .Include(c => c.Author)
+                    .Include(c => c.ParentCheep)
+                    .OrderBy(c => c.TimeStamp)
+                    .ToListAsync();
+
+                if (!replies.Any())
+                {
+                    break;
+                }
+
+                foreach (Cheep reply in replies)
+                {
+                    if (reply.ParentCheep == null)
+                    {
+                        continue;
+                    }
+
+                    int parentId = reply.ParentCheep.CheepId;
+                    if (!lookup.TryGetValue(parentId, out Cheep? parent))
+                    {
+                        continue;
+                    }
+
+                    if (parent.Replies.All(r => r.CheepId != reply.CheepId))
+                    {
+                        parent.Replies.Add(reply);
+                    }
+
+                    if (!lookup.ContainsKey(reply.CheepId))
+                    {
+                        lookup[reply.CheepId] = reply;
+                        reply.Replies = new List<Cheep>();
+                        parentsToProcess.Add(reply);
+                    }
+                }
+            }
+        }
     }
 }

@@ -7,17 +7,18 @@ namespace Chirp.Infrastructure.Repositories
         /// <summary>
         /// Retrieves a paginated list of cheeps ordered by publication date (newest first).
         /// </summary>
-        /// <param name="pagenum">The zero-based page number to retrieve. Default is 1.</param>
+        /// <param name="pagenum">The one-based page number to retrieve. Default is 1.</param>
         /// <returns>A task containing an enumerable collection of cheeps for the specified page.</returns>
         Task<IEnumerable<Cheep>> GetMainPage(int pagenum = 1);
+        
         /// <summary>
         /// Retrieves an author with a paginated list of their cheeps ordered by publication date (newest first).
         /// </summary>
         /// <param name="author">The author of the cheeps to retrieve.</param>
-        /// <param name="pagenum">The zero-based page number to retrieve. Default is 0.</param>
+        /// <param name="pagenum">The one-based page number to retrieve. Default is 1.</param>
         /// <returns>A task containing the author with their cheeps, or null if the author is not found.</returns>
-        Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 0);
-
+        Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 1);
+        
         /// <summary>
         /// Posts a new cheep (message) to the database asynchronously.
         /// </summary>
@@ -51,10 +52,10 @@ namespace Chirp.Infrastructure.Repositories
         /// Get users own private timeline, which contains their own cheeps and cheeps of users they follow
         /// </summary>
         /// <param name="user">Given ChirpUser to get private timeline for</param>
-        /// <param name="pagenum">The paginated result</param>
+        /// <param name="pagenum">The one-based page to retrieve.</param>
         /// <returns>An IEnumerable of Cheeps</returns>
-        Task<IEnumerable<Cheep>> GetPrivateTimelineCheeps(ChirpUser user, int pagenum = 0);
-
+        Task<IEnumerable<Cheep>> GetPrivateTimelineCheeps(ChirpUser user, int pagenum = 1);
+        
         /// <summary>
         /// Edit a cheep matching the id
         /// </summary>
