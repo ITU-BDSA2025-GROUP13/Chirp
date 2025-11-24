@@ -14,7 +14,7 @@
                     @if (CheepDataCache.Instance.UserIsFollowing(User.Identity.Name, @Model.AuthorName)) 
                     {
                         <!-- Unfollow Button -->
-                        <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;">
+                        <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;" data-preserve-scroll="true">
                             <input name="ToggleFollowForUserId" type="hidden" value="@Model.AuthorName">
                             <input type="submit" value="Unfollow" style="padding-left: 0.5em; float: left; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer; font-size: 14px; font-weight: normal;">
                         </form>
@@ -22,7 +22,7 @@
                     else
                     {
                         <!-- Follow Button -->
-                        <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;">
+                        <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;" data-preserve-scroll="true">
                             <input name="ToggleFollowForUserId" type="hidden" value="@Model.AuthorName">
                             <input type="submit" value="Follow" style="padding-left: 0.5em; loat: left; background:transparent; border-style:none; color:#6fdf53; cursor:pointer; font-size: 14px; font-weight: normal;">
                         </form>
@@ -66,7 +66,7 @@
         <div>
             <p id="cheep_text-@Model.CheepId" style="display:block;">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
             <div style="display: flex;">
-                <form method="post" asp-page-handler="Edit" style="display: none;" id="cheep-edit-@Model.CheepId">
+                <form method="post" asp-page-handler="Edit" style="display: none;" id="cheep-edit-@Model.CheepId" data-preserve-scroll="true">
                     <input name="EditedCheepText" type="text" value="@Model.Text" style="width: 100%;" id="cheep-edit-input-@Model.CheepId" required>
                     <input name="CheepIdForEditing" type="hidden" value="@Model.CheepId">
                     <input type="submit" value="Finish">
@@ -82,7 +82,7 @@
                     @if (@Model.AuthorName == User.Identity.Name)
                     {
                         <!-- Delete Button -->
-                        <form method="post" asp-page-handler="Delete" style="flex: 0 0 15%; display: inline;">
+                        <form method="post" asp-page-handler="Delete" style="flex: 0 0 15%; display: inline;" data-preserve-scroll="true">
                             <input name="CheepIdForDeletion" type="hidden" value="@Model.CheepId">
                             <input type="submit" value="Delete" style="background:transparent; border-style:none; color:#CC6E6E; cursor:pointer; font-size: 14px; font-weight: normal;">
                         </form>
@@ -99,7 +99,7 @@
 
         <!-- Reply Form -->
         <div class="reply-form" id="reply-form-wrapper-@Model.CheepId" style="display:none; margin-top:6px;">
-            <form method="post" asp-page-handler="Reply" id="reply-form-@Model.CheepId">
+            <form method="post" asp-page-handler="Reply" id="reply-form-@Model.CheepId" data-preserve-scroll="true">
                 <input type="hidden" name="Reply.CheepID" value="@Model.CheepId"/>
                 <textarea id="reply-text-field-@Model.CheepId" name="Reply.Text" required placeholder="Reply..."></textarea>
                 <input type="submit" value="Post"/>
