@@ -11,5 +11,7 @@
         maxlength="@Constants.MaxCheepLength"
         placeholder="Reply..."></textarea>
     <input type="hidden" name="Reply.CheepID" value="@Model.CheepId">
+    <br>
     <input type="submit" value="Post">
+    <small id="reply-form-@Model.CheepId-charcount">160 characters left</small>
 </form>

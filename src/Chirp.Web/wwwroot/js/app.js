@@ -209,4 +209,42 @@ function submitFormPreservingScroll(form) {
         form.submit();
     }
 }
+/**
+ * Attach a character count listener that updates as more characters are added to the textarea
+ * @param cheepId - the textarea form to attach a character count listener
+ */
+function setupCharcountMonitor(textarea) {
+    // Avoid adding duplicate listeners
+    if (textarea._charcountListenerAttached)
+        return;
+    textarea._charcountListenerAttached = true;
+    textarea.addEventListener("input", () => {
+        updateCharcount(textarea);
+    });
+    // Ensure correct charcount
+    updateCharcount(textarea);
+}
+/**
+ * Update the charcount associated with a given textarea
+ * @param textarea - the textarea's charcount to update
+ */
+function updateCharcount(textarea) {
+    const maxCharcount = textarea.maxLength;
+    const charcount = textarea.value.length;
+    const parentId = textarea.parentElement.id;
+    const charcountElement = document.getElementById(`${parentId}-charcount`);
+    charcountElement.innerHTML = `${(maxCharcount - charcount).toString()} characters left`;
+}
+document.addEventListener('DOMContentLoaded', () => {
+    // Setup event handlers
+    Array.from(document.getElementsByClassName("post-textarea")).forEach((element) => {
+        setupCharcountMonitor(element);
+    });
+    Array.from(document.getElementsByClassName("edit-textarea")).forEach((element) => {
+        setupCharcountMonitor(element);
+    });
+    Array.from(document.getElementsByClassName("reply-textarea")).forEach((element) => {
+        setupCharcountMonitor(element);
+    });
+});
 //# sourceMappingURL=app.js.map

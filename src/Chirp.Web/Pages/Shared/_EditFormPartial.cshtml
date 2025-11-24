@@ -15,6 +15,8 @@
                   maxlength="@Constants.MaxCheepLength"
                   placeholder="Edit...">@Model.Text</textarea>
         <input name="CheepIdForEditing" type="hidden" value="@Model.CheepId">
+        <br>
         <input type="submit" value="Finish">
+        <small id="edit-form-@Model.CheepId-charcount">160 characters left</small>
     </form>
 </div>
