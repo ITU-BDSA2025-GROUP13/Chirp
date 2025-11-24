@@ -120,7 +120,7 @@
             <ul class="cheep-children">
                 @foreach (var child in Model.Replies)
                 {
-                    @await Html.PartialAsync("_CheepPartial", child)
+                    <partial name="_CheepPartial" model="child" />
                 }
             </ul>
         }
