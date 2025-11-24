@@ -1,99 +1,102 @@
 body {
-  background: #eccaca;
+  background: #21242b;
+  color: #dddddd;
   font-family: 'Trebuchet MS', sans-serif;
   font-size: 14px;
+  padding: 0;
+  margin: 0;
 }
 
 a {
-  color: #26776F;
+  color: #7ed3d3;
 }
 
-a:hover {
+a:hover { 
   color: #333;
 }
 
+input[type="email"],
 input[type="text"],
 input[type="password"] {
-  background: white;
-  border: 1px solid #e6c0bf;
-  padding: 2px;
-  font-family: 'Trebuchet MS', sans-serif;
-  font-size: 14px;
-  border-radius: 2px;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  color: #571010;
+  margin-bottom: 4px;
 }
 
 input[type="submit"] {
-  background: #571010;
-  border: 1px solid #3b0707;
-  padding: 1px 3px;
+  background: #21242b;
+  border: 1px solid #999999;
+  padding: 1px 4px;
   font-family: 'Trebuchet MS', sans-serif;
   font-size: 14px;
   font-weight: bold;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
-  color: white;
+  color: #dddddd;
 }
 
 div.page {
-  background: white;
-  border: 1px solid #cc6e6e;
+  background: #dddddd;
+  border: 1px solid #999999;
   width: 700px;
-  margin: 30px auto;
+  margin: 0 auto 30px auto;
 }
 
-div.page h1 {
-  background: #cc6e6e;
+div.page header {
+  background: #282B34;
   margin: 0;
   padding: 10px 14px;
-  color: white;
-  letter-spacing: 1px;
-  text-shadow: 0 0 3px #772424;
-  font-weight: normal;
-  font-size: 80px;
+  color: #dddddd;
 }
 
-div.page h1 img {
-  height: 1em;
+div.page header h1 {
+  display: inline;
+  font-size: 100px;
+  letter-spacing: 1px;
+  font-weight: normal;
+  margin-bottom: 2em;
+  padding-left: 10px;
+}
+
+div.page header a img {
+  max-height: 5em;
+  filter: invert(1);
+  display: inline;
 }
 
 div.page div.navigation {
-  background: #DEE9E8;
-  padding: 4px 10px;
+  background: #333742;
+  padding: 4px 10px 4px 20;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #eee;
-  color: #888;
+  color: #999999;
   font-size: 12px;
   letter-spacing: 0.5px;
 }
 
 div.page div.navigation a {
-  color: #444;
+  color: #dddddd;
   font-weight: bold;
 }
 
 div.page h2 {
   margin: 0 0 15px 0;
-  color: #571010;
-  text-shadow: 0 1px 2px #ccc;
+  color: #dddddd;
 }
 
 div.page div.body {
   padding: 10px;
+  background: #2e313b;
 }
 
 div.page div.footer {
-  background: #eee;
-  color: #888;
+  background: #333742;
+  color: #999999;
   padding: 5px 10px;
   font-size: 12px;
 }
 
 div.page div.followstatus {
-  border: 1px solid #ccc;
+  border: 1px solid #999999;
   background: #E3EBEA;
   border-radius: 2px;
   -moz-border-radius: 2px;
@@ -111,12 +114,11 @@ div.page ul.cheeps {
 div.page ul.cheeps li {
   margin: 10px 0;
   padding: 5px;
-  background: #F0FAF9;
-  border: 1px solid #DBF3F1;
+  background: #2d313b;
+  border: 1px solid #4c4e52;
   border-radius: 2px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  min-height: 48px;
+  min-height: 56px;
+  color: #dddddd;
 }
 
 div.page ul.cheeps p {
@@ -130,14 +132,14 @@ div.page ul.cheeps li img {
 
 div.page ul.cheeps li small {
   font-size: 0.9em;
-  color: #888;
+  color: #999999;
 }
 
 div.page div.cheepbox {
   margin: 10px 0;
   padding: 5px;
-  background: #F0FAF9;
-  border: 1px solid #e29494;
+  background: #4a5470;
+  border: 1px solid #282B34;
   border-radius: 2px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -166,8 +168,8 @@ div.message {
   list-style: none;
   margin: 10px 10px 0 10px;
 
-  background: #f3b9b9;
-  border: 1px solid #ce8181;
+  background: #333742;
+  border: 1px solid #282B34;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -176,8 +178,8 @@ div.message {
 }
 
 ul.message li {
-  background: #f3b9b9;
-  border: 1px solid #ce8181;
+  background: #333742;
+  border: 1px solid #282B34;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -187,8 +189,8 @@ ul.message li {
 
 div.error {
   margin: 10px 0;
-  background: #FAE4E4;
-  border: 1px solid #DD6F6F;
+  background: #dddddd;
+  border: 1px solid #21242b;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -199,8 +201,8 @@ div.error {
 div.topics {
   width: 180px;
   height: 250px;
-  background: #ffffff;
-  border: 1px solid #e29494;
+  background: #dddddd;
+  border: 1px solid #282B34;
   border-radius: 2px;
   position: fixed;
   top: 50%;
@@ -222,15 +224,68 @@ li.topic {
   background: #F0FAF9;
   border: 1px solid #DBF3F1;
   border-radius: 2px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
   min-height: 20px;
 }
 
 nav {
-  background: #DEE9E8;
+  background-color: #333742;
+  color: #dddddd;
+  min-height: 2.2em;
+  padding-left: 0.8em;
 }
 
 nav a{
-  color: #464444;
+  color: #dddddd;
+  text-decoration: none;
+}
+
+nav a:hover{
+  color: #7ed3d3;
+  text-decoration: none;
+}
+
+#post-text-field {
+  margin-bottom: 6px;
+  background: #eeeeff;
+  border-radius: 2px;
+}
+
+.cheep-button {
+  background:transparent; 
+  border-style:none; 
+  color:#489cd4; 
+  cursor:pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 1px 3px;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+.pagination-display {
+  color: #dddddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+}
+
+.pagination-label {
+  font-size: 16px;
+}
+
+.pagination-button {
+  color: #dddddd;
+  font-size: 20px;
+}
+
+.pagination-button-unclickable {
+  font-size: 20px;
+  color: #4c4e52;
+
+}
+
+.checkbox mb-3 {
+  margin: 0;
+  padding: 0;
 }
