@@ -25,7 +25,7 @@
                 @foreach (var cheep in @Model.Cheeps) 
                 {
                     <li>
-                        <a style="color: #000000;" href="/user/@Model.Username">
+                        <a style="" href="/user/@Model.Username">
                             @Model.Username:
                             @cheep.Text.Substring(0, Math.Min(16, cheep.Text.Length))... 
                             @cheep.DatePosted
@@ -43,7 +43,7 @@
                 }
                 @foreach (string username in @Model.FollowedUsers) {
                     <li>
-                        <a style="color: #000000;" href="/user/@username">@username</a>
+                        <a style="" href="/user/@username">@username</a>
                     </li>
                 }
             </ul>

@@ -37,15 +37,19 @@ Layout = "Shared/_Layout";
     }
     </ul>
 
-	<div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+    <div class="pagination-display">
         @if (Model.HasPreviousPage)
         {
-            <a href="/?currentpage=@(Model.CurrentPage - 1)" style="font-size: 20px;">&larr;</a>
+            <a class="pagination-button" href="/?currentpage=@(Model.CurrentPage - 1)">&larr;</a>
+        } else {
+            <span class="pagination-button-unclickable">&larr;</span>
         }
-        <span style="font-size: 16px;">Page @Model.CurrentPage</span>
+        <span class="pagination-label">Page @Model.CurrentPage</span>
         @if (Model.HasNextPage)
         {
-            <a href="/?currentpage=@(Model.CurrentPage + 1)" style="font-size: 20px;">&rarr;</a>
+            <a class="pagination-button" href="/?currentpage=@(Model.CurrentPage + 1)">&rarr;</a>
+        } else {
+            <span class="pagination-button-unclickable">&rarr;</span>
         }
     </div>
 </div>

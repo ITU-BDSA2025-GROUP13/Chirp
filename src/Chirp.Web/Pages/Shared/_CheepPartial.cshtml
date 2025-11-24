@@ -24,7 +24,7 @@
                         <!-- Follow Button -->
                         <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;">
                             <input name="ToggleFollowForUserId" type="hidden" value="@Model.AuthorName">
-                            <input type="submit" value="Follow" style="padding-left: 0.5em; loat: left; background:transparent; border-style:none; color:#59b63d; cursor:pointer; font-size: 14px; font-weight: normal;">
+                            <input type="submit" value="Follow" style="padding-left: 0.5em; loat: left; background:transparent; border-style:none; color:#6fdf53; cursor:pointer; font-size: 14px; font-weight: normal;">
                         </form>
                     }
                 }
@@ -88,12 +88,12 @@
                         </form>
 
                         <!-- Edit Button -->
-                        <button type="button" class="textButton" onclick="editCheep(@Model.CheepId)" style="color:#b266df;">
+                        <button type="button" class="cheep-button" onclick="editCheep(@Model.CheepId)" style="color:#b266df;">
                             Edit
                         </button>
                     }
                     <!-- Reply Button -->
-                    <button class="textButton" onclick="toggleReply(@Model.CheepId)">Reply</button>    
+                    <button class="cheep-button" onclick="toggleReply(@Model.CheepId)">Reply</button>    
                 </div>
             }
         </div>
@@ -119,16 +119,3 @@
         }
     </flex-container>
 </li>
-
-<style>
-    .textButton {
-        background:transparent; 
-        border-style:none; 
-        color:#297eb6; 
-        cursor:pointer;
-        font-size: 14px;
-        font-weight: normal;
-        padding: 1px 3px;
-        font-family: 'Trebuchet MS', sans-serif;
-    }
-</style>
