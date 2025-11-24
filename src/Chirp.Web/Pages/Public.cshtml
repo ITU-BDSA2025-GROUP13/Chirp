@@ -27,7 +27,7 @@ Layout = "Shared/_Layout";
     <ul class="cheeps-list">
             @foreach (var cheep in Model.Cheeps.Where(c => !c.ParentCheepID.HasValue)) //Renders only root node cheeps (replies gets rendered from _CheepPartial)
             {
-                @await Html.PartialAsync("_CheepPartial", cheep)
+                <partial name="_CheepPartial" model="cheep" />
             }
         </ul>
     }
@@ -53,9 +53,3 @@ Layout = "Shared/_Layout";
         }
     </div>
 </div>
-
-<script>
-    window.addEventListener("load", function () {
-        setupPostEnterBehavior();
-    });
-</script>

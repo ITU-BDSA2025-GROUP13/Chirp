@@ -20,7 +20,7 @@
             <ul class="cheeps-list">
                 @foreach (var cheep in Model.Cheeps.Where(c => !c.ParentCheepID.HasValue)) //Renders only root node cheeps (replies gets rendered from _CheepPartial)
                 {
-                    @await Html.PartialAsync("_CheepPartial", cheep)
+                    <partial name="_CheepPartial" model="cheep" />
                 }
             </ul>
         }
