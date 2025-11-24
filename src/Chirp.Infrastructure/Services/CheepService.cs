@@ -13,14 +13,14 @@ namespace Chirp.Infrastructure.Services
             return ToDTO(cheeps);
         }
 
-        public List<CheepDTO> GetCheepsFromAuthorName(string authorName, int pagenum = 0)
+        public List<CheepDTO> GetCheepsFromAuthorName(string authorName, int pagenum = 1)
         {
             ChirpUser? author = userManager.FindByNameAsync(authorName).GetAwaiter().GetResult();
             if (author == null) return [];
             return ToDTO(cheepRepo.GetAuthorPage(author, pagenum).GetAwaiter().GetResult());
         }
 
-        public List<CheepDTO> GetCheepsFromAuthorID(string authorID, int pagenum = 0)
+        public List<CheepDTO> GetCheepsFromAuthorID(string authorID, int pagenum = 1)
         {
             ChirpUser? author = userManager.FindByIdAsync(authorID.ToString()).GetAwaiter().GetResult();
             if (author == null) return [];
@@ -29,7 +29,7 @@ namespace Chirp.Infrastructure.Services
 
         }
 
-        public List<CheepDTO> GetCheepsFromAuthorEmail(string authorEmail, int pagenum = 0)
+        public List<CheepDTO> GetCheepsFromAuthorEmail(string authorEmail, int pagenum = 1)
         {
             ChirpUser? author = userManager.FindByEmailAsync(authorEmail).GetAwaiter().GetResult();
             if (author == null) return [];
@@ -89,7 +89,7 @@ namespace Chirp.Infrastructure.Services
             return followerNames;
         }
 
-        public List<CheepDTO> GetOwnPrivateTimeline(string username, int pagenum = 0)
+        public List<CheepDTO> GetOwnPrivateTimeline(string username, int pagenum = 1)
         {
             ChirpUser? user = userManager.FindByNameAsync(username).GetAwaiter().GetResult();
 

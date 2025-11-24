@@ -7,10 +7,9 @@ namespace Chirp.Infrastructure.Repositories
         /// <summary>
         /// Retrieves a paginated list of cheeps ordered by publication date (newest first).
         /// </summary>
-        /// <param name="pagenum">The zero-based page number to retrieve. Default is 0.</param>
+        /// <param name="pagenum">The zero-based page number to retrieve. Default is 1.</param>
         /// <returns>A task containing an enumerable collection of cheeps for the specified page.</returns>
-        Task<IEnumerable<Cheep>> GetMainPage(int pagenum = 0);
-
+        Task<IEnumerable<Cheep>> GetMainPage(int pagenum = 1);
         /// <summary>
         /// Retrieves an author with a paginated list of their cheeps ordered by publication date (newest first).
         /// </summary>
