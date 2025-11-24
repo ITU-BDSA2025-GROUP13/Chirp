@@ -64,10 +64,10 @@
             </div>
         </div>
         <div>
-            <p id="cheep_text" style="display:block;">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
+            <p id="cheep_text-@Model.CheepId" style="display:block;">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
             <div style="display: flex;">
-                <form method="post" asp-page-handler="Edit" style="display: none;" id="cheep_edit">
-                    <input name="EditedCheepText" type="text" value="@Model.Text" style="width: 100%;" id="cheep_edit_input" required>
+                <form method="post" asp-page-handler="Edit" style="display: none;" id="cheep-edit-@Model.CheepId">
+                    <input name="EditedCheepText" type="text" value="@Model.Text" style="width: 100%;" id="cheep-edit-input-@Model.CheepId" required>
                     <input name="CheepIdForEditing" type="hidden" value="@Model.CheepId">
                     <input type="submit" value="Finish">
                 </form>  
@@ -86,7 +86,6 @@
                             <input name="CheepIdForDeletion" type="hidden" value="@Model.CheepId">
                             <input type="submit" value="Delete" style="background:transparent; border-style:none; color:#CC6E6E; cursor:pointer; font-size: 14px; font-weight: normal;">
                         </form>
-
                         <!-- Edit Button -->
                         <button type="button" class="cheep-button" onclick="editCheep(@Model.CheepId)" style="color:#b266df;">
                             Edit
