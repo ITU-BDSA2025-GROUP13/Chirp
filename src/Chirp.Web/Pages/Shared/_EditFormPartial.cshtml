@@ -1,4 +1,5 @@
 @using Chirp.Infrastructure.Services
+@using Chirp.Web.Constants
 
 @model CheepDTO
 <div class="cheep-edit-wrapper">
@@ -11,6 +12,7 @@
                   name="EditedCheepText"
                   class="cheep-edit-input"
                   id="cheep-edit-input-@Model.CheepId"
+                  maxlength="@Constants.MaxCheepLength"
                   placeholder="Edit...">@Model.Text</textarea>
         <input name="CheepIdForEditing" type="hidden" value="@Model.CheepId">
         <input type="submit" value="Finish">
