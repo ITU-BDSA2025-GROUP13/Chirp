@@ -37,15 +37,21 @@ function toggleReply(cheepId) {
  */
 function editCheep(cheepId) {
     const cheep = document.getElementById(`cheep-${cheepId}`);
-    const cheep_text = cheep.querySelector("#cheep_text");
-    const cheep_edit = cheep.querySelector("#cheep_edit");
-    if (cheep_text.style.display === "none") {
-        cheep_text.style.display = "block";
-        cheep_edit.style.display = "none";
+    const cheepText = cheep.querySelector("#cheep-text-" + cheepId);
+    const cheepEdit = cheep.querySelector("#cheep-edit-" + cheepId);
+    const cheepEditInput = cheep.querySelector("#cheep-edit-input-" + cheepId);
+    if (!cheepText || !cheepEdit || !cheepEditInput)
+        return;
+    if (cheepText.style.display === "none") {
+        cheepText.style.display = "block";
+        cheepEdit.style.display = "none";
     }
     else {
-        cheep_text.style.display = "none";
-        cheep_edit.style.display = "block";
+        cheepText.style.display = "none";
+        cheepEdit.style.display = "block";
+        cheepEditInput.focus();
+        const len = cheepEditInput.value.length;
+        cheepEditInput.setSelectionRange(len, len);
     }
 }
 /**

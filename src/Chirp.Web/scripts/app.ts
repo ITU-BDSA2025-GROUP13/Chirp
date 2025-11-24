@@ -25,29 +25,34 @@ function toggleReply(cheepId: number): void {
     const replyTextField = document.getElementById(`reply-text-field-${cheepId}`);
     if (!replyFormWrapper || !replyTextField) return;
 
-    if (replyFormWrapper.style.display === "none" || replyFormWrapper.style.display === "") {
-        replyFormWrapper.style.display = "block";
+    if (replyFormWrapper.style.display === 'none' || replyFormWrapper.style.display === '') {
+        replyFormWrapper.style.display = 'block';
         replyTextField.focus();
         setupReplyEnterBehavior(cheepId);
     } else {
-        replyFormWrapper.style.display = "none";
+        replyFormWrapper.style.display = 'none';
     }
 }
 
 /**
  * @param {string} cheepId - the cheepId to query for
  */
-function editCheep(cheepId: string): void {
+function editCheep(cheepId: number): void {
     const cheep = document.getElementById(`cheep-${cheepId}`);
-    const cheep_text = cheep.querySelector<HTMLElement>("#cheep_text")
-    const cheep_edit = cheep.querySelector<HTMLElement>("#cheep_edit")
+    const cheepText = cheep.querySelector<HTMLElement>("#cheep-text-" + cheepId);
+    const cheepEdit = cheep.querySelector<HTMLElement>("#cheep-edit-" + cheepId);
+    const cheepEditInput = cheep.querySelector<HTMLInputElement>("#cheep-edit-input-" + cheepId);
+    if (!cheepText || !cheepEdit || !cheepEditInput) return;
 
-    if (cheep_text.style.display === "none") {
-        cheep_text.style.display = "block";
-        cheep_edit.style.display = "none"
+    if (cheepText.style.display === "none") {
+        cheepText.style.display = "block";
+        cheepEdit.style.display = "none"   
     } else {
-        cheep_text.style.display = "none";
-        cheep_edit.style.display = "block";
+        cheepText.style.display = "none";
+        cheepEdit.style.display = "block";
+		cheepEditInput.focus();
+		const len = cheepEditInput.value.length;
+		cheepEditInput.setSelectionRange(len, len);	
     }
 }
 
