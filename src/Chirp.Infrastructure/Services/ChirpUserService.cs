@@ -21,7 +21,10 @@ public class ChirpUserService(IChirpUserRepository chirpUserRepo, UserManager<Ch
         }
 
         List<ChirpUser> followedUsers = chirpUserRepo.GetFollowedUsers(user);
-        return followedUsers.Select(u => u.UserName ?? "").Where(name => !string.IsNullOrEmpty(name)).ToList();
+        return followedUsers
+            .Select(u => u.UserName ?? "")
+            .Where(name => !string.IsNullOrEmpty(name))
+            .Where(name => name != user.UserName).ToList();
     }
 
     /// <summary>
