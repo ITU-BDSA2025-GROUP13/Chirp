@@ -7,7 +7,7 @@ namespace Chirp.Infrastructure.Services
     public class CheepService(ICheepRepository cheepRepo, UserManager<ChirpUser> userManager) : ICheepService
     {
         private const string DeletedUser = "Deleted User";
-        public List<CheepDTO> GetMainPageCheeps(int page = 0)
+        public List<CheepDTO> GetMainPageCheeps(int page = 1)
         {
             List<Cheep> cheeps = cheepRepo.GetMainPage(page).GetAwaiter().GetResult().ToList();
             return ToDTO(cheeps);

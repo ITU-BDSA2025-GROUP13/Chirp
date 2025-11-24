@@ -1,5 +1,6 @@
 ﻿using Chirp.Web;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Playwright.Helpers;
 using Microsoft.Playwright.Xunit;
 using System.Text.RegularExpressions;
 
@@ -90,12 +91,11 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
         await Page.ClickAsync("input[type='submit']");
 
         // Assert message has been posted
-        await Expect(Page.GetByText(message)).ToBeVisibleAsync();
+        var cheep = Page.Locator("li.cheep", new() { HasTextString = message });
 
-        // Edit cheep
-        await Page.ClickAsync("button:text('Edit')");
-        await Page.FillAsync("#cheep_edit_input", editedMessage);
-        await Page.ClickAsync("input:text('Finish')");
+        await cheep.GetByRole(Microsoft.Playwright.AriaRole.Button, new() { Name = "Edit" }).ClickAsync();
+        await cheep.Locator("input[name='EditedCheepText']").FillAsync(editedMessage);
+        await cheep.GetByRole(Microsoft.Playwright.AriaRole.Button, new() { Name = "Finish" }).ClickAsync();
 
         // Assert message has been edited
         await Expect(Page.GetByText(editedMessage)).ToBeVisibleAsync();

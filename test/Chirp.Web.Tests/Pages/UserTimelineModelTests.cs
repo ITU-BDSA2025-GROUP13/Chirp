@@ -46,11 +46,11 @@ public class UserTimelineModelTests
         var model = CreateModel(mockCheepService, mockUserService);
 
         model.Author = user;
-        model.CurrentPage = 0;
+        model.CurrentPage = 1;
         var result = model.OnGet();
 
         Assert.IsType<PageResult>(result);
-        mockCheepService.Verify(s => s.GetCheepsFromAuthorName(user, 0), Times.Once);
+        mockCheepService.Verify(s => s.GetCheepsFromAuthorName(user, 1), Times.Once);
         Assert.Equal(expectedCheeps, model.Cheeps);
     }
 
@@ -70,11 +70,11 @@ public class UserTimelineModelTests
         var model = CreateModel(mockCheepService, mockUserService);
 
         model.Author = anotherUser;
-        model.CurrentPage = 0;
+        model.CurrentPage = 1;
         var result = model.OnGet();
 
         Assert.IsType<PageResult>(result);
-        mockCheepService.Verify(s => s.GetCheepsFromAuthorName(anotherUser, 0), Times.Once);
+        mockCheepService.Verify(s => s.GetCheepsFromAuthorName(anotherUser, 1), Times.Once);
         Assert.Single(model.Cheeps);
         Assert.Equal(anotherUser, model.Cheeps.First().AuthorName);
     }
@@ -89,7 +89,7 @@ public class UserTimelineModelTests
         var model = CreateModel(mockCheepService, mockUserService);
 
         model.Author = "NonExistent";
-        model.CurrentPage = 0;
+        model.CurrentPage = 1;
         var result = model.OnGet();
 
         Assert.IsType<PageResult>(result);
@@ -112,7 +112,7 @@ public class UserTimelineModelTests
         var model = CreateModel(mockCheepService, mockUserService);
 
         model.Author = user;
-        model.CurrentPage = 0;
+        model.CurrentPage = 1;
         var result = model.OnGet();
 
         Assert.IsType<PageResult>(result);

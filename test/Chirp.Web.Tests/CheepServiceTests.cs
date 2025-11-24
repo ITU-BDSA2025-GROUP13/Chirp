@@ -26,7 +26,7 @@ public class CheepServiceTests
         var mockCheepRepo = new Mock<ICheepRepository>();
 
         mockCheepRepo
-            .Setup(c => c.GetMainPage(0))
+            .Setup(c => c.GetMainPage(It.IsAny<int>()))
             .ReturnsAsync(cheeps);
 
         Mock<IUserStore<ChirpUser>> userStore = new Mock<IUserStore<ChirpUser>>();
