@@ -1,3 +1,18 @@
+const scrollStorageKey = `chirp-scroll:${window.location.pathname}${window.location.search}`;
+
+const canUseSessionStorage = (() => {
+    try {
+        if (typeof sessionStorage === "undefined") return false;
+
+        const testKey = "__chirp_scroll_test__";
+        sessionStorage.setItem(testKey, "1");
+        sessionStorage.removeItem(testKey);
+        return true;
+    } catch {
+        return false;
+    }
+})();
+
 function setupPostEnterBehavior(): void {
     const textarea = document.getElementById('post-text-field') as HTMLTextAreaElement | null;
     const form = document.getElementById('post-form') as HTMLFormElement | null;
@@ -11,10 +26,52 @@ function setupPostEnterBehavior(): void {
     textarea.addEventListener("keydown", function (event) {
         if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
-            form.submit();
+            submitFormPreservingScroll(form);
         }
     });
 }
+
+function persistScrollPosition(): void {
+    if (!canUseSessionStorage) return;
+    sessionStorage.setItem(scrollStorageKey, window.scrollY.toString());
+}
+
+function restoreScrollPosition(): void {
+    if (!canUseSessionStorage) return;
+
+    const storedValue = sessionStorage.getItem(scrollStorageKey);
+    if (!storedValue) return;
+
+    const scrollY = Number(storedValue);
+    sessionStorage.removeItem(scrollStorageKey);
+    if (Number.isNaN(scrollY)) return;
+
+    window.requestAnimationFrame(() => {
+        window.scrollTo({ top: scrollY, left: window.scrollX });
+    });
+}
+
+function setupScrollPreservation(): void {
+    if (!canUseSessionStorage) return;
+
+    const forms = document.querySelectorAll<HTMLFormElement>('form[data-preserve-scroll]');
+    forms.forEach(form => {
+        if ((form as any)._scrollPreserverAttached) return;
+        form.addEventListener('submit', persistScrollPosition);
+        (form as any)._scrollPreserverAttached = true;
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    restoreScrollPosition();
+    setupScrollPreservation();
+});
+
+window.addEventListener('pageshow', event => {
+    if (event.persisted) {
+        restoreScrollPosition();
+    }
+});
 
 /**
  * Toggles the reply UI
@@ -32,6 +89,8 @@ function toggleReply(cheepId: number): void {
     } else {
         replyFormWrapper.style.display = 'none';
     }
+
+    setupScrollPreservation();
 }
 
 /**
@@ -72,7 +131,17 @@ function setupReplyEnterBehavior(cheepId: number): void {
     textarea.addEventListener("keydown", function (event) {
         if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
-            form.submit();
+            submitFormPreservingScroll(form);
         }
     });
+}
+
+function submitFormPreservingScroll(form: HTMLFormElement): void {
+    persistScrollPosition();
+
+    if (typeof form.requestSubmit === "function") {
+        form.requestSubmit();
+    } else {
+        form.submit();
+    }
 }
