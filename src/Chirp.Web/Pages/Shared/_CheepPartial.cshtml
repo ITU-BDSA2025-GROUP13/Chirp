@@ -67,10 +67,10 @@
         </div>
 
         <!-- Reply Form -->
-        <div class="reply-form" id="reply-form-@Model.CheepId" style="display:none; margin-top:6px;">
-            <form method="post" asp-page-handler="Reply">
+        <div class="reply-form" id="reply-form-wrapper-@Model.CheepId" style="display:none; margin-top:6px;">
+            <form method="post" asp-page-handler="Reply" id="reply-form-@Model.CheepId">
                 <input type="hidden" name="Reply.CheepID" value="@Model.CheepId"/>
-                <textarea name="Reply.Text" required placeholder="Reply..."></textarea>
+                <textarea id="reply-text-field-@Model.CheepId" name="Reply.Text" required placeholder="Reply..."></textarea>
                 <input type="submit" value="Post"/>
             </form>
         </div>
