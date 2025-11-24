@@ -3,33 +3,33 @@
  * @param cheepId - the ID to query for
  */
 function toggleReply(cheepId: number): void {
-    const replyFormWrapper = document.getElementById('reply-form-wrapper-' + cheepId);
-    const replyTextField  = document.getElementById('reply-text-field-' + cheepId);
+    const replyFormWrapper = document.getElementById(`reply-form-wrapper-${cheepId}`);
+    const replyTextField = document.getElementById(`reply-text-field-${cheepId}`);
     if (!replyFormWrapper || !replyTextField) return;
 
-    if (replyFormWrapper.style.display === 'none' || replyFormWrapper.style.display === '') {
-      replyFormWrapper.style.display = 'block';
-      replyTextField.focus();
-      setupReplyEnterBehavior(cheepId);
+    if (replyFormWrapper.style.display === "none" || replyFormWrapper.style.display === "") {
+        replyFormWrapper.style.display = "block";
+        replyTextField.focus();
+        setupReplyEnterBehavior(cheepId);
     } else {
-      replyFormWrapper.style.display = 'none';
+        replyFormWrapper.style.display = "none";
     }
 }
 /**
  * @param {string} cheepId - the cheepId to query for
  */
 function editCheep(cheepId: string): void {
-  const cheep = document.getElementById(`cheep-${cheepId}`);
-  const cheep_text = cheep.querySelector<HTMLElement>("#cheep_text")
-  const cheep_edit = cheep.querySelector<HTMLElement>("#cheep_edit")
+    const cheep = document.getElementById(`cheep-${cheepId}`);
+    const cheep_text = cheep.querySelector<HTMLElement>("#cheep_text")
+    const cheep_edit = cheep.querySelector<HTMLElement>("#cheep_edit")
 
-  if (cheep_text.style.display === "none") {
-    cheep_text.style.display = "block";
-    cheep_edit.style.display = "none"   
-  } else {
-    cheep_text.style.display = "none";
-    cheep_edit.style.display = "block";
-  }
+    if (cheep_text.style.display === "none") {
+        cheep_text.style.display = "block";
+        cheep_edit.style.display = "none"
+    } else {
+        cheep_text.style.display = "none";
+        cheep_edit.style.display = "block";
+    }
 }
 
 /**
