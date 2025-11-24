@@ -86,7 +86,7 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
 
         // Post cheep
         await Page.GotoAsync($"{_baseUrl}/");
-        await Page.FillAsync("#CheepMessage", message);
+        await Page.FillAsync("#post-text-field", message);
         await Page.ClickAsync("input[type='submit']");
 
         // Assert message has been posted
