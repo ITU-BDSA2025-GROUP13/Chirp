@@ -77,7 +77,8 @@ public class UserTimelineModel : PageModel
 
         Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
         HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
-        LoadLikedCheeps();
+        LoadLikes();
+        LoadTimeline(CurrentPage);
         return Page();
     }
 
@@ -97,7 +98,7 @@ public class UserTimelineModel : PageModel
         }
 
         Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
-        LoadLikedCheeps();
+        LoadLikes();
         return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
 
@@ -112,7 +113,7 @@ public class UserTimelineModel : PageModel
             {
                 return LocalRedirect($"/user/{Author}");
             }
-            LoadLikedCheeps();
+            LoadLikes();
             return LocalRedirect($"/user/{Author}?page={CurrentPage}");
         }
 
@@ -131,9 +132,7 @@ public class UserTimelineModel : PageModel
         if (name == null)
         {
             ErrorMessage = "You must be logged in to post a cheep.";
-            CurrentPage = 1;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            LoadTimeline(1);
             return Page();
         }
 
@@ -141,22 +140,18 @@ public class UserTimelineModel : PageModel
         if (user == null)
         {
             ErrorMessage = "User not found! Try logging out and in again.";
-            CurrentPage = 1;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            LoadTimeline(1);
             return Page();
         }
 
         if (Reply == null || Reply.Text == null)
         {
             ErrorMessage = "Reply not found!";
-            CurrentPage = 1;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            LoadTimeline(CurrentPage);
             return Page();
         }
 
-        LoadLikedCheeps();
+        LoadLikes();
         _service.ReplyToCheep(Reply.CheepID, Reply.Text, user);
         return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
@@ -176,7 +171,7 @@ public class UserTimelineModel : PageModel
         return true;
     }
 
-    private void LoadLikedCheeps()
+    private void LoadLikes()
     {
         if (User?.Identity != null && User.Identity.IsAuthenticated)
         {
@@ -203,7 +198,7 @@ public class UserTimelineModel : PageModel
         {
             ErrorMessage = "You must be logged in to like a cheep.";
             Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
-            LoadLikedCheeps();
+            LoadLikes();
             return Page();
         }
 
@@ -214,7 +209,7 @@ public class UserTimelineModel : PageModel
         {
             ErrorMessage = "User not found!";
             Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
-            LoadLikedCheeps();
+            LoadLikes();
             return Page();
         }
 
@@ -228,7 +223,24 @@ public class UserTimelineModel : PageModel
         }
 
         Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
-        LoadLikedCheeps();
+        LoadLikes();
         return Page();
+    }
+
+    private void LoadTimeline(int page)
+    {
+        CurrentPage = page < 1 ? 1 : page;
+        bool isViewingOwnTimeline = Author == User.Identity?.Name;
+
+        if (isViewingOwnTimeline)
+        {
+            Cheeps = _service.GetOwnPrivateTimeline(Author, CurrentPage);
+            HasNextPage = _service.GetOwnPrivateTimeline(Author, CurrentPage + 1).Any();
+        }
+        else
+        {
+            Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
+            HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
+        }
     }
 }
