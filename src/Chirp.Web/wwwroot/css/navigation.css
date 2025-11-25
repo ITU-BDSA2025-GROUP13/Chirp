@@ -1,0 +1,26 @@
+nav {
+  background-color: #333742;
+  color: #dddddd;
+  min-height: 2.2em;
+  padding-left: 0.8em;
+}
+
+nav a {
+  color: #dddddd;
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: #7ed3d3;
+  text-decoration: none;
+}
+
+.navigation-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navigation-button {
+  font-weight: bold;
+}

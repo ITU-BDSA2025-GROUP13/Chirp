@@ -1,0 +1,124 @@
+body {
+  background: #21242b;
+  color: #dddddd;
+  font-family: 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: #7ed3d3;
+}
+
+a:hover {
+  color: #333;
+}
+
+input[type="email"],
+input[type="text"],
+input[type="password"] {
+  margin-bottom: 4px;
+}
+
+input[type="submit"] {
+  background: #21242b;
+  border: 1px solid #999999;
+  padding: 1px 4px;
+  font-family: 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  color: #dddddd;
+}
+
+div.page {
+  background: #dddddd;
+  border: 1px solid #999999;
+  width: 700px;
+  margin: 0 auto 30px auto;
+}
+
+div.page header {
+  background: #282B34;
+  margin: 0;
+  padding: 10px 14px;
+  color: #dddddd;
+}
+
+div.page header h1 {
+  display: inline;
+  font-size: 100px;
+  letter-spacing: 1px;
+  font-weight: normal;
+  margin-bottom: 2em;
+  padding-left: 10px;
+}
+
+div.page header a img {
+  max-height: 5em;
+  filter: invert(1);
+  display: inline;
+}
+
+div.page h2 {
+  margin: 0 0 15px 0;
+  color: #dddddd;
+}
+
+div.page div.body {
+  padding: 10px;
+  background: #2e313b;
+}
+
+div.page div.footer {
+  background: #333742;
+  color: #999999;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+div.page ul.cheeps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+div.page ul.cheeps li {
+  margin: 10px 0;
+  padding: 5px;
+  background: #2d313b;
+  border: 1px solid #4c4e52;
+  border-radius: 2px;
+  min-height: 56px;
+  color: #dddddd;
+}
+
+div.page ul.cheeps p {
+  margin: 0;
+}
+
+div.page ul.cheeps li img {
+  float: left;
+  padding: 0 10px 0 0;
+}
+
+div.page ul.cheeps li small {
+  font-size: 0.9em;
+  color: #999999;
+}
+
+.form-error {
+  color: red;
+  margin-bottom: 10px;
+}
+
+#post-text-field {
+  margin-bottom: 6px;
+  background: #eeeeff;
+  border-radius: 2px;
+  width: 100%;
+  box-sizing: border-box;
+}
