@@ -11,9 +11,9 @@ Layout = "Shared/_Layout";
     <form method="post" id="post-form" data-preserve-scroll="true">
             @if (!string.IsNullOrEmpty(Model.ErrorMessage))
             {
-                <div style="color: red; margin-bottom: 10px;">@Model.ErrorMessage</div>
+                <div class="form-error">@Model.ErrorMessage</div>
             }
-            <textarea id="post-text-field" asp-for="CheepMessage" required placeholder="Post a Cheep!" rows="4" style="width: 100%; box-sizing: border-box"></textarea>
+            <textarea id="post-text-field" asp-for="CheepMessage" required placeholder="Post a Cheep!" rows="4"></textarea>
             <br>
             <input type="submit" value="Post">
         </form>
@@ -24,7 +24,7 @@ Layout = "Shared/_Layout";
     <ul id="messagelist" class="cheeps">
     @if (Model.Cheeps.Any())
     {
-        <ul class="cheeps-list" style="list-style:none; padding-left:0;">
+    <ul class="cheeps-list">
             @foreach (var cheep in Model.Cheeps.Where(c => !c.ParentCheepID.HasValue)) //Renders only root node cheeps (replies gets rendered from _CheepPartial)
             {
                 @await Html.PartialAsync("_CheepPartial", cheep)
