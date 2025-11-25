@@ -26,6 +26,11 @@ namespace Chirp.Infrastructure.Services
 
         public bool UserHasLiked(string username, int cheepId)
         {
+            if (string.IsNullOrEmpty(username))
+            {
+                return false;
+            }
+
             return _likeCache.TryGetValue(username, out var likedCheeps)
                 && likedCheeps.Contains(cheepId);
         }

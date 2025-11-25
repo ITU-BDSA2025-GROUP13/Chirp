@@ -29,34 +29,42 @@
                     }
                 }
             </div>
-            <small>&mdash; @Model.DatePosted</small>
-            <small>&mdash; @Model.Likes</small>
-            @if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                <div style="flex: 0 0 10%; margin: 0;">
-                    <form method="post" asp-page-handler="Like"
-                        style="flex: 0 0 15%;">
-                        <input name="CheepIdForLike" type="hidden" value="@Model.CheepId" ,>
-                        <input type="submit" value="Like" style="float:right; background:transparent; border-style:none; color:#50CC6E; cursor:pointer;">
+            <div style="display: flex; flex-direction: row; align-items: center;">
+                @if (User.Identity != null && User.Identity.IsAuthenticated && User.Identity.Name != null)
+                {   
+                    <!-- Like/Unlike button -->
+                    <form method="post" asp-page-handler="Like" style="flex: 0 0 15%;">
+                    <input name="CheepIdForLike" type="hidden" value="@Model.CheepId">
+                    @if (CheepDataCache.Instance.UserHasLiked(User.Identity.Name, Model.CheepId))
+                    {   
+                        <div style="display: flex; align-items: center;">
+                            <span style="text-shadow: 1px 1px 1px">@Model.Likes</span>
+                            <button type="submit" style="display:inline-block; background:transparent; border-style:none; cursor:pointer;">
+                                <i class="fa fa-thumbs-up"></i> <!-- filled thumbs-up icon -->
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="display: flex; align-items: center;">
+                            <span>@Model.Likes</span>
+                            <button type="submit" style="display:inline-block; background:transparent; border-style:none; cursor:pointer;">
+                                <i class="fa">&#xf087;</i> <!-- outlined thumbs-up icon -->
+                            </button>
+                        </div>
+                    }
                     </form>
-                </div>
-            }
-            <form method="post" asp-page-handler="Like" style="flex: 0 0 15%;">
-                <input name="CheepIdForLike" type="hidden" value="@Model.CheepId">
-                @if (CheepDataCache.Instance.UserHasLiked(User.Identity.Name, Model.CheepId))
-                {
-                <input type="submit" value="👎 Unlike"
-                    style="float:right; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer; font-weight:bold;">
+                } else {
+                    <div style="display: flex; align-items: center;">
+                        <span style="margin-right:4px">@Model.Likes</span> 
+                        <i class="fa">&#xf087;</i> <!-- outlined thumbs-up icon -->
+                    </div> 
                 }
-                else
-                {
-                <input type="submit" value="👍 Like"
-                    style="float:right; background:transparent; border-style:none; color:#50CC6E; cursor:pointer;">
-                }
-            </form>
+
+            </div>
         </div>
         <div>
-            <p id="cheep_text" style="display:block;">@Model.Text</p>
+            <p id="cheep_text" style="display:block;">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
             <div style="display: flex;">
                 <form method="post" asp-page-handler="Edit" style="display: none;" id="cheep_edit">
                     <input name="EditedCheepText" type="text" value="@Model.Text" style="width: 100%;" id="cheep_edit_input" required>

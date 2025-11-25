@@ -2,7 +2,7 @@ using Chirp.Infrastructure.Services;
 
 namespace Chirp.Infrastructure.Tests.Services;
 
-public class FollowCacheTests
+public class CheepDataCacheTests
 {
     [Fact]
     public void SetFollowedUsers_WhenCalled_CachesFollowedUsers()
