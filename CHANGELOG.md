@@ -1,5 +1,37 @@
 # Changelog
 
+## [5.4.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.3.1...v5.4.0) (2025-11-25)
+
+
+### Features
+
+* add about me page for GDPR ([8a22f42](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/8a22f42fe5e7e0eba2e30de9dcb9374620d74553))
+* add download user data functionality ([0644cbf](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/0644cbf987dba9e725402cd1e60af355c22765ae))
+* add liked posts to chirp to db ([5e90419](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/5e90419067e2f4e3fb5163bdd435e4cb22946436))
+* add likes to cheep repo and service ([1ecd2be](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/1ecd2be76bca2c25f7f3e9b1ff8e67c158f61d03))
+* add likes to ui ([c2b7047](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/c2b704751ad07b4ced8f34f575ab6a43827a0eed))
+* add visual indicators for unliking ([1bc453d](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/1bc453d6f284212849cb139fdc7ec831946fe494))
+* adds new ChirpUser repo and service ([6bedfb9](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/6bedfb9d1a244488bb70334d3860e3a9228f1191))
+* allow editing cheeps on backend ([99e60de](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/99e60de2ae9bec482d8b969ab24dee9292e4a5c6))
+* backend now can handle following relations from post requests ([630599d](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/630599df069932df42a185adca47d8106aa6f4e1))
+* deletion button now turns into follow button on chepes not written by the authenticated users themselves ([1af9608](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/1af9608bb9e8f6cb6d013ba854048780dcac8474))
+* expose ui to edit cheeps ([afc910f](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/afc910fee77b8123aeaaccaa628eb78652f0bcbf))
+* following now has UI elements and backend was updated slightly. ([4163694](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/416369482cdaabcf38c894024bfabe923decff11))
+* make about me page display followed users ([e8cc56a](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/e8cc56a813523a540319e884dee73f014d747ee3))
+* make user data listings collapsable ([6e1317d](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/6e1317da98f0424980677b62bd553ef70e29cf74))
+* QOL improvements for reply form ([ab79b12](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/ab79b124f87722a539d81c8e6dedcf6b98013f0c))
+* reply to Cheep ([afead26](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/afead2664a90427de3c0945303706b5ead46e3bf))
+
+
+### Bug Fixes
+
+* adapt follow to new cheep component ([2accb27](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/2accb27bf9af0272431f9a3c5c68538aab03d074))
+* database creation on windows ([c816871](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/c8168718595902b372026889e452fd9bd5c6a612))
+* fixed pagniation error on own private timeline ([bd26606](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/bd26606511a43d002a978997cf44c1fb7decdc32))
+* fixed redirect bug including handler in url, causing exceptions ([976a055](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/976a0558d574cc6247d7d398fca1a32b3a5ca59c))
+* make replies also work in user timelines ([4c5e41c](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/4c5e41c6887d3f318ab4c13bb4aeb4b6e6534410))
+* now displays own timeline correct after merge ([15871f3](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/15871f34e5be5ff46ed01ddfd319f23a5cdfd276))
+
 ## [5.3.1](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.3.0...v5.3.1) (2025-11-17)
 
 
