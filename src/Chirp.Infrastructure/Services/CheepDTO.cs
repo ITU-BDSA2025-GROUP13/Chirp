@@ -6,7 +6,7 @@ namespace Chirp.Infrastructure.Services
         string AuthorName,
         int CheepId,
         int? ParentCheepID,
-        List<CheepDTO> Replies, 
+        List<CheepDTO> Replies,
         string Likes
     );
 }

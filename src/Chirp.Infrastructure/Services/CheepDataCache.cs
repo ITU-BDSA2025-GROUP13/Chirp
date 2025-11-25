@@ -4,7 +4,7 @@ namespace Chirp.Infrastructure.Services
     {
         public static CheepDataCache Instance { get; } = new CheepDataCache();
         private readonly Dictionary<string, HashSet<string>> _followCache = new();
-        private readonly Dictionary<string, HashSet<int>> _likeCache = new();        
+        private readonly Dictionary<string, HashSet<int>> _likeCache = new();
 
         private CheepDataCache() { }
 
