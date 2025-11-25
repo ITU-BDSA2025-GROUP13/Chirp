@@ -12,12 +12,12 @@
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-        <div style="color: red; margin-bottom: 10px;">@Model.ErrorMessage</div>
+        <div class="form-error">@Model.ErrorMessage</div>
     }
     <ul id="messagelist" class="cheeps">
         @if (Model.Cheeps.Any())
         {
-            <ul class="cheeps-list" style="list-style:none; padding-left:0;">
+            <ul class="cheeps-list">
                 @foreach (var cheep in Model.Cheeps.Where(c => !c.ParentCheepID.HasValue)) //Renders only root node cheeps (replies gets rendered from _CheepPartial)
                 {
                     @await Html.PartialAsync("_CheepPartial", cheep)

@@ -1,3 +1,9 @@
+.cheep-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 0.5em;
+}
 body {
   background: #21242b;
   color: #dddddd;
@@ -248,6 +254,8 @@ nav a:hover{
   margin-bottom: 6px;
   background: #eeeeff;
   border-radius: 2px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .cheep-button {
@@ -288,4 +296,185 @@ nav a:hover{
 .checkbox mb-3 {
   margin: 0;
   padding: 0;
+}
+
+.navigation-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-error {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.cheeps-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.aboutme-info-list {
+  margin: 0;
+  padding: 0 0 0 2em;
+  line-height: 2;
+}
+
+.aboutme-details {
+  margin: 0;
+  padding: 0.4em 0 0 1.1em;
+}
+
+.aboutme-detail-list {
+  margin-top: 0.2em;
+  line-height: 1.8;
+  list-style: none;
+  padding-left: 1.5em;
+}
+
+.aboutme-download-button {
+  margin-bottom: 0.5em;
+}
+
+.cheep-root {
+  margin-left: 0;
+}
+
+.cheep-reply {
+  margin-left: 5px;
+}
+
+.cheep-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cheep-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.cheep-header-left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.cheep-follow-form {
+  flex: 0 0 15%;
+}
+
+.cheep-follow-button {
+  padding-left: 0.5em;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: normal;
+  color: inherit;
+  font-family: 'Trebuchet MS', sans-serif;
+  float: left;
+}
+
+.cheep-follow-button-unfollow {
+  color: #CC6E6E;
+}
+
+.cheep-follow-button-follow {
+  color: #6fdf53;
+}
+
+.cheep-like-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.cheep-like-form {
+  flex: 0 0 15%;
+}
+
+.cheep-likes-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cheep-likes-count {
+  color: #ffffff;
+}
+
+.cheep-likes-count-highlight {
+  text-shadow: 1px 1px 1px;
+}
+
+.cheep-likes-count-inline {
+  margin-right: 4px;
+}
+
+.cheep-like-button {
+  display: inline-block;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+.cheep-like-icon {
+  color: #eeeeff;
+}
+
+.cheep-edit-wrapper {
+  display: flex;
+}
+
+.cheep-edit-form {
+  width: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.cheep-edit-input {
+  width: 100%;
+}
+
+.cheep-action-wrapper {
+  flex: 0 0 15%;
+}
+
+.cheep-actions {
+  float: right;
+}
+
+.cheep-inline-form {
+  display: inline;
+}
+
+.cheep-delete-button {
+  background: transparent;
+  border: none;
+  color: #CC6E6E;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: normal;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+.cheep-edit-button {
+  color: #b266df;
+}
+
+.reply-form {
+  display: none;
+  margin-top: 6px;
+}
+
+.cheep-children {
+  list-style: none;
+  padding-left: 0;
 }

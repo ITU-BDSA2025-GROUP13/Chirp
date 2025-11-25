@@ -3,92 +3,92 @@
 
 @model CheepDTO
 
-<li class="cheep" id="cheep-@Model.CheepId" style="margin-left:@(Model.ParentCheepID.HasValue ? "5px" : "0")">
-    <flex-container style="display:flex; flex-direction: column; height: 100%;">
+<li class="cheep @(Model.ParentCheepID.HasValue ? "cheep-reply" : "cheep-root")" id="cheep-@Model.CheepId">
+    <div class="cheep-container">
 
-        <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <div style="display: flex; flex-direction: row;">
+        <div class="cheep-header">
+            <div class="cheep-header-left">
                 <strong><a href="/user/@Model.AuthorName">@Model.AuthorName</a></strong>
                 @if (User.Identity is { IsAuthenticated: true } && User.Identity.Name != null && @Model.AuthorName != User.Identity.Name)
                 {
                     @if (CheepDataCache.Instance.UserIsFollowing(User.Identity.Name, @Model.AuthorName)) 
                     {
                         <!-- Unfollow Button -->
-                        <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;" data-preserve-scroll="true">
+                        <form method="post" asp-page-handler="Follow" class="cheep-follow-form" data-preserve-scroll="true">
                             <input name="ToggleFollowForUserId" type="hidden" value="@Model.AuthorName">
-                            <input type="submit" value="Unfollow" style="padding-left: 0.5em; float: left; background:transparent; border-style:none; color:#CC6E6E; cursor:pointer; font-size: 14px; font-weight: normal;">
+                            <input type="submit" value="Unfollow" class="cheep-follow-button cheep-follow-button-unfollow">
                         </form>
                     }
                     else
                     {
                         <!-- Follow Button -->
-                        <form method="post" asp-page-handler="Follow" style="flex: 0 0 15%;" data-preserve-scroll="true">
+                        <form method="post" asp-page-handler="Follow" class="cheep-follow-form" data-preserve-scroll="true">
                             <input name="ToggleFollowForUserId" type="hidden" value="@Model.AuthorName">
-                            <input type="submit" value="Follow" style="padding-left: 0.5em; loat: left; background:transparent; border-style:none; color:#6fdf53; cursor:pointer; font-size: 14px; font-weight: normal;">
+                            <input type="submit" value="Follow" class="cheep-follow-button cheep-follow-button-follow">
                         </form>
                     }
                 }
             </div>
-            <div style="display: flex; flex-direction: row; align-items: center;">
+            <div class="cheep-like-wrapper">
                 @if (User.Identity != null && User.Identity.IsAuthenticated && User.Identity.Name != null)
                 {   
-                    <form method="post" asp-page-handler="Like" style="flex: 0 0 15%;" data-preserve-scroll="true">
+                    <form method="post" asp-page-handler="Like" class="cheep-like-form" data-preserve-scroll="true">
                     <input name="CheepIdForLike" type="hidden" value="@Model.CheepId">
                     @if (CheepDataCache.Instance.UserHasLiked(User.Identity.Name, Model.CheepId))
                     {   
                         <!-- Unlike button -->
-                        <div style="display: flex; align-items: center;">
-                            <span style="color:#ffffff; text-shadow: 1px 1px 1px">@Model.Likes</span>
-                            <button type="submit" style="display:inline-block; background:transparent; border-style:none; cursor:pointer;">
-                                <i class="fa fa-thumbs-up" style="color:#eeeeff"></i> <!-- filled thumbs-up icon -->
+                        <div class="cheep-likes-container">
+                            <span class="cheep-likes-count cheep-likes-count-highlight">@Model.Likes</span>
+                            <button type="submit" class="cheep-like-button">
+                                <i class="fa fa-thumbs-up cheep-like-icon"></i> <!-- filled thumbs-up icon -->
                             </button>
                         </div>
                     }
                     else
                     {
                         <!-- Like button -->
-                        <div style="display: flex; align-items: center;">
-                            <span style="color:#ffffff;">@Model.Likes</span>
-                            <button type="submit" style="display:inline-block; background:transparent; border-style:none; cursor:pointer;">
-                                <i class="fa" style="color:#eeeeff;">&#xf087;</i> <!-- outlined thumbs-up icon -->
+                        <div class="cheep-likes-container">
+                            <span class="cheep-likes-count">@Model.Likes</span>
+                            <button type="submit" class="cheep-like-button">
+                                <i class="fa cheep-like-icon">&#xf087;</i> <!-- outlined thumbs-up icon -->
                             </button>
                         </div>
                     }
                     </form>
                 } else {
-                    <div style="display: flex; align-items: center;">
-                        <span style="margin-right:4px; color:#ffffff;">@Model.Likes</span> 
-                        <i class="fa" style="color:#eeeeff;">&#xf087;</i> <!-- outlined thumbs-up icon -->
+                    <div class="cheep-likes-container">
+                        <span class="cheep-likes-count cheep-likes-count-inline">@Model.Likes</span> 
+                        <i class="fa cheep-like-icon">&#xf087;</i> <!-- outlined thumbs-up icon -->
                     </div> 
                 }
 
             </div>
         </div>
         <div>
-            <p id="cheep-text-@Model.CheepId" style="display:block;">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
-            <div style="display: flex;">
-                <form method="post" asp-page-handler="Edit" style="display: none;" id="cheep-edit-@Model.CheepId" data-preserve-scroll="true">
-                    <input name="EditedCheepText" type="text" value="@Model.Text" style="width: 100%;" id="cheep-edit-input-@Model.CheepId" required>
+            <p id="cheep-text-@Model.CheepId">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
+            <div class="cheep-edit-wrapper">
+                <form method="post" asp-page-handler="Edit" class="cheep-edit-form hidden" id="cheep-edit-@Model.CheepId" data-preserve-scroll="true">
+                    <input name="EditedCheepText" type="text" value="@Model.Text" class="cheep-edit-input" id="cheep-edit-input-@Model.CheepId" required>
                     <input name="CheepIdForEditing" type="hidden" value="@Model.CheepId">
                     <input type="submit" value="Finish">
                 </form>  
             </div>
         </div>
 
-        <div style="flex: 0 0 15%;">
+        <div class="cheep-action-wrapper">
 
             @if (User.Identity is { IsAuthenticated: true } && User.Identity.Name != null)
             {
-                <div style="float: right;">
+                <div class="cheep-actions">
                     @if (@Model.AuthorName == User.Identity.Name)
                     {
                         <!-- Delete Button -->
-                        <form method="post" asp-page-handler="Delete" style="flex: 0 0 15%; display: inline;" data-preserve-scroll="true">
+                        <form method="post" asp-page-handler="Delete" class="cheep-inline-form" data-preserve-scroll="true">
                             <input name="CheepIdForDeletion" type="hidden" value="@Model.CheepId">
-                            <input type="submit" value="Delete" style="background:transparent; border-style:none; color:#CC6E6E; cursor:pointer; font-size: 14px; font-weight: normal;">
+                            <input type="submit" value="Delete" class="cheep-delete-button">
                         </form>
                         <!-- Edit Button -->
-                        <button type="button" class="cheep-button" onclick="editCheep(@Model.CheepId)" style="color:#b266df;">
+                        <button type="button" class="cheep-button cheep-edit-button" onclick="editCheep(@Model.CheepId)">
                             Edit
                         </button>
                     }
@@ -99,7 +99,7 @@
         </div>
 
         <!-- Reply Form -->
-        <div class="reply-form" id="reply-form-wrapper-@Model.CheepId" style="display:none; margin-top:6px;">
+        <div class="reply-form" id="reply-form-wrapper-@Model.CheepId">
             <form method="post" asp-page-handler="Reply" id="reply-form-@Model.CheepId" data-preserve-scroll="true">
                 <input type="hidden" name="Reply.CheepID" value="@Model.CheepId"/>
                 <textarea id="reply-text-field-@Model.CheepId" name="Reply.Text" required placeholder="Reply..."></textarea>
@@ -110,12 +110,12 @@
         <!-- Replies -->
         @if (Model.Replies.Any())
         {
-            <ul class="cheep-children" style="list-style:none; padding-left:0;">
+            <ul class="cheep-children">
                 @foreach (var child in Model.Replies)
                 {
                     @await Html.PartialAsync("_CheepPartial", child)
                 }
             </ul>
         }
-    </flex-container>
+    </div>
 </li>
