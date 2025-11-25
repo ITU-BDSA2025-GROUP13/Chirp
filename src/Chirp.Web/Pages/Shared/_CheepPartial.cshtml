@@ -32,12 +32,11 @@
             <div style="display: flex; flex-direction: row; align-items: center;">
                 @if (User.Identity != null && User.Identity.IsAuthenticated && User.Identity.Name != null)
                 {   
-                    <form method="post" asp-page-handler="Like" style="flex: 0 0 15%;">
+                    <form method="post" asp-page-handler="Like" style="flex: 0 0 15%;" data-preserve-scroll="true">
                     <input name="CheepIdForLike" type="hidden" value="@Model.CheepId">
                     @if (CheepDataCache.Instance.UserHasLiked(User.Identity.Name, Model.CheepId))
                     {   
                         <!-- Unlike button -->
-
                         <div style="display: flex; align-items: center;">
                             <span style="color:#ffffff; text-shadow: 1px 1px 1px">@Model.Likes</span>
                             <button type="submit" style="display:inline-block; background:transparent; border-style:none; cursor:pointer;">
