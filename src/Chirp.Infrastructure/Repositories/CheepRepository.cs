@@ -108,11 +108,7 @@ namespace Chirp.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(c => c.ParentCheep == null)
                 .Include(c => c.Author)
-                .Include(c => c.Replies)
-                .ThenInclude(r => r.Author)
                 .Include(c => c.UsersWhoLiked)
-                .Include(c => c.Replies)
-                .ThenInclude(r => r.UsersWhoLiked)
                 .Include(c => c.ParentCheep)
                 .OrderByDescending(c => c.TimeStamp)
                 .Skip(skip)
@@ -126,23 +122,18 @@ namespace Chirp.Infrastructure.Repositories
 
         public async Task<IEnumerable<Cheep>> GetPrivateTimelineCheeps(ChirpUser user, int pagenum = 1)
         {
-            List<ChirpUser> fList = await GetListOfFollowers(user);
-            fList.Add(user); // add own cheeps to private timeline
-
-            List<string> authorIds = fList
-                .Select(f => f.Id)
-                .ToList();
+            List<ChirpUser> followers = await GetListOfFollowers(user);
+            followers.Add(user);
 
             int skip = pagenum < 1 ? 0 : (pagenum - 1) * _readLimit;
 
             List<Cheep> cheeps = await dbContext.Cheeps
                 .AsNoTracking()
-                .Where(m => authorIds.Contains(m.AuthorId) && m.ParentCheep == null)
-                .Include(m => m.Author)
-                .Where(m => fList.Contains(m.Author))
-                .Include(m => m.Author) //Joins Author's 
-                .Include(m => m.UsersWhoLiked) //Joins users who liked
-                .OrderByDescending(m => m.TimeStamp)
+                .Where(c => followers.Contains(c.Author) && c.ParentCheep == null)
+                .Include(c => c.Author)
+                .Include(c => c.Author) 
+                .Include(c => c.UsersWhoLiked) 
+                .OrderByDescending(c => c.TimeStamp)
                 .Skip(skip)
                 .Take(_readLimit)
                 .ToListAsync();
@@ -173,9 +164,8 @@ namespace Chirp.Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(c => c.AuthorId == author.Id && c.ParentCheep == null)
                 .Include(c => c.Author)
-                .Include(m => m.UsersWhoLiked) //Joins users who liked
-                .Where(m => m.AuthorId == author.Id)
-                .OrderByDescending(m => m.TimeStamp)
+                .Include(c => c.UsersWhoLiked)
+                .OrderByDescending(c => c.TimeStamp)
                 .Skip(skip)
                 .Take(_readLimit)
                 .ToListAsync();
@@ -215,10 +205,7 @@ namespace Chirp.Infrastructure.Repositories
 
         private async Task PopulateRepliesRecursiveAsync(List<Cheep> rootCheeps)
         {
-            if (!rootCheeps.Any())
-            {
-                return;
-            }
+            if (!rootCheeps.Any()) return;
 
             Dictionary<int, Cheep> lookup = new Dictionary<int, Cheep>();
             List<Cheep> parentsToProcess = new List<Cheep>();
@@ -239,6 +226,7 @@ namespace Chirp.Infrastructure.Repositories
                     .AsNoTracking()
                     .Include(c => c.Author)
                     .Include(c => c.ParentCheep)
+                    .Include(c => c.UsersWhoLiked)
                     .OrderBy(c => c.TimeStamp)
                     .ToListAsync();
 
