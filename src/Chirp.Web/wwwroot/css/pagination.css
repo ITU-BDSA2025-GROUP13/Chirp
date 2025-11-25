@@ -1,0 +1,21 @@
+.pagination-display {
+  color: #dddddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-label {
+  font-size: 16px;
+}
+
+.pagination-button {
+  color: #dddddd;
+  font-size: 20px;
+}
+
+.pagination-button-unclickable {
+  font-size: 20px;
+  color: #4c4e52;
+}

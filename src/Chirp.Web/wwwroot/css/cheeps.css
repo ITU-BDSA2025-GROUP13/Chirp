@@ -1,0 +1,159 @@
+.cheep-button {
+  background: transparent;
+  border-style: none;
+  color: #489cd4;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 1px 3px;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+.cheeps-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.cheep-root {
+  margin-left: 0;
+}
+
+.cheep-reply {
+  margin-left: 5px;
+}
+
+.cheep-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cheep-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.cheep-header-left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.cheep-follow-form {
+  flex: 0 0 15%;
+}
+
+.cheep-follow-button {
+  padding-left: 0.5em;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: normal;
+  color: inherit;
+  font-family: 'Trebuchet MS', sans-serif;
+  float: left;
+}
+
+.cheep-follow-button-unfollow {
+  color: #CC6E6E;
+}
+
+.cheep-follow-button-follow {
+  color: #6fdf53;
+}
+
+.cheep-like-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.cheep-like-form {
+  flex: 0 0 15%;
+}
+
+.cheep-likes-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cheep-likes-count {
+  color: #ffffff;
+}
+
+.cheep-likes-count-highlight {
+  text-shadow: 1px 1px 1px;
+}
+
+.cheep-likes-count-inline {
+  margin-right: 4px;
+}
+
+.cheep-like-button {
+  display: inline-block;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+.cheep-like-icon {
+  color: #eeeeff;
+}
+
+.cheep-edit-wrapper {
+  display: flex;
+}
+
+.cheep-edit-form {
+  width: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.cheep-edit-input {
+  width: 100%;
+}
+
+.cheep-action-wrapper {
+  flex: 0 0 15%;
+}
+
+.cheep-actions {
+  float: right;
+}
+
+.cheep-inline-form {
+  display: inline;
+}
+
+.cheep-delete-button {
+  background: transparent;
+  border: none;
+  color: #CC6E6E;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: normal;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+.cheep-edit-button {
+  color: #b266df;
+}
+
+.reply-form {
+  display: none;
+  margin-top: 6px;
+}
+
+.cheep-children {
+  list-style: none;
+  padding-left: 0;
+}
