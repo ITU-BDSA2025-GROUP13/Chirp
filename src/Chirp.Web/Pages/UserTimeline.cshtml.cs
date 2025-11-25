@@ -67,18 +67,8 @@ public class UserTimelineModel : PageModel
             var followedUsers = _service.GetListOfNamesOfFollowedUsers(User.Identity.Name);
             CheepDataCache.Instance.SetFollowedUsers(User.Identity.Name, followedUsers);
         }
-
-        if (Author == User.Identity?.Name)
-        {
-            Cheeps = _service.GetOwnPrivateTimeline(Author, CurrentPage);
-            HasNextPage = _service.GetOwnPrivateTimeline(Author, CurrentPage + 1).Any();
-            return Page();
-        }
-
-        Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
-        HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
-        LoadLikes();
         LoadTimeline(CurrentPage);
+        LoadLikes();
         return Page();
     }
 
@@ -171,24 +161,6 @@ public class UserTimelineModel : PageModel
         return true;
     }
 
-    private void LoadLikes()
-    {
-        if (User?.Identity != null && User.Identity.IsAuthenticated)
-        {
-            string? name = User.Identity.Name;
-            if (name != null)
-            {
-                ChirpUser? user = _userManager.Users
-                    .Include(u => u.LikedCheeps)
-                    .FirstOrDefault(u => u.UserName == name);
-                if (user != null)
-                {
-                    CheepDataCache.Instance.SetLikedCheeps(name, user.LikedCheeps.Select(c => c.CheepId).ToHashSet());
-                }
-            }
-        }
-    }
-
     public ActionResult OnPostLike()
     {
         HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
@@ -224,7 +196,7 @@ public class UserTimelineModel : PageModel
 
         Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
         LoadLikes();
-        return Page();
+        return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
 
     private void LoadTimeline(int page)
@@ -241,6 +213,24 @@ public class UserTimelineModel : PageModel
         {
             Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
             HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
+        }
+    }
+
+    private void LoadLikes()
+    {
+        if (User?.Identity != null && User.Identity.IsAuthenticated)
+        {
+            string? name = User.Identity.Name;
+            if (name != null)
+            {
+                ChirpUser? user = _userManager.Users
+                    .Include(u => u.LikedCheeps)
+                    .FirstOrDefault(u => u.UserName == name);
+                if (user != null)
+                {
+                    CheepDataCache.Instance.SetLikedCheeps(name, user.LikedCheeps.Select(c => c.CheepId).ToHashSet());
+                }
+            }
         }
     }
 }

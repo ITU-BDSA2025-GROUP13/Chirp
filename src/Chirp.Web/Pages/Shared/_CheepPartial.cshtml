@@ -32,39 +32,41 @@
             <div style="display: flex; flex-direction: row; align-items: center;">
                 @if (User.Identity != null && User.Identity.IsAuthenticated && User.Identity.Name != null)
                 {   
-                    <!-- Like/Unlike button -->
                     <form method="post" asp-page-handler="Like" style="flex: 0 0 15%;">
                     <input name="CheepIdForLike" type="hidden" value="@Model.CheepId">
                     @if (CheepDataCache.Instance.UserHasLiked(User.Identity.Name, Model.CheepId))
                     {   
+                        <!-- Unlike button -->
+
                         <div style="display: flex; align-items: center;">
-                            <span style="text-shadow: 1px 1px 1px">@Model.Likes</span>
+                            <span style="color:#ffffff; text-shadow: 1px 1px 1px">@Model.Likes</span>
                             <button type="submit" style="display:inline-block; background:transparent; border-style:none; cursor:pointer;">
-                                <i class="fa fa-thumbs-up"></i> <!-- filled thumbs-up icon -->
+                                <i class="fa fa-thumbs-up" style="color:#eeeeff"></i> <!-- filled thumbs-up icon -->
                             </button>
                         </div>
                     }
                     else
                     {
+                        <!-- Like button -->
                         <div style="display: flex; align-items: center;">
-                            <span>@Model.Likes</span>
+                            <span style="color:#ffffff;">@Model.Likes</span>
                             <button type="submit" style="display:inline-block; background:transparent; border-style:none; cursor:pointer;">
-                                <i class="fa">&#xf087;</i> <!-- outlined thumbs-up icon -->
+                                <i class="fa" style="color:#eeeeff;">&#xf087;</i> <!-- outlined thumbs-up icon -->
                             </button>
                         </div>
                     }
                     </form>
                 } else {
                     <div style="display: flex; align-items: center;">
-                        <span style="margin-right:4px">@Model.Likes</span> 
-                        <i class="fa">&#xf087;</i> <!-- outlined thumbs-up icon -->
+                        <span style="margin-right:4px; color:#ffffff;">@Model.Likes</span> 
+                        <i class="fa" style="color:#eeeeff;">&#xf087;</i> <!-- outlined thumbs-up icon -->
                     </div> 
                 }
 
             </div>
         </div>
         <div>
-            <p id="cheep_text-@Model.CheepId" style="display:block;">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
+            <p id="cheep-text-@Model.CheepId" style="display:block;">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
             <div style="display: flex;">
                 <form method="post" asp-page-handler="Edit" style="display: none;" id="cheep-edit-@Model.CheepId" data-preserve-scroll="true">
                     <input name="EditedCheepText" type="text" value="@Model.Text" style="width: 100%;" id="cheep-edit-input-@Model.CheepId" required>
