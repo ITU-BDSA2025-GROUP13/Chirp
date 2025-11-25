@@ -74,8 +74,8 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
         string testEmail = $"testuser_{Guid.NewGuid()}@example.com";
         string testPassword = "TestPassword123!";
         string testUser = $"testuser_{Guid.NewGuid()}";
-        string message = "This is a message";
-        string editedMessage = "This is a edited message";
+        string message = $"This is a message {Guid.NewGuid()}";
+        string editedMessage = $"This is an edited message {Guid.NewGuid()}";
 
         // Register
         await Page.GotoAsync($"{_baseUrl}/Identity/Account/Register?ReturnUrl=%2FIdentity%2FAccount%2FLogout");
@@ -89,15 +89,26 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
         await Page.GotoAsync($"{_baseUrl}/");
         await Page.FillAsync("#post-text-field", message);
         await Page.ClickAsync("input[type='submit']");
+        await Page.WaitForLoadStateAsync(Microsoft.Playwright.LoadState.NetworkIdle);
 
         // Assert message has been posted
         var cheep = Page.Locator("li.cheep", new() { HasTextString = message });
+        await Expect(cheep).ToBeVisibleAsync(new());
 
-        await cheep.GetByRole(Microsoft.Playwright.AriaRole.Button, new() { Name = "Edit" }).ClickAsync();
-        await cheep.Locator("input[name='EditedCheepText']").FillAsync(editedMessage);
-        await cheep.GetByRole(Microsoft.Playwright.AriaRole.Button, new() { Name = "Finish" }).ClickAsync();
+        var editButton = cheep.GetByRole(Microsoft.Playwright.AriaRole.Button, new() { Name = "Edit" });
+        await Expect(editButton).ToBeVisibleAsync(new());
+        await editButton.ClickAsync();
+
+        var editInput = cheep.Locator("input[name='EditedCheepText']");
+        await Expect(editInput).ToBeVisibleAsync(new());
+        await editInput.FillAsync(editedMessage);
+
+        var finishButton = cheep.GetByRole(Microsoft.Playwright.AriaRole.Button, new() { Name = "Finish" });
+        await Expect(finishButton).ToBeVisibleAsync(new());
+        await finishButton.ClickAsync();
+        await Page.WaitForLoadStateAsync(Microsoft.Playwright.LoadState.NetworkIdle);
 
         // Assert message has been edited
-        await Expect(Page.GetByText(editedMessage)).ToBeVisibleAsync();
+        await Expect(Page.GetByText(editedMessage)).ToBeVisibleAsync(new());
     }
 }

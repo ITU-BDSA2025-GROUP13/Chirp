@@ -124,7 +124,7 @@ public class PublicModel : PageModel
         _service.DeleteCheep(CheepIdForDeletion);
 
         Cheeps = _service.GetMainPageCheeps(CurrentPage);
-        return RedirectToPage($"/Public?page={CurrentPage}");
+        return RedirectToCurrent();
     }
 
     public ActionResult OnPostFollow()
@@ -187,29 +187,8 @@ public class PublicModel : PageModel
 
     private ActionResult RedirectToCurrent()
     {
-        if (CurrentPage == 0)
-        {
-            return RedirectToPage("/Public");
-        }
-        return RedirectToPage($"/Public?page={CurrentPage}");
-    }
-
-    private void LoadLikes()
-    {
-        if (User?.Identity != null && User.Identity.IsAuthenticated)
-        {
-            string? name = User.Identity.Name;
-            if (name != null)
-            {
-                ChirpUser? user = _userManager.Users
-                    .Include(u => u.LikedCheeps)
-                    .FirstOrDefault(u => u.UserName == name);
-                if (user != null)
-                {
-                    CheepDataCache.Instance.SetLikedCheeps(name, user.LikedCheeps.Select(c => c.CheepId).ToHashSet());
-                }
-            }
-        }
+        int targetPage = CurrentPage <= 0 ? 1 : CurrentPage;
+        return RedirectToPage("/Public", new { currentpage = targetPage });
     }
 
     public ActionResult OnPostLike()
@@ -246,6 +225,24 @@ public class PublicModel : PageModel
         Cheeps = _service.GetMainPageCheeps(CurrentPage);
         LoadLikes();
         return RedirectToCurrent();
+    }
+
+    private void LoadLikes()
+    {
+        if (User?.Identity != null && User.Identity.IsAuthenticated)
+        {
+            string? name = User.Identity.Name;
+            if (name != null)
+            {
+                ChirpUser? user = _userManager.Users
+                    .Include(u => u.LikedCheeps)
+                    .FirstOrDefault(u => u.UserName == name);
+                if (user != null)
+                {
+                    CheepDataCache.Instance.SetLikedCheeps(name, user.LikedCheeps.Select(c => c.CheepId).ToHashSet());
+                }
+            }
+        }
     }
 }
 
