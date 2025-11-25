@@ -45,7 +45,7 @@ namespace Chirp.Infrastructure.DatabaseContext
                     .HasMany(c => c.Replies)
                     .WithOne(c => c.ParentCheep)
                     .OnDelete(DeleteBehavior.Cascade);
-                    
+
                 entity.HasMany(u => u.UsersWhoLiked)
                       .WithMany(u => u.LikedCheeps);
             });

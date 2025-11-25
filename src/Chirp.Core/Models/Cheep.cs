@@ -45,7 +45,7 @@ namespace Chirp.Core.Models
         /// The replies to this Cheep 
         /// </summary>
         public List<Cheep> Replies { get; set; } = [];
-        
+
         /// //TODO this might be needed if performance takes a hit
         /// public int Likes { get; set; } = 0;
 
