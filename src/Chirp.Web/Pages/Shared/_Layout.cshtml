@@ -15,21 +15,21 @@
     <!-- todo: These two User.Identity.Name below need to reference the Author table -->
     <nav class="navigation-bar">
         <div>
-            <a class="navigation_button" href="/">Public Timeline</a>
+            <a class="navigation-button" href="/">Public Timeline</a>
             |
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                <a class="navigation_button" href="/user/@(User.Identity.Name)">My Timeline</a>    
+                <a class="navigation-button" href="/user/@(User.Identity.Name)">My Timeline</a>    
                 <a>|</a>
-                <a class="navigation_button" href="/user/@(User.Identity.Name)/about">About Me</a>
+                <a class="navigation-button" href="/user/@(User.Identity.Name)/about">About Me</a>
                 <a>|</a>
-                <a class="navigation_button" href="/Identity/Account/Logout">Logout [@(User.Identity.Name)]</a>
+                <a class="navigation-button" href="/Identity/Account/Logout">Logout [@(User.Identity.Name)]</a>
             }
             else
             {
-                <a class="navigation_button" href="/Identity/Account/Register">Register</a>
+                <a class="navigation-button" href="/Identity/Account/Register">Register</a>
                 <a>|</a>
-                <a class="navigation_button" href="/Identity/Account/Login">Login</a>        
+                <a class="navigation-button" href="/Identity/Account/Login">Login</a>        
             }
         </div>
     </nav>
