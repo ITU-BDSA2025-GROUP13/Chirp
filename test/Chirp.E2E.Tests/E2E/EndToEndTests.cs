@@ -87,28 +87,25 @@ public class EndToEndTests : PageTest, IClassFixture<WebApplicationFactory<Progr
 
         // Post cheep
         await Page.GotoAsync($"{_baseUrl}/");
-        await Page.FillAsync("#post-text-field", message);
+        await Page.FillAsync(".post-textarea", message);
         await Page.ClickAsync("input[type='submit']");
         await Page.WaitForLoadStateAsync(Microsoft.Playwright.LoadState.NetworkIdle);
 
         // Assert message has been posted
-        var cheep = Page.Locator("li.cheep", new() { HasTextString = message });
-        await Expect(cheep).ToBeVisibleAsync(new());
+        await Expect(Page.Locator(".cheep-text", new()
+        {
+            HasTextString = message
+        })).ToBeVisibleAsync();
 
-        var editButton = cheep.GetByRole(Microsoft.Playwright.AriaRole.Button, new() { Name = "Edit" });
-        await Expect(editButton).ToBeVisibleAsync(new());
-        await editButton.ClickAsync();
-
-        var editInput = cheep.Locator("input[name='EditedCheepText']");
-        await Expect(editInput).ToBeVisibleAsync(new());
-        await editInput.FillAsync(editedMessage);
-
-        var finishButton = cheep.GetByRole(Microsoft.Playwright.AriaRole.Button, new() { Name = "Finish" });
-        await Expect(finishButton).ToBeVisibleAsync(new());
-        await finishButton.ClickAsync();
-        await Page.WaitForLoadStateAsync(Microsoft.Playwright.LoadState.NetworkIdle);
+        // Edit cheep
+        await Page.ClickAsync("button:text('Edit')");
+        await Page.FillAsync(".cheep-edit-input", editedMessage);
+        await Page.ClickAsync("input:text('Finish')");
 
         // Assert message has been edited
-        await Expect(Page.GetByText(editedMessage)).ToBeVisibleAsync(new());
+        await Expect(Page.Locator(".cheep-text", new()
+        {
+            HasTextString = editedMessage
+        })).ToBeVisibleAsync();
     }
 }

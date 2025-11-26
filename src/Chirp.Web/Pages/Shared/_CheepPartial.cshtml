@@ -70,13 +70,9 @@
             </div>
         </div>
         <div>
-            <p class="cheep-text" id="cheep-text-@Model.CheepId">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
-            <div class="cheep-edit-wrapper">
-                <form method="post" asp-page-handler="Edit" class="cheep-edit-form hidden" id="cheep-edit-@Model.CheepId" data-preserve-scroll="true">
-                    <input name="EditedCheepText" type="text" value="@Model.Text" class="cheep-edit-input" id="cheep-edit-input-@Model.CheepId" required>
-                    <input name="CheepIdForEditing" type="hidden" value="@Model.CheepId">
-                    <input type="submit" value="Finish">
-                </form>  
+            <p id="cheep-text-@Model.CheepId" class="cheep-text" style="display:block;">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
+            <div style="display: flex;">
+                <partial name="_EditFormPartial" model="Model" />
             </div>
         </div>
 
@@ -107,11 +103,7 @@
 
         <!-- Reply Form -->
         <div class="reply-form" id="reply-form-wrapper-@Model.CheepId">
-            <form method="post" asp-page-handler="Reply" id="reply-form-@Model.CheepId" data-preserve-scroll="true">
-                <input type="hidden" name="Reply.CheepID" value="@Model.CheepId"/>
-                <textarea id="reply-text-field-@Model.CheepId" name="Reply.Text" required placeholder="Reply..."></textarea>
-                <input type="submit" value="Post"/>
-            </form>
+            <partial name="_ReplyFormPartial" model="Model" />
         </div>
 
         <!-- Replies -->

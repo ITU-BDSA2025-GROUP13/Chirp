@@ -144,7 +144,7 @@ function setupThemeToggle(currentTheme) {
  */
 function toggleReply(cheepId) {
     const replyFormWrapper = document.getElementById(`reply-form-wrapper-${cheepId}`);
-    const replyTextField = document.getElementById(`reply-text-field-${cheepId}`);
+    const replyTextField = document.getElementById(`reply-textarea-${cheepId}`);
     if (!replyFormWrapper || !replyTextField)
         return;
     if (replyFormWrapper.style.display === 'none' || replyFormWrapper.style.display === '') {
@@ -162,9 +162,11 @@ function toggleReply(cheepId) {
  */
 function editCheep(cheepId) {
     const cheep = document.getElementById(`cheep-${cheepId}`);
-    const cheepText = cheep.querySelector("#cheep-text-" + cheepId);
-    const cheepEdit = cheep.querySelector("#cheep-edit-" + cheepId);
-    const cheepEditInput = cheep.querySelector("#cheep-edit-input-" + cheepId);
+    if (!cheep)
+        return;
+    const cheepText = cheep.querySelector(`#cheep-text-${cheepId}`);
+    const cheepEdit = cheep.querySelector(`#cheep-edit-${cheepId}`);
+    const cheepEditInput = cheep.querySelector(`#cheep-edit-input-${cheepId}`);
     if (!cheepText || !cheepEdit || !cheepEditInput)
         return;
     if (cheepText.style.display === "none") {
@@ -183,7 +185,7 @@ function editCheep(cheepId) {
  * @param cheepId - the cheepId to for the reply form
  */
 function setupReplyEnterBehavior(cheepId) {
-    const textarea = document.getElementById(`reply-text-field-${cheepId}`);
+    const textarea = document.getElementById(`reply-textarea-${cheepId}`);
     const form = document.getElementById(`reply-form-${cheepId}`);
     if (!textarea || !form)
         return;

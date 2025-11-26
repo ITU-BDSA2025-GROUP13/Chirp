@@ -8,16 +8,14 @@ Layout = "Shared/_Layout";
 <div>
 	@if (User.Identity != null && User.Identity.IsAuthenticated)
     {
-    <form method="post" id="post-form" data-preserve-scroll="true">
+        <div>
             @if (!string.IsNullOrEmpty(Model.ErrorMessage))
             {
                 <div class="form-error">@Model.ErrorMessage</div>
             }
-            <textarea id="post-text-field" asp-for="CheepMessage" required placeholder="Post a Cheep!" rows="4"></textarea>
-            <br>
-            <input type="submit" value="Post">
-        </form>
-        <hr>
+            <partial name="_PostFormPartial" model="Model"/>
+            <hr>
+        </div>
     }
 
     <h2> Public Timeline </h2>
