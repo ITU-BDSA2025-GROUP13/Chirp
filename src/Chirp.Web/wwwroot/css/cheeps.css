@@ -157,3 +157,11 @@
   list-style: none;
   padding-left: 0;
 }
+
+.cheep-text {
+  max-width: 72ch;
+}
+
+.cheep-date-posted {
+  text-wrap-mode: nowrap;
+}

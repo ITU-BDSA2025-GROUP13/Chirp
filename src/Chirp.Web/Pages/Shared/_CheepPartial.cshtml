@@ -16,7 +16,9 @@
                         <!-- Unfollow Button -->
                         <form method="post" asp-page-handler="Follow" class="cheep-follow-form" data-preserve-scroll="true">
                             <input name="ToggleFollowForUserId" type="hidden" value="@Model.AuthorName">
-                            <input type="submit" value="Unfollow" class="cheep-follow-button cheep-follow-button-unfollow">
+                            <button type="submit" class="cheep-follow-button cheep-follow-button-unfollow">
+                                Unfollow
+                            </button>
                         </form>
                     }
                     else
@@ -24,7 +26,9 @@
                         <!-- Follow Button -->
                         <form method="post" asp-page-handler="Follow" class="cheep-follow-form" data-preserve-scroll="true">
                             <input name="ToggleFollowForUserId" type="hidden" value="@Model.AuthorName">
-                            <input type="submit" value="Follow" class="cheep-follow-button cheep-follow-button-follow">
+                            <button type="submit" class="cheep-follow-button cheep-follow-button-follow">
+                                Follow
+                            </button>
                         </form>
                     }
                 }
@@ -65,7 +69,7 @@
             </div>
         </div>
         <div>
-            <p id="cheep-text-@Model.CheepId">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
+            <p class="cheep-text" id="cheep-text-@Model.CheepId">@Model.Text <small class="cheep-date-posted"> &mdash; @Model.DatePosted</small></p>
             <div class="cheep-edit-wrapper">
                 <form method="post" asp-page-handler="Edit" class="cheep-edit-form hidden" id="cheep-edit-@Model.CheepId" data-preserve-scroll="true">
                     <input name="EditedCheepText" type="text" value="@Model.Text" class="cheep-edit-input" id="cheep-edit-input-@Model.CheepId" required>
@@ -85,7 +89,9 @@
                         <!-- Delete Button -->
                         <form method="post" asp-page-handler="Delete" class="cheep-inline-form" data-preserve-scroll="true">
                             <input name="CheepIdForDeletion" type="hidden" value="@Model.CheepId">
-                            <input type="submit" value="Delete" class="cheep-delete-button">
+                            <button type="submit" class="cheep-delete-button">
+                                Delete
+                            </button>
                         </form>
                         <!-- Edit Button -->
                         <button type="button" class="cheep-button cheep-edit-button" onclick="editCheep(@Model.CheepId)">
