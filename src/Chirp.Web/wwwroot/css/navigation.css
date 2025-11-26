@@ -1,17 +1,17 @@
 nav {
-  background-color: #333742;
-  color: #dddddd;
+  background-color: var(--nav-background);
+  color: var(--text-default);
   min-height: 2.2em;
   padding-left: 0.8em;
 }
 
 nav a {
-  color: #dddddd;
+  color: var(--text-default);
   text-decoration: none;
 }
 
 nav a:hover {
-  color: #7ed3d3;
+  color: var(--link-default);
   text-decoration: none;
 }
 

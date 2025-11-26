@@ -1,6 +1,6 @@
 body {
-  background: #21242b;
-  color: #dddddd;
+  background: var(--background-main);
+  color: var(--text-default);
   font-family: 'Trebuchet MS', sans-serif;
   font-size: 14px;
   padding: 0;
@@ -8,11 +8,11 @@ body {
 }
 
 a {
-  color: #7ed3d3;
+  color: var(--link-default);
 }
 
 a:hover {
-  color: #333;
+  color: var(--link-hover);
 }
 
 input[type="email"],
@@ -22,8 +22,8 @@ input[type="password"] {
 }
 
 input[type="submit"] {
-  background: #21242b;
-  border: 1px solid #999999;
+  background: var(--background-main);
+  border: 1px solid var(--border-default);
   padding: 1px 4px;
   font-family: 'Trebuchet MS', sans-serif;
   font-size: 14px;
@@ -31,21 +31,21 @@ input[type="submit"] {
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
-  color: #dddddd;
+  color: var(--text-default);
 }
 
 div.page {
-  background: #dddddd;
-  border: 1px solid #999999;
+  background: var(--page-background);
+  border: 1px solid var(--border-default);
   width: 700px;
   margin: 0 auto 30px auto;
 }
 
 div.page header {
-  background: #282B34;
+  background: var(--header-background);
   margin: 0;
   padding: 10px 14px;
-  color: #dddddd;
+  color: var(--text-default);
 }
 
 div.page header h1 {
@@ -65,17 +65,17 @@ div.page header a img {
 
 div.page h2 {
   margin: 0 0 15px 0;
-  color: #dddddd;
+  color: var(--text-default);
 }
 
 div.page div.body {
   padding: 10px;
-  background: #2e313b;
+  background: var(--body-background);
 }
 
 div.page div.footer {
-  background: #333742;
-  color: #999999;
+  background: var(--footer-background);
+  color: var(--footer-text);
   padding: 5px 10px;
   font-size: 12px;
 }
@@ -89,11 +89,11 @@ div.page ul.cheeps {
 div.page ul.cheeps li {
   margin: 10px 0;
   padding: 5px;
-  background: #2d313b;
-  border: 1px solid #4c4e52;
+  background: var(--cheep-background);
+  border: 1px solid var(--cheep-border);
   border-radius: 2px;
   min-height: 56px;
-  color: #dddddd;
+  color: var(--text-default);
 }
 
 div.page ul.cheeps p {
@@ -107,17 +107,17 @@ div.page ul.cheeps li img {
 
 div.page ul.cheeps li small {
   font-size: 0.9em;
-  color: #999999;
+  color: var(--cheep-small-text);
 }
 
 .form-error {
-  color: red;
+  color: var(--form-error);
   margin-bottom: 10px;
 }
 
 #post-text-field {
   margin-bottom: 6px;
-  background: #eeeeff;
+  background: var(--input-background);
   border-radius: 2px;
   width: 100%;
   box-sizing: border-box;

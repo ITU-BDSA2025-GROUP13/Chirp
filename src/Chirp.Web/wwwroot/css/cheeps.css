@@ -1,7 +1,7 @@
 .cheep-button {
   background: transparent;
   border-style: none;
-  color: #489cd4;
+  color: var(--cheep-button-text);
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
@@ -59,11 +59,11 @@
 }
 
 .cheep-follow-button-unfollow {
-  color: #CC6E6E;
+  color: var(--action-warning);
 }
 
 .cheep-follow-button-follow {
-  color: #6fdf53;
+  color: var(--action-success);
 }
 
 .cheep-like-wrapper {
@@ -83,7 +83,7 @@
 }
 
 .cheep-likes-count {
-  color: #ffffff;
+  color: var(--cheep-like-count);
 }
 
 .cheep-likes-count-highlight {
@@ -103,7 +103,7 @@
 }
 
 .cheep-like-icon {
-  color: #eeeeff;
+  color: var(--cheep-like-icon);
 }
 
 .cheep-edit-wrapper {
@@ -137,7 +137,7 @@
 .cheep-delete-button {
   background: transparent;
   border: none;
-  color: #CC6E6E;
+  color: var(--action-warning);
   cursor: pointer;
   font-size: 14px;
   font-weight: normal;
@@ -145,7 +145,7 @@
 }
 
 .cheep-edit-button {
-  color: #b266df;
+  color: var(--cheep-edit-accent);
 }
 
 .reply-form {
@@ -160,8 +160,4 @@
 
 .cheep-text {
   max-width: 72ch;
-}
-
-.cheep-date-posted {
-  text-wrap-mode: nowrap;
 }
