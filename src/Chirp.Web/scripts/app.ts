@@ -157,7 +157,7 @@ function setupThemeToggle(currentTheme: ThemePreference): void {
  */
 function toggleReply(cheepId: number): void {
     const replyFormWrapper = document.getElementById(`reply-form-wrapper-${cheepId}`);
-    const replyTextField = document.getElementById(`reply-text-field-${cheepId}`);
+    const replyTextField = document.getElementById(`reply-textarea-${cheepId}`);
     if (!replyFormWrapper || !replyTextField) return;
 
     if (replyFormWrapper.style.display === 'none' || replyFormWrapper.style.display === '') {
@@ -176,20 +176,22 @@ function toggleReply(cheepId: number): void {
  */
 function editCheep(cheepId: number): void {
     const cheep = document.getElementById(`cheep-${cheepId}`);
-    const cheepText = cheep.querySelector<HTMLElement>("#cheep-text-" + cheepId);
-    const cheepEdit = cheep.querySelector<HTMLElement>("#cheep-edit-" + cheepId);
-    const cheepEditInput = cheep.querySelector<HTMLInputElement>("#cheep-edit-input-" + cheepId);
+    if (!cheep) return;
+
+    const cheepText = cheep.querySelector<HTMLElement>(`#cheep-text-${cheepId}`);
+    const cheepEdit = cheep.querySelector<HTMLElement>(`#cheep-edit-${cheepId}`);
+    const cheepEditInput = cheep.querySelector<HTMLTextAreaElement>(`#cheep-edit-input-${cheepId}`);
     if (!cheepText || !cheepEdit || !cheepEditInput) return;
 
     if (cheepText.style.display === "none") {
         cheepText.style.display = "block";
-        cheepEdit.style.display = "none"   
+        cheepEdit.style.display = "none";
     } else {
         cheepText.style.display = "none";
         cheepEdit.style.display = "block";
-		cheepEditInput.focus();
-		const len = cheepEditInput.value.length;
-		cheepEditInput.setSelectionRange(len, len);	
+        cheepEditInput.focus();
+        const len = cheepEditInput.value.length;
+        cheepEditInput.setSelectionRange(len, len);
     }
 }
 
@@ -197,7 +199,7 @@ function editCheep(cheepId: number): void {
  * @param cheepId - the cheepId to for the reply form
  */
 function setupReplyEnterBehavior(cheepId: number): void {
-    const textarea = document.getElementById(`reply-text-field-${cheepId}`) as HTMLTextAreaElement | null;
+    const textarea = document.getElementById(`reply-textarea-${cheepId}`) as HTMLTextAreaElement | null;
     const form = document.getElementById(`reply-form-${cheepId}`) as HTMLFormElement | null;
 
     if (!textarea || !form) return;

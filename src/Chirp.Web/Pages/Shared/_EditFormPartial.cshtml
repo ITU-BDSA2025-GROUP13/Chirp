@@ -1,0 +1,18 @@
+@using Chirp.Infrastructure.Services
+
+@model CheepDTO
+<div class="cheep-edit-wrapper">
+    <form method="post"
+          asp-page-handler="Edit"
+          id="cheep-edit-@Model.CheepId"
+          class="cheep-edit-form hidden"
+          data-preserve-scroll="true">
+        <textarea required
+                  name="EditedCheepText"
+                  class="cheep-edit-input"
+                  id="cheep-edit-input-@Model.CheepId"
+                  placeholder="Edit...">@Model.Text</textarea>
+        <input name="CheepIdForEditing" type="hidden" value="@Model.CheepId">
+        <input type="submit" value="Finish">
+    </form>
+</div>

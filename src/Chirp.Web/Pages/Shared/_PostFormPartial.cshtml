@@ -1,0 +1,11 @@
+@model Chirp.Web.Pages.PublicModel
+
+<form method="post" id="post-form">
+    <textarea required 
+        class="post-textarea"
+        asp-for="CheepMessage"
+        placeholder="Post a Cheep!"
+        rows="4" style="width: 100%; box-sizing: border-box"></textarea>
+    <br>
+    <input type="submit" value="Post">
+</form>
