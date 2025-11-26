@@ -1,5 +1,5 @@
 .pagination-display {
-  color: #dddddd;
+  color: var(--text-default);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,11 +11,11 @@
 }
 
 .pagination-button {
-  color: #dddddd;
+  color: var(--text-default);
   font-size: 20px;
 }
 
 .pagination-button-unclickable {
   font-size: 20px;
-  color: #4c4e52;
+  color: var(--pagination-inactive);
 }

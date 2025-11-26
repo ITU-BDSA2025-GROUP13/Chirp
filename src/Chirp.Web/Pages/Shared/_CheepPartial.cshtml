@@ -69,7 +69,7 @@
             </div>
         </div>
         <div>
-            <p class="cheep-text" id="cheep-text-@Model.CheepId">@Model.Text <small class="cheep-date-posted"> &mdash; @Model.DatePosted</small></p>
+            <p class="cheep-text" id="cheep-text-@Model.CheepId">@Model.Text<small> &mdash; @Model.DatePosted</small></p>
             <div class="cheep-edit-wrapper">
                 <form method="post" asp-page-handler="Edit" class="cheep-edit-form hidden" id="cheep-edit-@Model.CheepId" data-preserve-scroll="true">
                     <input name="EditedCheepText" type="text" value="@Model.Text" class="cheep-edit-input" id="cheep-edit-input-@Model.CheepId" required>
