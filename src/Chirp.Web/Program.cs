@@ -82,12 +82,13 @@ namespace Chirp.Web
                 chirpContext.Database.Migrate();
                 DbInitializer.SeedDatabase(chirpContext, userManager);
             }
-            
+
             Console.WriteLine("Running...");
-            
+
             app.Start();
-            foreach (var url in app.Urls) {
-               Console.WriteLine($"Listening on {url}");
+            foreach (var url in app.Urls)
+            {
+                Console.WriteLine($"Listening on {url}");
             }
             app.WaitForShutdown();
         }
