@@ -10,7 +10,7 @@ namespace Chirp.Infrastructure.Repositories
         /// <param name="pagenum">The one-based page number to retrieve. Default is 1.</param>
         /// <returns>A task containing an enumerable collection of cheeps for the specified page.</returns>
         Task<IEnumerable<Cheep>> GetMainPage(int pagenum = 1);
-        
+
         /// <summary>
         /// Retrieves an author with a paginated list of their cheeps ordered by publication date (newest first).
         /// </summary>
@@ -18,7 +18,7 @@ namespace Chirp.Infrastructure.Repositories
         /// <param name="pagenum">The one-based page number to retrieve. Default is 1.</param>
         /// <returns>A task containing the author with their cheeps, or null if the author is not found.</returns>
         Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 1);
-        
+
         /// <summary>
         /// Posts a new cheep (message) to the database asynchronously.
         /// </summary>
@@ -55,7 +55,7 @@ namespace Chirp.Infrastructure.Repositories
         /// <param name="pagenum">The one-based page to retrieve.</param>
         /// <returns>An IEnumerable of Cheeps</returns>
         Task<IEnumerable<Cheep>> GetPrivateTimelineCheeps(ChirpUser user, int pagenum = 1);
-        
+
         /// <summary>
         /// Edit a cheep matching the id
         /// </summary>
