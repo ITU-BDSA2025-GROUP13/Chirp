@@ -181,10 +181,6 @@ public class IntegrationTests
             .ReturnsAsync(() => karlFortniteWithCheeps.Cheeps);
 
         mockCheepRepo
-            .Setup(c => c.GetListOfFollowers(It.IsAny<ChirpUser>()))
-            .ReturnsAsync(new List<ChirpUser>());
-
-        mockCheepRepo
             .Setup(c => c.GetPrivateTimelineCheeps(It.IsAny<ChirpUser>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Cheep>());
 

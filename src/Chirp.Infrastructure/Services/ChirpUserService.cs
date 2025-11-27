@@ -54,4 +54,34 @@ public class ChirpUserService(IChirpUserRepository chirpUserRepo, UserManager<Ch
             _ = chirpUserRepo.AddToFollowerList(userA, userB);
         }
     }
+
+    public async Task<List<ChirpUser>> GetListOfFollowers(string username)
+    {
+        ChirpUser? user = userManager.FindByNameAsync(username).GetAwaiter().GetResult();
+        if (user == null)
+        {
+            return new List<ChirpUser>();
+        }
+        return await chirpUserRepo.GetListOfFollowers(user);
+    }
+
+    public List<string> GetListOfNamesOfFollowedUsers(string username)
+    {
+        List<ChirpUser> userlist = GetListOfFollowers(username).GetAwaiter().GetResult();
+        if (!userlist.Any())
+        {
+            return new List<string>();
+        }
+
+        List<string> followerNames = new List<string>();
+        foreach (ChirpUser following in userlist)
+        {
+            if (following.UserName != null)
+            {
+                followerNames.Add(following.UserName);
+            }
+        }
+
+        return followerNames;
+    }
 }

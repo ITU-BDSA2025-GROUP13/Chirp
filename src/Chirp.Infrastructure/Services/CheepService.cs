@@ -6,8 +6,12 @@ namespace Chirp.Infrastructure.Services
 {
     public class CheepService(ICheepRepository cheepRepo, UserManager<ChirpUser> userManager) : ICheepService
     {
+<<<<<<< HEAD
         private const string DeletedUser = "Deleted User";
         public List<CheepDTO> GetMainPageCheeps(int page = 1)
+=======
+        public List<CheepDTO> GetMainPageCheeps(int page = 0)
+>>>>>>> f608645 (refactor: move user related methods from cheep service/repo to user service/repo)
         {
             List<Cheep> cheeps = cheepRepo.GetMainPage(page).GetAwaiter().GetResult().ToList();
             return ToDTO(cheeps);
@@ -48,7 +52,7 @@ namespace Chirp.Infrastructure.Services
                     new CheepDTO(
                         cheep.Text,
                         cheep.TimeStamp.ToString(),
-                        cheep.Author.UserName ?? DeletedUser,
+                        cheep.Author.UserName ?? "Deleted User",
                         cheep.CheepId,
                         cheep.ParentCheep?.CheepId,
                         ToDTO(cheep.Replies),
@@ -59,6 +63,7 @@ namespace Chirp.Infrastructure.Services
             return DTOCheeps;
         }
 
+<<<<<<< HEAD
         public async Task<List<ChirpUser>> GetListOfFollowers(string username)
         {
             ChirpUser? user = userManager.FindByNameAsync(username).GetAwaiter().GetResult();
@@ -90,6 +95,9 @@ namespace Chirp.Infrastructure.Services
         }
 
         public List<CheepDTO> GetOwnPrivateTimeline(string username, int pagenum = 1)
+=======
+        public List<CheepDTO> GetOwnPrivateTimeline(string username, int pagenum = 0)
+>>>>>>> f608645 (refactor: move user related methods from cheep service/repo to user service/repo)
         {
             ChirpUser? user = userManager.FindByNameAsync(username).GetAwaiter().GetResult();
 

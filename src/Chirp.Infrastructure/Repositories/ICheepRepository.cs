@@ -42,13 +42,6 @@ namespace Chirp.Infrastructure.Repositories
         Task<Cheep?> GetCheepById(int cheepID);
 
         /// <summary>
-        /// Get list of ChirpUsers for a given ChirpUser
-        /// </summary>
-        /// <param name="user">Given ChirpUser to get relations from</param>
-        /// <returns>A list of ChirpUsers</returns>
-        Task<List<ChirpUser>> GetListOfFollowers(ChirpUser user);
-
-        /// <summary>
         /// Get users own private timeline, which contains their own cheeps and cheeps of users they follow
         /// </summary>
         /// <param name="user">Given ChirpUser to get private timeline for</param>
