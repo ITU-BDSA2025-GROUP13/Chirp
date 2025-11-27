@@ -65,7 +65,7 @@ public class UserTimelineModel : PageModel
     {
         if (User.Identity?.Name != null)
         {
-            var followedUsers = _chirpUserService.GetListOfNamesOfFollowedUsers(User.Identity.Name);
+            var followedUsers = _chirpUserService.GetFollowedUsernames(User.Identity.Name);
             CheepDataCache.Instance.SetFollowedUsers(User.Identity.Name, followedUsers);
         }
         LoadTimeline(CurrentPage);

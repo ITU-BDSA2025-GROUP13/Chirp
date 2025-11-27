@@ -48,11 +48,16 @@ namespace Chirp.Infrastructure.Services
 
             foreach (Cheep cheep in cheeps)
             {
+                string username = cheep.Author?.UserName ?? "Deleted User";
+                string displayName = username.StartsWith("[")
+                    ? "Deleted User"
+                    : username;
+
                 DTOCheeps.Add(
                     new CheepDTO(
                         cheep.Text,
                         cheep.TimeStamp.ToString(),
-                        cheep.Author.UserName ?? "Deleted User",
+                        displayName,
                         cheep.CheepId,
                         cheep.ParentCheep?.CheepId,
                         ToDTO(cheep.Replies),

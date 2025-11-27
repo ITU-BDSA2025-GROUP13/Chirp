@@ -1,4 +1,6 @@
+using Chirp.Core.Models;
 using Chirp.Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.IO.Compression;
@@ -7,14 +9,28 @@ using System.Text.Json;
 
 namespace Chirp.Web.Pages
 {
-    public class AboutMeModel(ICheepService cheepService, IChirpUserService chirpUserService) : PageModel
+    public class AboutMeModel : PageModel
     {
-        private readonly ICheepService _cheepService = cheepService;
-        private readonly IChirpUserService _chirpUserService = chirpUserService;
+        private readonly ICheepService _cheepService;
+        private readonly IChirpUserService _chirpUserService;
         public string Username { get; private set; } = "";
         public string Email { get; private set; } = "";
         public List<CheepDTO> Cheeps { get; private set; } = [];
         public List<string> FollowedUsers { get; private set; } = [];
+
+        private readonly SignInManager<ChirpUser> _signInManager;
+        private readonly ILogger<AboutMeModel> _logger;
+
+        public AboutMeModel(ICheepService cheepService, 
+                IChirpUserService chirpUserService, 
+                SignInManager<ChirpUser> signInManager, 
+                ILogger<AboutMeModel> logger)
+        {
+            _cheepService = cheepService;
+            _chirpUserService = chirpUserService;
+            _signInManager = signInManager;
+            _logger = logger;
+        }
 
         public void OnGet() => UpdateUserInfo();
 
@@ -53,6 +69,24 @@ namespace Chirp.Web.Pages
 
             var zipBytes = memoryStream.ToArray();
             return File(zipBytes, "application/zip", "user-data.zip");
+        }
+
+        public async Task<IActionResult> OnPostForgetMe()
+        {
+            UpdateUserInfo();
+
+            // Sign out the user 
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logged out.");
+
+            // Anonymize user data
+            await _chirpUserService.ForgetUser(Username);
+
+            // Clear authentication cookies
+            _signInManager.Context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
+            _signInManager.Context.Response.Cookies.Delete(".AspNetCore.Identity.External");
+
+            return Redirect("~/");
         }
     }
 }

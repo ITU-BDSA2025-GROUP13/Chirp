@@ -53,5 +53,10 @@
         <form method="post">
             <button type="submit" asp-page-handler="DownloadUserData" class="aboutme-download-button">Download ZIP</button>
         </form>
+
+        <p>To delete all your personal data, press the button below:</p>
+        <form method="post">
+            <button class="forget-me-button" type="submit" asp-page-handler="ForgetMe" style="margin-bottom: 0.5em; color: white; background-color: red;">Forget Me!</button>
+        </form>        
     }
 </div>

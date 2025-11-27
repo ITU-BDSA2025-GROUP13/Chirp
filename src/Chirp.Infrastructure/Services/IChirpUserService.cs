@@ -25,11 +25,11 @@ public interface IChirpUserService
     /// <param name="username">Given user to check following relations</param>
     /// <returns>List of ChirpUsers</returns>
     public Task<List<ChirpUser>> GetListOfFollowers(string username);
-    
+
     /// <summary>
-    /// Returns a list of usernames, which the given user follows.
+    /// Anonymizes all personal data for the given user.
     /// </summary>
-    /// <param name="username">Given user to check following relations</param>
-    /// <returns>List of usernames</returns>
-    public List<string> GetListOfNamesOfFollowedUsers(string username);
+    /// <param name="username">The username of the user whose data is to be deleted.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>  
+    public Task ForgetUser(string username);
 }
