@@ -41,5 +41,12 @@ namespace Chirp.Infrastructure.Repositories
         /// <param name="user">Given ChirpUser to get relations from</param>
         /// <returns>A list of ChirpUsers</returns>
         Task<List<ChirpUser>> GetListOfFollowers(ChirpUser user);
+
+        /// <summary>
+        /// Anonymizes all personal data for the given user.
+        /// </summary>
+        /// <param name="user">The user whose data is to be deleted.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task ForgetUser(ChirpUser user);
     }
 }

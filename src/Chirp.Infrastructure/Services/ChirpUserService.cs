@@ -55,6 +55,11 @@ public class ChirpUserService(IChirpUserRepository chirpUserRepo, UserManager<Ch
         }
     }
 
+    /// <summary>
+    /// Returns a list of ChirpUsers, which the given user follows.
+    /// </summary>
+    /// <param name="username">Given user to check following relations</param>
+    /// <returns>List of ChirpUsers</returns>
     public async Task<List<ChirpUser>> GetListOfFollowers(string username)
     {
         ChirpUser? user = userManager.FindByNameAsync(username).GetAwaiter().GetResult();
@@ -65,23 +70,33 @@ public class ChirpUserService(IChirpUserRepository chirpUserRepo, UserManager<Ch
         return await chirpUserRepo.GetListOfFollowers(user);
     }
 
-    public List<string> GetListOfNamesOfFollowedUsers(string username)
+    /// <summary>
+    /// Anonymizes all personal data for the given user.
+    /// </summary>
+    /// <param name="username">The username of the user whose data is to be deleted.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>  
+    public async Task ForgetUser(string username)
     {
-        List<ChirpUser> userlist = GetListOfFollowers(username).GetAwaiter().GetResult();
-        if (!userlist.Any())
+        ChirpUser? user = await userManager.FindByNameAsync(username);
+        if (user == null)
         {
-            return new List<string>();
+            Console.WriteLine("User not found during ForgetUser()");
+            return;
         }
 
-        List<string> followerNames = new List<string>();
-        foreach (ChirpUser following in userlist)
+        // Remove any external sign-in associations to prevent OAuth re-authentication.
+        var externalLogins = await userManager.GetLoginsAsync(user);
+        foreach (var login in externalLogins)
         {
-            if (following.UserName != null)
+            var removeResult = await userManager.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey);
+            if (!removeResult.Succeeded)
             {
-                followerNames.Add(following.UserName);
+                var errors = string.Join(", ", removeResult.Errors.Select(e => e.Description));
+                throw new InvalidOperationException($"Failed to remove external login '{login.LoginProvider}' for user '{user.Id}': {errors}");
             }
         }
-
-        return followerNames;
+        
+        await chirpUserRepo.ForgetUser(user);        
+        await userManager.UpdateAsync(user);
     }
 }

@@ -66,6 +66,46 @@ namespace Chirp.Infrastructure.Repositories
 
             return user.FollowsList;
         }
+        
+        public async Task ForgetUser(ChirpUser user)
+        {
+            var trackedUser = dbContext.ChirpUsers.Local.SingleOrDefault(u => u.Id == user.Id);
+            if (trackedUser is null)
+            {
+                dbContext.ChirpUsers.Attach(user);
+            }
+            else
+            {
+                user = trackedUser;
+            }
+
+            var entry = dbContext.ChirpUsers.Entry(user);
+
+            entry.Collection(u => u.FollowsList).Load();
+            entry.Collection(u => u.FollowedByList).Load();
+            entry.Collection(u => u.LikedCheeps).Load();
+            user.FollowsList.Clear();
+            user.LikedCheeps.Clear();
+            user.FollowedByList.Clear();
+            
+            user.UserName = $"[{user.Id}]";
+            user.NormalizedUserName = user.UserName.ToUpperInvariant();
+            user.Email = null;
+            user.NormalizedEmail = null;
+            user.PhoneNumber = null;
+            user.PhoneNumberConfirmed = false;
+            user.TwoFactorEnabled = false;
+            user.PasswordHash = null;
+            user.SecurityStamp = Guid.NewGuid().ToString();
+            user.ConcurrencyStamp = Guid.NewGuid().ToString();
+            
+            foreach (var cheep in dbContext.Cheeps.Where(c => c.AuthorId == user.Id))
+            {
+                cheep.Text = "[Deleted]";
+            }
+
+            await dbContext.SaveChangesAsync();
+        }
         #endregion
     }
 }
