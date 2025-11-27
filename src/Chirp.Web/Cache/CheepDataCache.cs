@@ -1,4 +1,4 @@
-namespace Chirp.Infrastructure.Services
+namespace Chirp.Web.Cache
 {
     public class CheepDataCache
     {

@@ -1,3 +1,4 @@
+var _a;
 const scrollStorageKey = `chirp-scroll:${window.location.pathname}${window.location.search}`;
 const canUseSessionStorage = (() => {
     try {
@@ -12,6 +13,60 @@ const canUseSessionStorage = (() => {
         return false;
     }
 })();
+const canUseLocalStorage = (() => {
+    try {
+        if (typeof localStorage === "undefined")
+            return false;
+        const testKey = "__chirp_theme_test__";
+        localStorage.setItem(testKey, "1");
+        localStorage.removeItem(testKey);
+        return true;
+    }
+    catch (_a) {
+        return false;
+    }
+})();
+const themeStorageKey = "chirp-theme";
+const defaultLightHref = "/css/colors-light-theme.css";
+const defaultDarkHref = "/css/colors-dark-theme.css";
+function getStoredTheme() {
+    if (!canUseLocalStorage)
+        return null;
+    const storedValue = localStorage.getItem(themeStorageKey);
+    if (storedValue === "light" || storedValue === "dark")
+        return storedValue;
+    return null;
+}
+function storeTheme(theme) {
+    if (!canUseLocalStorage)
+        return;
+    localStorage.setItem(themeStorageKey, theme);
+}
+function applyTheme(theme) {
+    var _a, _b;
+    const themeLink = document.getElementById("theme-stylesheet");
+    if (!themeLink)
+        return;
+    const lightHref = (_a = themeLink.dataset.lightHref) !== null && _a !== void 0 ? _a : defaultLightHref;
+    const darkHref = (_b = themeLink.dataset.darkHref) !== null && _b !== void 0 ? _b : defaultDarkHref;
+    themeLink.href = theme === "dark" ? darkHref : lightHref;
+    document.documentElement.setAttribute("data-theme", theme);
+    const toggleButton = document.getElementById("themeToggleButton");
+    if (toggleButton) {
+        updateToggleButtonAppearance(toggleButton, theme);
+    }
+}
+function updateToggleButtonAppearance(button, theme) {
+    const icon = button.querySelector("i");
+    if (icon) {
+        icon.classList.remove("fa-sun-o", "fa-moon-o");
+        icon.classList.add(theme === "dark" ? "fa-sun-o" : "fa-moon-o");
+    }
+    const ariaLabel = theme === "dark" ? "Switch to light theme" : "Switch to dark theme";
+    button.setAttribute("aria-label", ariaLabel);
+}
+const initialTheme = (_a = getStoredTheme()) !== null && _a !== void 0 ? _a : "dark";
+applyTheme(initialTheme);
 function setupPostEnterBehavior() {
     const textarea = document.getElementById('post-text-field');
     const form = document.getElementById('post-form');
@@ -61,12 +116,28 @@ function setupScrollPreservation() {
 document.addEventListener('DOMContentLoaded', () => {
     restoreScrollPosition();
     setupScrollPreservation();
+    setupThemeToggle(initialTheme);
 });
 window.addEventListener('pageshow', event => {
     if (event.persisted) {
         restoreScrollPosition();
     }
 });
+function setupThemeToggle(currentTheme) {
+    const toggleButton = document.getElementById('themeToggleButton');
+    if (!toggleButton)
+        return;
+    if (toggleButton._themeListenerAttached)
+        return;
+    toggleButton._themeListenerAttached = true;
+    updateToggleButtonAppearance(toggleButton, currentTheme);
+    toggleButton.addEventListener('click', () => {
+        const activeTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        const selectedTheme = activeTheme === 'dark' ? 'light' : 'dark';
+        applyTheme(selectedTheme);
+        storeTheme(selectedTheme);
+    });
+}
 /**
  * Toggles the reply UI
  * @param cheepId - the ID to query for
@@ -76,13 +147,13 @@ function toggleReply(cheepId) {
     const replyTextField = document.getElementById(`reply-text-field-${cheepId}`);
     if (!replyFormWrapper || !replyTextField)
         return;
-    if (replyFormWrapper.style.display === "none" || replyFormWrapper.style.display === "") {
-        replyFormWrapper.style.display = "block";
+    if (replyFormWrapper.style.display === 'none' || replyFormWrapper.style.display === '') {
+        replyFormWrapper.style.display = 'block';
         replyTextField.focus();
         setupReplyEnterBehavior(cheepId);
     }
     else {
-        replyFormWrapper.style.display = "none";
+        replyFormWrapper.style.display = 'none';
     }
     setupScrollPreservation();
 }

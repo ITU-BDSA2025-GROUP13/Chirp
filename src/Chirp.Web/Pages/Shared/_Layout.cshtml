@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <title>@ViewData["Title"]</title>
-    <link href="/css/colors.css" rel="stylesheet" type="text/css" />
+    <link id="theme-stylesheet" href="/css/colors-dark-theme.css" rel="stylesheet" type="text/css" data-light-href="/css/colors-light-theme.css" data-dark-href="/css/colors-dark-theme.css" />
     <link href="/css/main.css" rel="stylesheet" type="text/css" />
     <link href="/css/navigation.css" rel="stylesheet" type="text/css" />
     <link href="/css/cheeps.css" rel="stylesheet" type="text/css" />
@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
+<div class="theme-toggle">
+    <button id="themeToggleButton" type="button" aria-label="Switch to light theme">
+        <i class="fa fa-sun-o" aria-hidden="true"></i>
+    </button>
+</div>
 <div class=page>
     <header>
         <a href="/"><img src="/images/logo.svg" alt="logo"/></a><h1>Chirp!</h1>

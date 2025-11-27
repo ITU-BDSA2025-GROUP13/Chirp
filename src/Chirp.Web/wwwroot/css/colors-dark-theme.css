@@ -1,25 +1,47 @@
 :root {
+  /* backgrounds */
   --background-main: #21242b;
   --page-background: #dddddd;
+
+  /* logo */
+  --logo-filter: invert(1);
+
+  /* text */
   --text-default: #dddddd;
   --link-default: #7ed3d3;
   --link-hover: #333333;
+
+  /* borders / dividers */
   --border-default: #999999;
+
+  /* header / body / footer / nav */
   --header-background: #282b34;
   --body-background: #2e313b;
   --footer-background: #333742;
   --footer-text: #999999;
   --nav-background: #333742;
+
+  /* "cheep" card / post styles */
   --cheep-background: #2d313b;
   --cheep-border: #4c4e52;
   --cheep-small-text: #999999;
-  --input-background: #eeeeff;
+
+  /* buttons / accents */
   --cheep-button-text: #489cd4;
-  --action-warning: #cc6e6e;
-  --action-success: #6fdf53;
   --cheep-edit-accent: #b266df;
+
+  /* likes / icons */
   --cheep-like-count: #ffffff;
   --cheep-like-icon: #eeeeff;
+
+  /* actions */
+  --action-warning: #cc6e6e;
+  --action-success: #6fdf53;
+
+  /* form / input */
+  --input-background: #eeeeff;
+
+  /* misc */
   --pagination-inactive: #4c4e52;
   --form-error: red;
 }

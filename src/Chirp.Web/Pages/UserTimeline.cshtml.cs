@@ -1,5 +1,6 @@
 using Chirp.Core.Models;
 using Chirp.Infrastructure.Services;
+using Chirp.Web.Cache;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
