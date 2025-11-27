@@ -13,6 +13,66 @@ const canUseSessionStorage = (() => {
     }
 })();
 
+const canUseLocalStorage = (() => {
+    try {
+        if (typeof localStorage === "undefined") return false;
+
+        const testKey = "__chirp_theme_test__";
+        localStorage.setItem(testKey, "1");
+        localStorage.removeItem(testKey);
+        return true;
+    } catch {
+        return false;
+    }
+})();
+
+type ThemePreference = "light" | "dark";
+
+const themeStorageKey = "chirp-theme";
+const defaultLightHref = "/css/colors-light-theme.css";
+const defaultDarkHref = "/css/colors-dark-theme.css";
+
+function getStoredTheme(): ThemePreference | null {
+    if (!canUseLocalStorage) return null;
+    const storedValue = localStorage.getItem(themeStorageKey);
+    if (storedValue === "light" || storedValue === "dark") return storedValue;
+    return null;
+}
+
+function storeTheme(theme: ThemePreference): void {
+    if (!canUseLocalStorage) return;
+    localStorage.setItem(themeStorageKey, theme);
+}
+
+function applyTheme(theme: ThemePreference): void {
+    const themeLink = document.getElementById("theme-stylesheet") as HTMLLinkElement | null;
+    if (!themeLink) return;
+
+    const lightHref = themeLink.dataset.lightHref ?? defaultLightHref;
+    const darkHref = themeLink.dataset.darkHref ?? defaultDarkHref;
+    themeLink.href = theme === "dark" ? darkHref : lightHref;
+    document.documentElement.setAttribute("data-theme", theme);
+
+    const toggleButton = document.getElementById("themeToggleButton") as HTMLButtonElement | null;
+    if (toggleButton) {
+        updateToggleButtonAppearance(toggleButton, theme);
+    }
+}
+
+function updateToggleButtonAppearance(button: HTMLButtonElement, theme: ThemePreference): void {
+    const icon = button.querySelector("i");
+    if (icon) {
+        icon.classList.remove("fa-sun-o", "fa-moon-o");
+        icon.classList.add(theme === "dark" ? "fa-sun-o" : "fa-moon-o");
+    }
+
+    const ariaLabel = theme === "dark" ? "Switch to light theme" : "Switch to dark theme";
+    button.setAttribute("aria-label", ariaLabel);
+}
+
+const initialTheme = getStoredTheme() ?? "dark";
+applyTheme(initialTheme);
+
 function setupPostEnterBehavior(): void {
     const textarea = document.getElementById('post-text-field') as HTMLTextAreaElement | null;
     const form = document.getElementById('post-form') as HTMLFormElement | null;
@@ -65,6 +125,7 @@ function setupScrollPreservation(): void {
 document.addEventListener('DOMContentLoaded', () => {
     restoreScrollPosition();
     setupScrollPreservation();
+    setupThemeToggle(initialTheme);
 });
 
 window.addEventListener('pageshow', event => {
@@ -72,6 +133,23 @@ window.addEventListener('pageshow', event => {
         restoreScrollPosition();
     }
 });
+
+function setupThemeToggle(currentTheme: ThemePreference): void {
+    const toggleButton = document.getElementById('themeToggleButton') as HTMLButtonElement | null;
+    if (!toggleButton) return;
+
+    if ((toggleButton as any)._themeListenerAttached) return;
+    (toggleButton as any)._themeListenerAttached = true;
+
+    updateToggleButtonAppearance(toggleButton, currentTheme);
+
+    toggleButton.addEventListener('click', () => {
+        const activeTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        const selectedTheme: ThemePreference = activeTheme === 'dark' ? 'light' : 'dark';
+        applyTheme(selectedTheme);
+        storeTheme(selectedTheme);
+    });
+}
 
 /**
  * Toggles the reply UI
