@@ -163,7 +163,6 @@ function toggleReply(cheepId: number): void {
     if (replyFormWrapper.style.display === 'none' || replyFormWrapper.style.display === '') {
         replyFormWrapper.style.display = 'block';
         replyTextField.focus();
-        setupReplyEnterBehavior(cheepId);
     } else {
         replyFormWrapper.style.display = 'none';
     }
@@ -196,11 +195,10 @@ function editCheep(cheepId: number): void {
 }
 
 /**
- * @param cheepId - the cheepId to for the reply form
+ * @param textarea - the textarea to connect the handler to
  */
-function setupReplyEnterBehavior(cheepId: number): void {
-    const textarea = document.getElementById(`reply-textarea-${cheepId}`) as HTMLTextAreaElement | null;
-    const form = document.getElementById(`reply-form-${cheepId}`) as HTMLFormElement | null;
+function setupEnterBehavior(textarea: HTMLTextAreaElement): void {
+    const form = textarea.parentElement as HTMLFormElement;
 
     if (!textarea || !form) return;
 
@@ -259,11 +257,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Setup event handlers
     Array.from(document.getElementsByClassName("post-textarea"),).forEach((element: HTMLTextAreaElement) => {
         setupCharcountMonitor(element);
+        setupEnterBehavior(element);
     });
     Array.from(document.getElementsByClassName("edit-textarea")).forEach((element: HTMLTextAreaElement) => {
         setupCharcountMonitor(element);
+        setupEnterBehavior(element);
     });
     Array.from(document.getElementsByClassName("reply-textarea")).forEach((element: HTMLTextAreaElement) => {
         setupCharcountMonitor(element);
+        setupEnterBehavior(element);
     });
 });
