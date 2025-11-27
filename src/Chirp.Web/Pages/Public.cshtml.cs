@@ -10,7 +10,7 @@ namespace Chirp.Web.Pages;
 
 public class PublicModel : PageModel
 {
-    private readonly ICheepService _service;
+    private readonly ICheepService _cheepService;
     private readonly IChirpUserService _chirpUserService;
     private readonly UserManager<ChirpUser> _userManager;
     public List<CheepDTO> Cheeps { get; set; }
@@ -48,7 +48,7 @@ public class PublicModel : PageModel
 
     public PublicModel(ICheepService service, IChirpUserService chirpUserService, UserManager<ChirpUser> userManager)
     {
-        _service = service;
+        _cheepService = service;
         _userManager = userManager;
         _chirpUserService = chirpUserService;
         Cheeps = new List<CheepDTO>();
@@ -59,12 +59,12 @@ public class PublicModel : PageModel
     {
         if (User.Identity?.Name != null)
         {
-            var followedUsers = _service.GetListOfNamesOfFollowedUsers(User.Identity.Name);
+            var followedUsers = _chirpUserService.GetListOfNamesOfFollowedUsers(User.Identity.Name);
             CheepDataCache.Instance.SetFollowedUsers(User.Identity.Name, followedUsers);
         }
 
-        Cheeps = _service.GetMainPageCheeps(CurrentPage);
-        HasNextPage = _service.GetMainPageCheeps(CurrentPage + 1).Any();
+        Cheeps = _cheepService.GetMainPageCheeps(CurrentPage);
+        HasNextPage = _cheepService.GetMainPageCheeps(CurrentPage + 1).Any();
         LoadLikes();
         return Page();
     }
@@ -86,8 +86,8 @@ public class PublicModel : PageModel
 
     public ActionResult OnPost()
     {
-        Cheeps = _service.GetMainPageCheeps();
-        HasNextPage = _service.GetMainPageCheeps(1).Any();
+        Cheeps = _cheepService.GetMainPageCheeps();
+        HasNextPage = _cheepService.GetMainPageCheeps(1).Any();
 
         if (!IsValidMessage(CheepMessage))
         {
@@ -99,8 +99,8 @@ public class PublicModel : PageModel
         {
             ErrorMessage = "You must be logged in to post a cheep.";
             CurrentPage = 1;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            Cheeps = _cheepService.GetMainPageCheeps();
+            HasNextPage = _cheepService.GetMainPageCheeps(1).Any();
             return RedirectToCurrent();
         }
 
@@ -109,22 +109,22 @@ public class PublicModel : PageModel
         {
             ErrorMessage = "User not found!";
             CurrentPage = 1;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            Cheeps = _cheepService.GetMainPageCheeps();
+            HasNextPage = _cheepService.GetMainPageCheeps(1).Any();
             return RedirectToCurrent();
         }
 
-        _service.PostCheep(CheepMessage!, user.Id);
+        _cheepService.PostCheep(CheepMessage!, user.Id);
         return RedirectToCurrent();
     }
 
     public ActionResult OnPostDelete()
     {
-        HasNextPage = _service.GetMainPageCheeps(CurrentPage + 1).Any();
+        HasNextPage = _cheepService.GetMainPageCheeps(CurrentPage + 1).Any();
 
-        _service.DeleteCheep(CheepIdForDeletion);
+        _cheepService.DeleteCheep(CheepIdForDeletion);
 
-        Cheeps = _service.GetMainPageCheeps(CurrentPage);
+        Cheeps = _cheepService.GetMainPageCheeps(CurrentPage);
         return RedirectToCurrent();
     }
 
@@ -138,16 +138,16 @@ public class PublicModel : PageModel
 
     public ActionResult OnPostEdit()
     {
-        HasNextPage = _service.GetMainPageCheeps(CurrentPage + 1).Any();
+        HasNextPage = _cheepService.GetMainPageCheeps(CurrentPage + 1).Any();
 
         if (!IsValidMessage(EditedCheepText))
         {
-            Cheeps = _service.GetMainPageCheeps(CurrentPage);
+            Cheeps = _cheepService.GetMainPageCheeps(CurrentPage);
             return RedirectToCurrent();
         }
 
-        _service.EditCheep(CheepIdForEditing, EditedCheepText!);
-        Cheeps = _service.GetMainPageCheeps(CurrentPage);
+        _cheepService.EditCheep(CheepIdForEditing, EditedCheepText!);
+        Cheeps = _cheepService.GetMainPageCheeps(CurrentPage);
         return RedirectToCurrent();
     }
 
@@ -158,8 +158,8 @@ public class PublicModel : PageModel
         {
             ErrorMessage = "You must be logged in to post a cheep.";
             CurrentPage = 1;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            Cheeps = _cheepService.GetMainPageCheeps();
+            HasNextPage = _cheepService.GetMainPageCheeps(1).Any();
             return RedirectToCurrent();
         }
 
@@ -168,8 +168,8 @@ public class PublicModel : PageModel
         {
             ErrorMessage = "User not found! Try logging out and in again.";
             CurrentPage = 1;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            Cheeps = _cheepService.GetMainPageCheeps();
+            HasNextPage = _cheepService.GetMainPageCheeps(1).Any();
             return RedirectToCurrent();
         }
 
@@ -177,12 +177,12 @@ public class PublicModel : PageModel
         {
             ErrorMessage = "Reply not found!";
             CurrentPage = 1;
-            Cheeps = _service.GetMainPageCheeps();
-            HasNextPage = _service.GetMainPageCheeps(1).Any();
+            Cheeps = _cheepService.GetMainPageCheeps();
+            HasNextPage = _cheepService.GetMainPageCheeps(1).Any();
             return RedirectToCurrent();
         }
 
-        _service.ReplyToCheep(Reply.CheepID, Reply.Text, user);
+        _cheepService.ReplyToCheep(Reply.CheepID, Reply.Text, user);
         return RedirectToCurrent();
     }
 
@@ -194,13 +194,13 @@ public class PublicModel : PageModel
 
     public ActionResult OnPostLike()
     {
-        HasNextPage = _service.GetMainPageCheeps(CurrentPage + 1).Any();
+        HasNextPage = _cheepService.GetMainPageCheeps(CurrentPage + 1).Any();
 
         string? name = User.Identity?.Name;
         if (name == null)
         {
             ErrorMessage = "You must be logged in to like a cheep.";
-            Cheeps = _service.GetMainPageCheeps(CurrentPage);
+            Cheeps = _cheepService.GetMainPageCheeps(CurrentPage);
             return Page();
         }
 
@@ -210,20 +210,20 @@ public class PublicModel : PageModel
         if (user == null)
         {
             ErrorMessage = "User not found!";
-            Cheeps = _service.GetMainPageCheeps(CurrentPage);
+            Cheeps = _cheepService.GetMainPageCheeps(CurrentPage);
             return Page();
         }
 
         if (user.LikedCheeps.Any(c => c.CheepId == CheepIdForLike))
         {
-            _service.UnLikeCheep(CheepIdForLike, user.Id);
+            _cheepService.UnLikeCheep(CheepIdForLike, user.Id);
         }
         else
         {
-            _service.LikeCheep(CheepIdForLike, user.Id);
+            _cheepService.LikeCheep(CheepIdForLike, user.Id);
         }
 
-        Cheeps = _service.GetMainPageCheeps(CurrentPage);
+        Cheeps = _cheepService.GetMainPageCheeps(CurrentPage);
         LoadLikes();
         return RedirectToCurrent();
     }

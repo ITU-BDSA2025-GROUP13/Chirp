@@ -10,7 +10,7 @@ namespace Chirp.Web.Cache
 
         public void SetFollowedUsers(string username, IEnumerable<string> followedUsers)
         {
-            _followCache[username] = followedUsers.ToHashSet();
+            _followCache[username] = followedUsers?.ToHashSet() ?? new HashSet<string>();
         }
 
         public bool UserIsFollowing(string user, string target)

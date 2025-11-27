@@ -20,19 +20,6 @@ namespace Chirp.Infrastructure.Services
         public List<CheepDTO> GetOwnPrivateTimeline(string username, int pagenum = 1);
 
         /// <summary>
-        /// Returns a list of ChirpUsers, which the given user follows.
-        /// </summary>
-        /// <param name="username">Given user to check following relations</param>
-        /// <returns>List of ChirpUsers</returns>
-        public Task<List<ChirpUser>> GetListOfFollowers(string username);
-        /// <summary>
-        /// Returns a list of usernames, which the given user follows.
-        /// </summary>
-        /// <param name="username">Given user to check following relations</param>
-        /// <returns>List of usernames</returns>
-        public List<string> GetListOfNamesOfFollowedUsers(string username);
-
-        /// <summary>
         /// Returns at most N Cheeps from author. Will create a new author on request if no author exist.
         /// </summary>
         /// <param name="authorName"></param>

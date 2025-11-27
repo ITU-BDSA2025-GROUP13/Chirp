@@ -11,7 +11,7 @@ namespace Chirp.Web.Pages;
 
 public class UserTimelineModel : PageModel
 {
-    private readonly ICheepService _service;
+    private readonly ICheepService _cheepService;
     private readonly IChirpUserService _chirpUserService;
     private readonly UserManager<ChirpUser> _userManager;
     public List<CheepDTO> Cheeps { get; set; }
@@ -54,7 +54,7 @@ public class UserTimelineModel : PageModel
 
     public UserTimelineModel(ICheepService service, IChirpUserService chirpUserService, UserManager<ChirpUser> userManager)
     {
-        _service = service;
+        _cheepService = service;
         _chirpUserService = chirpUserService;
         _userManager = userManager;
         Cheeps = new List<CheepDTO>();
@@ -65,7 +65,7 @@ public class UserTimelineModel : PageModel
     {
         if (User.Identity?.Name != null)
         {
-            var followedUsers = _service.GetListOfNamesOfFollowedUsers(User.Identity.Name);
+            var followedUsers = _chirpUserService.GetListOfNamesOfFollowedUsers(User.Identity.Name);
             CheepDataCache.Instance.SetFollowedUsers(User.Identity.Name, followedUsers);
         }
         LoadTimeline(CurrentPage);
@@ -75,9 +75,9 @@ public class UserTimelineModel : PageModel
 
     public ActionResult OnPostDelete()
     {
-        HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
+        HasNextPage = _cheepService.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
 
-        _service.DeleteCheep(CheepIdForDeletion);
+        _cheepService.DeleteCheep(CheepIdForDeletion);
         return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
 
@@ -88,18 +88,18 @@ public class UserTimelineModel : PageModel
             _chirpUserService.ToggleUserFollowing(User.Identity.Name, ToggleFollowForUserId);
         }
 
-        Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
         LoadLikes();
+        Cheeps = _cheepService.GetCheepsFromAuthorName(Author, CurrentPage);
         return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
 
     public ActionResult OnPostEdit()
     {
-        HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
+        HasNextPage = _cheepService.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
 
         if (!IsValidMessage(EditedCheepText))
         {
-            Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
+            Cheeps = _cheepService.GetCheepsFromAuthorName(Author, CurrentPage);
             if (CurrentPage == 0)
             {
                 return LocalRedirect($"/user/{Author}");
@@ -108,8 +108,8 @@ public class UserTimelineModel : PageModel
             return LocalRedirect($"/user/{Author}?page={CurrentPage}");
         }
 
-        _service.EditCheep(CheepIdForEditing, EditedCheepText!);
-        Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
+        _cheepService.EditCheep(CheepIdForEditing, EditedCheepText!);
+        Cheeps = _cheepService.GetCheepsFromAuthorName(Author, CurrentPage);
         if (CurrentPage == 0)
         {
             return LocalRedirect($"/user/{Author}");
@@ -143,7 +143,7 @@ public class UserTimelineModel : PageModel
         }
 
         LoadLikes();
-        _service.ReplyToCheep(Reply.CheepID, Reply.Text, user);
+        _cheepService.ReplyToCheep(Reply.CheepID, Reply.Text, user);
         return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
 
@@ -164,13 +164,13 @@ public class UserTimelineModel : PageModel
 
     public ActionResult OnPostLike()
     {
-        HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
+        HasNextPage = _cheepService.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
 
         string? name = User.Identity?.Name;
         if (name == null)
         {
             ErrorMessage = "You must be logged in to like a cheep.";
-            Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
+            Cheeps = _cheepService.GetCheepsFromAuthorName(Author, CurrentPage);
             LoadLikes();
             return Page();
         }
@@ -181,21 +181,21 @@ public class UserTimelineModel : PageModel
         if (user == null)
         {
             ErrorMessage = "User not found!";
-            Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
+            Cheeps = _cheepService.GetCheepsFromAuthorName(Author, CurrentPage);
             LoadLikes();
             return Page();
         }
 
         if (user.LikedCheeps.Any(c => c.CheepId == CheepIdForLike))
         {
-            _service.UnLikeCheep(CheepIdForLike, user.Id);
+            _cheepService.UnLikeCheep(CheepIdForLike, user.Id);
         }
         else
         {
-            _service.LikeCheep(CheepIdForLike, user.Id);
+            _cheepService.LikeCheep(CheepIdForLike, user.Id);
         }
 
-        Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
+        Cheeps = _cheepService.GetCheepsFromAuthorName(Author, CurrentPage);
         LoadLikes();
         return LocalRedirect($"/user/{Author}?page={CurrentPage}");
     }
@@ -207,13 +207,13 @@ public class UserTimelineModel : PageModel
 
         if (isViewingOwnTimeline)
         {
-            Cheeps = _service.GetOwnPrivateTimeline(Author, CurrentPage);
-            HasNextPage = _service.GetOwnPrivateTimeline(Author, CurrentPage + 1).Any();
+            Cheeps = _cheepService.GetOwnPrivateTimeline(Author, CurrentPage);
+            HasNextPage = _cheepService.GetOwnPrivateTimeline(Author, CurrentPage + 1).Any();
         }
         else
         {
-            Cheeps = _service.GetCheepsFromAuthorName(Author, CurrentPage);
-            HasNextPage = _service.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
+            Cheeps = _cheepService.GetCheepsFromAuthorName(Author, CurrentPage);
+            HasNextPage = _cheepService.GetCheepsFromAuthorName(Author, CurrentPage + 1).Any();
         }
     }
 

@@ -34,5 +34,12 @@ namespace Chirp.Infrastructure.Repositories
         /// <param name="user">The user whose followed list is requested.</param>
         /// <returns>List of users that the user is following.</returns>
         List<ChirpUser> GetFollowedUsers(ChirpUser user);
+
+        /// <summary>
+        /// Get list of ChirpUsers for a given ChirpUser
+        /// </summary>
+        /// <param name="user">Given ChirpUser to get relations from</param>
+        /// <returns>A list of ChirpUsers</returns>
+        Task<List<ChirpUser>> GetListOfFollowers(ChirpUser user);
     }
 }
