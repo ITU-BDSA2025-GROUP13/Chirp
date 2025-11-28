@@ -25,8 +25,14 @@ numbersections: true
 # Process
 
 ## Build, test, release, and deployment
+### Versioning
+
+### Deployment
+
+### Linear git history
 
 ## Team work
+### Trunk-based development
 
 ## How to make _Chirp!_ work locally
 
