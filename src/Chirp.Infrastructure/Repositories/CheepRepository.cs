@@ -122,37 +122,38 @@ namespace Chirp.Infrastructure.Repositories
 
         public async Task<IEnumerable<Cheep>> GetPrivateTimelineCheeps(ChirpUser user, int pagenum = 1)
         {
-<<<<<<< HEAD
-            List<ChirpUser> followers = await GetListOfFollowers(user);
-            followers.Add(user);
+            await dbContext.ChirpUsers
+                .Entry(user)
+                .Collection(u => u.FollowsList)
+                .LoadAsync();
+
+            List<string> followedUserIds = user.FollowsList
+                .Where(u => !string.IsNullOrEmpty(u.Id))
+                .Select(u => u.Id!)
+                .ToList();
+
+            if (!string.IsNullOrEmpty(user.Id))
+            {
+                followedUserIds.Add(user.Id);
+            }
+
+            followedUserIds = followedUserIds.Distinct().ToList();
+
+            if (followedUserIds.Count == 0)
+            {
+                return new List<Cheep>();
+            }
 
             int skip = pagenum < 1 ? 0 : (pagenum - 1) * _readLimit;
 
-            List<Cheep> cheeps = await dbContext.Cheeps
+            var cheeps = await dbContext.Cheeps
                 .AsNoTracking()
-                .Where(c => followers.Contains(c.Author) && c.ParentCheep == null)
-                .Include(c => c.Author)
-                .Include(c => c.Author)
-                .Include(c => c.UsersWhoLiked)
-                .OrderByDescending(c => c.TimeStamp)
-                .Skip(skip)
-=======
-            dbContext.ChirpUsers
-                .Entry(user)
-                .Collection(u => u.FollowsList)
-                .Load();
-                
-            List<ChirpUser> followsList = user.FollowsList;
-            followsList.Add(user); // add own cheeps to private timeline
-
-            return await dbContext.Cheeps
                 .Include(m => m.Author)
-                .Where(m => followsList.Contains(m.Author))
-                .Include(m => m.Author) //Joins Author's 
-                .Include(m => m.UsersWhoLiked) //Joins users who liked
+                .Include(m => m.UsersWhoLiked)
+                .Where(m => m.ParentCheep == null)
+                .Where(m => m.AuthorId != null && followedUserIds.Contains(m.AuthorId))
                 .OrderByDescending(m => m.TimeStamp)
-                .Skip(pagenum * _readLimit)
->>>>>>> f608645 (refactor: move user related methods from cheep service/repo to user service/repo)
+                .Skip(skip)
                 .Take(_readLimit)
                 .ToListAsync();
 
@@ -161,24 +162,7 @@ namespace Chirp.Infrastructure.Repositories
             return cheeps;
         }
 
-<<<<<<< HEAD
-        public async Task<List<ChirpUser>> GetListOfFollowers(ChirpUser user)
-        {
-            await dbContext.ChirpUsers
-                .Entry(user)
-                .Collection(u => u.FollowsList)
-                .LoadAsync();
-
-            // might not be necessary, but keeping it just in case.
-            await dbContext.SaveChangesAsync();
-
-            return user.FollowsList;
-        }
-
-        public async Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 1)
-=======
         public async Task<IEnumerable<Cheep>> GetAuthorPage(ChirpUser author, int pagenum = 0)
->>>>>>> f608645 (refactor: move user related methods from cheep service/repo to user service/repo)
         {
             int skip = pagenum < 1 ? 0 : (pagenum - 1) * _readLimit;
 

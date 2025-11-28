@@ -38,6 +38,10 @@
   --action-warning: #cc6e6e;
   --action-success: #6fdf53;
 
+  /* about me page */
+  --forget-me-button-background: #bc3e3e;
+  --forget-me-button-text: #ffffff;
+
   /* form / input */
   --input-background: #eeeeff;
 

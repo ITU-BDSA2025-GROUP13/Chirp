@@ -11,6 +11,42 @@ namespace Chirp.Infrastructure.Tests.Services;
 public class ChirpUserServiceTests
 {
     [Fact]
+    public async Task GetListOfFollowers_UserMissing_ReturnsEmpty()
+    {
+        Mock<IChirpUserRepository> repoMock = new Mock<IChirpUserRepository>();
+        Mock<UserManager<ChirpUser>> userManagerMock = CreateUserManagerMock();
+
+        userManagerMock.Setup(m => m.FindByNameAsync("ghost")).ReturnsAsync((ChirpUser?)null);
+
+        var service = new ChirpUserService(repoMock.Object, userManagerMock.Object);
+
+        List<ChirpUser> result = await service.GetListOfFollowers("ghost");
+
+        Assert.Empty(result);
+        repoMock.Verify(r => r.GetListOfFollowers(It.IsAny<ChirpUser>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetListOfFollowers_UserFound_ReturnsRepositoryResult()
+    {
+        Mock<IChirpUserRepository> repoMock = new Mock<IChirpUserRepository>();
+        Mock<UserManager<ChirpUser>> userManagerMock = CreateUserManagerMock();
+
+        var user = new ChirpUser { Id = "user", UserName = "User" };
+        userManagerMock.Setup(m => m.FindByNameAsync(user.UserName!)).ReturnsAsync(user);
+
+        var follower = new ChirpUser { Id = "follower", UserName = "Follower" };
+        repoMock.Setup(r => r.GetListOfFollowers(user)).ReturnsAsync(new List<ChirpUser> { follower });
+
+        var service = new ChirpUserService(repoMock.Object, userManagerMock.Object);
+
+        List<ChirpUser> result = await service.GetListOfFollowers(user.UserName!);
+
+        ChirpUser loaded = Assert.Single(result);
+        Assert.Equal(follower.Id, loaded.Id);
+    }
+
+    [Fact]
     public void GetFollowedUsernames_UserNotFound_ReturnsEmptyList()
     {
         Mock<IChirpUserRepository> repoMock = new Mock<IChirpUserRepository>();
