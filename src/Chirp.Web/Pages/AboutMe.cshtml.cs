@@ -75,16 +75,23 @@ namespace Chirp.Web.Pages
         {
             UpdateUserInfo();
 
-            // Sign out the user 
-            await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out.");
+            try {
+                // Sign out the user 
+                await _signInManager.SignOutAsync();
+                _logger.LogInformation("User logged out.");
 
-            // Anonymize user data
-            await _chirpUserService.ForgetUser(Username);
+                // Anonymize user data
+                await _chirpUserService.ForgetUser(Username);
 
-            // Clear authentication cookies
-            _signInManager.Context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
-            _signInManager.Context.Response.Cookies.Delete(".AspNetCore.Identity.External");
+                // Clear authentication cookies
+                _signInManager.Context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
+                _signInManager.Context.Response.Cookies.Delete(".AspNetCore.Identity.External");
+            }
+            catch (Exception e) {
+                _logger.LogError(e, "Error occurred while processing ForgetMe request for user {Username}", Username);
+                ModelState.AddModelError(string.Empty, "An error occurred while processing your request. Please try again later.");
+                return Page();
+            }
 
             return Redirect("~/");
         }

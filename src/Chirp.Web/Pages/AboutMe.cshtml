@@ -57,6 +57,7 @@
         <p>To delete all your personal data, press the button below:</p>
         <form method="post">
             <button class="aboutme-forget-me-button" type="submit" asp-page-handler="ForgetMe">Forget Me!</button>
+            <div asp-validation-summary="All" class="aboutme-forget-me-error" role="alert"></div>
         </form>        
     }
 </div>
