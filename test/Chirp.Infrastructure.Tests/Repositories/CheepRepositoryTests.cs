@@ -298,7 +298,7 @@ public class CheepRepositoryTests
     public async Task GetListOfFollowers_WhenCalled_LoadsFollowList()
     {
         await using ChirpDbContext context = CreateInMemoryContext();
-        var repository = new CheepRepository(context);
+        var repository = new ChirpUserRepository(context);
 
         var owner = new ChirpUser { Id = "owner", UserName = "Owner", Email = "owner@test.com" };
         var follower = new ChirpUser { Id = "follower", UserName = "Follower", Email = "follower@test.com" };

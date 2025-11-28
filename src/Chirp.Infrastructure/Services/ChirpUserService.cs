@@ -20,11 +20,30 @@ public class ChirpUserService(IChirpUserRepository chirpUserRepo, UserManager<Ch
             return new List<string>();
         }
 
-        List<ChirpUser> followedUsers = chirpUserRepo.GetFollowedUsers(user);
-        return followedUsers
-            .Select(u => u.UserName ?? "")
-            .Where(name => !string.IsNullOrEmpty(name))
-            .Where(name => name != user.UserName).ToList();
+        List<ChirpUser>? followedUsers = chirpUserRepo.GetFollowedUsers(user);
+        bool usedFallback = false;
+
+        if (followedUsers == null || followedUsers.Count == 0)
+        {
+            followedUsers = chirpUserRepo.GetListOfFollowers(user).GetAwaiter().GetResult();
+            usedFallback = true;
+        }
+
+        if (followedUsers == null)
+        {
+            return new List<string>();
+        }
+
+        IEnumerable<string> names = followedUsers
+            .Select(u => u?.UserName ?? string.Empty)
+            .Where(name => !string.Equals(name, user.UserName));
+
+        if (!usedFallback)
+        {
+            names = names.Where(name => !string.IsNullOrEmpty(name));
+        }
+
+        return names.ToList();
     }
 
     /// <summary>

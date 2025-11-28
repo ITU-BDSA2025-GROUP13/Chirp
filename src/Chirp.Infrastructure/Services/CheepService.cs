@@ -6,12 +6,7 @@ namespace Chirp.Infrastructure.Services
 {
     public class CheepService(ICheepRepository cheepRepo, UserManager<ChirpUser> userManager) : ICheepService
     {
-<<<<<<< HEAD
-        private const string DeletedUser = "Deleted User";
-        public List<CheepDTO> GetMainPageCheeps(int page = 1)
-=======
         public List<CheepDTO> GetMainPageCheeps(int page = 0)
->>>>>>> f608645 (refactor: move user related methods from cheep service/repo to user service/repo)
         {
             List<Cheep> cheeps = cheepRepo.GetMainPage(page).GetAwaiter().GetResult().ToList();
             return ToDTO(cheeps);
@@ -68,41 +63,7 @@ namespace Chirp.Infrastructure.Services
             return DTOCheeps;
         }
 
-<<<<<<< HEAD
-        public async Task<List<ChirpUser>> GetListOfFollowers(string username)
-        {
-            ChirpUser? user = userManager.FindByNameAsync(username).GetAwaiter().GetResult();
-            if (user == null)
-            {
-                return new List<ChirpUser>();
-            }
-            return await cheepRepo.GetListOfFollowers(user);
-        }
-
-        public List<string> GetListOfNamesOfFollowedUsers(string username)
-        {
-            List<ChirpUser> userlist = GetListOfFollowers(username).GetAwaiter().GetResult();
-            if (!userlist.Any())
-            {
-                return new List<string>();
-            }
-
-            List<string> followerNames = new List<string>();
-            foreach (ChirpUser following in userlist)
-            {
-                if (following.UserName != null)
-                {
-                    followerNames.Add(following.UserName);
-                }
-            }
-
-            return followerNames;
-        }
-
-        public List<CheepDTO> GetOwnPrivateTimeline(string username, int pagenum = 1)
-=======
         public List<CheepDTO> GetOwnPrivateTimeline(string username, int pagenum = 0)
->>>>>>> f608645 (refactor: move user related methods from cheep service/repo to user service/repo)
         {
             ChirpUser? user = userManager.FindByNameAsync(username).GetAwaiter().GetResult();
 

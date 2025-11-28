@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Chirp.Core.Models;
 using Chirp.Infrastructure.Repositories;
 using Chirp.Infrastructure.Services;
@@ -96,68 +92,6 @@ public class CheepServiceTests
         CheepDTO dto = Assert.Single(result);
         Assert.Equal(cheep.CheepId, dto.CheepId);
         repoMock.Verify(r => r.GetAuthorPage(author, 2), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetListOfFollowers_UserMissing_ReturnsEmpty()
-    {
-        Mock<ICheepRepository> repoMock = new Mock<ICheepRepository>();
-        Mock<UserManager<ChirpUser>> userManagerMock = CreateUserManagerMock();
-
-        userManagerMock.Setup(m => m.FindByNameAsync("ghost")).ReturnsAsync((ChirpUser?)null);
-
-        var service = new CheepService(repoMock.Object, userManagerMock.Object);
-
-        List<ChirpUser> result = await service.GetListOfFollowers("ghost");
-
-        Assert.Empty(result);
-        repoMock.Verify(r => r.GetListOfFollowers(It.IsAny<ChirpUser>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task GetListOfFollowers_UserFound_ReturnsRepositoryResult()
-    {
-        Mock<ICheepRepository> repoMock = new Mock<ICheepRepository>();
-        Mock<UserManager<ChirpUser>> userManagerMock = CreateUserManagerMock();
-
-        var user = new ChirpUser { Id = "user", UserName = "User" };
-        userManagerMock.Setup(m => m.FindByNameAsync(user.UserName!)).ReturnsAsync(user);
-
-        var follower = new ChirpUser { Id = "follower", UserName = "Follower" };
-        repoMock.Setup(r => r.GetListOfFollowers(user)).ReturnsAsync(new List<ChirpUser> { follower });
-
-        var service = new CheepService(repoMock.Object, userManagerMock.Object);
-
-        List<ChirpUser> result = await service.GetListOfFollowers(user.UserName!);
-
-        ChirpUser loaded = Assert.Single(result);
-        Assert.Equal(follower.Id, loaded.Id);
-    }
-
-    [Fact]
-    public void GetListOfNamesOfFollowedUsers_FiltersInvalidNames()
-    {
-        Mock<ICheepRepository> repoMock = new Mock<ICheepRepository>();
-        Mock<UserManager<ChirpUser>> userManagerMock = CreateUserManagerMock();
-
-        var user = new ChirpUser { Id = "user", UserName = "User" };
-        userManagerMock.Setup(m => m.FindByNameAsync(user.UserName!)).ReturnsAsync(user);
-
-        List<ChirpUser> followed =
-        [
-            new ChirpUser { UserName = "Friend" },
-            new ChirpUser { UserName = null },
-            new ChirpUser { UserName = "" }
-        ];
-        repoMock.Setup(r => r.GetListOfFollowers(user)).ReturnsAsync(followed);
-
-        var service = new CheepService(repoMock.Object, userManagerMock.Object);
-
-        List<string> result = service.GetListOfNamesOfFollowedUsers(user.UserName!);
-
-        Assert.Equal(2, result.Count);
-        Assert.Contains("Friend", result);
-        Assert.Contains(string.Empty, result);
     }
 
     [Fact]

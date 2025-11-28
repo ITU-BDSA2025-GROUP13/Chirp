@@ -18,4 +18,12 @@
 
 .aboutme-download-button {
   margin-bottom: 0.5em;
+  border-radius: 5px;
+}
+
+.aboutme-forget-me-button {
+  margin-bottom: 0.5em;
+  color: var(--forget-me-button-text);
+  background-color: var(--forget-me-button-background);
+  border-radius: 5px;
 }
