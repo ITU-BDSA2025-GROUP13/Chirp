@@ -66,7 +66,7 @@ namespace Chirp.Infrastructure.Repositories
 
             return user.FollowsList;
         }
-        
+
         public async Task ForgetUser(ChirpUser user)
         {
             var trackedUser = dbContext.ChirpUsers.Local.SingleOrDefault(u => u.Id == user.Id);
@@ -87,7 +87,7 @@ namespace Chirp.Infrastructure.Repositories
             user.FollowsList.Clear();
             user.LikedCheeps.Clear();
             user.FollowedByList.Clear();
-            
+
             user.UserName = $"[{user.Id}]";
             user.NormalizedUserName = user.UserName.ToUpperInvariant();
             user.Email = null;
@@ -98,7 +98,7 @@ namespace Chirp.Infrastructure.Repositories
             user.PasswordHash = null;
             user.SecurityStamp = Guid.NewGuid().ToString();
             user.ConcurrencyStamp = Guid.NewGuid().ToString();
-            
+
             foreach (var cheep in dbContext.Cheeps.Where(c => c.AuthorId == user.Id))
             {
                 cheep.Text = "[Deleted]";
@@ -108,8 +108,8 @@ namespace Chirp.Infrastructure.Repositories
             if (result > 0)
             {
                 Console.WriteLine($"User {user.Id} has been successfuly forgotten.");
-            } 
-            else 
+            }
+            else
             {
                 throw new InvalidOperationException($"Failed to forget user {user.Id}.");
             }

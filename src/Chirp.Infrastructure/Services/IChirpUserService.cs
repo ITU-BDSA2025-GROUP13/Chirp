@@ -3,7 +3,7 @@ using Chirp.Core.Models;
 namespace Chirp.Infrastructure.Services;
 
 public interface IChirpUserService
-{   
+{
     /// <summary>
     /// UserA wants to follow UserB from a Cheep.
     /// Cheeps author is found and then a relation is created.

@@ -21,9 +21,9 @@ namespace Chirp.Web.Pages
         private readonly SignInManager<ChirpUser> _signInManager;
         private readonly ILogger<AboutMeModel> _logger;
 
-        public AboutMeModel(ICheepService cheepService, 
-                IChirpUserService chirpUserService, 
-                SignInManager<ChirpUser> signInManager, 
+        public AboutMeModel(ICheepService cheepService,
+                IChirpUserService chirpUserService,
+                SignInManager<ChirpUser> signInManager,
                 ILogger<AboutMeModel> logger)
         {
             _cheepService = cheepService;
@@ -75,7 +75,8 @@ namespace Chirp.Web.Pages
         {
             UpdateUserInfo();
 
-            try {
+            try
+            {
                 // Sign out the user 
                 await _signInManager.SignOutAsync();
                 _logger.LogInformation("User logged out.");
@@ -87,7 +88,8 @@ namespace Chirp.Web.Pages
                 _signInManager.Context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
                 _signInManager.Context.Response.Cookies.Delete(".AspNetCore.Identity.External");
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 _logger.LogError(e, "Error occurred while processing ForgetMe request for user {Username}", Username);
                 ModelState.AddModelError(string.Empty, "An error occurred while processing your request. Please try again later.");
                 return Page();
