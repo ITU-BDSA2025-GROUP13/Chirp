@@ -113,6 +113,71 @@ public class ChirpUserRepositoryTests
         Assert.Contains(followedUsers, u => u.Id == followedB.Id);
     }
 
+    [Fact]
+    public async Task GetListOfFollowers_WhenRelationsExist_ReturnsFollowers()
+    {
+        await using var context = CreateInMemoryContext();
+        var repository = new ChirpUserRepository(context);
+
+        var follower = CreateUser("follower");
+        var followedA = CreateUser("followed-a");
+        var followedB = CreateUser("followed-b");
+
+        await context.ChirpUsers.AddRangeAsync(follower, followedA, followedB);
+        await context.SaveChangesAsync();
+
+        await repository.AddToFollowerList(follower, followedA);
+        await repository.AddToFollowerList(follower, followedB);
+
+        context.ChangeTracker.Clear();
+
+        var persistedFollower = await context.ChirpUsers.SingleAsync(u => u.Id == follower.Id);
+
+        var followedUsers = await repository.GetListOfFollowers(persistedFollower);
+
+        Assert.Equal(2, followedUsers.Count);
+        Assert.Contains(followedUsers, u => u.Id == followedA.Id);
+        Assert.Contains(followedUsers, u => u.Id == followedB.Id);
+    }
+
+    [Fact]
+    public async Task ForgetUser_WhenCalled_AnonymizesUserData()
+    {
+        await using var context = CreateInMemoryContext();
+        var repository = new ChirpUserRepository(context);
+
+        var user = CreateUser("testuser");
+        var follower = CreateUser("follower");
+        var followed = CreateUser("followed");
+
+        await context.ChirpUsers.AddRangeAsync(user, follower, followed);
+        await context.SaveChangesAsync();
+
+        // Add some relationships
+        await repository.AddToFollowerList(user, followed);
+        await repository.AddToFollowerList(follower, user);
+
+        context.ChangeTracker.Clear();
+
+        var trackedUser = await context.ChirpUsers.SingleAsync(u => u.Id == user.Id);
+
+        await repository.ForgetUser(trackedUser);
+
+        context.ChangeTracker.Clear();
+
+        var forgottenUser = await context.ChirpUsers
+            .Include(u => u.FollowsList)
+            .Include(u => u.FollowedByList)
+            .SingleAsync(u => u.Id == user.Id);
+
+        Assert.Equal($"[{user.Id}]", forgottenUser.UserName);
+        Assert.Null(forgottenUser.Email);
+        Assert.Null(forgottenUser.PhoneNumber);
+        Assert.Null(forgottenUser.PasswordHash);
+        Assert.Empty(forgottenUser.FollowsList);
+        Assert.Empty(forgottenUser.FollowedByList);
+    }
+
     private static ChirpDbContext CreateInMemoryContext()
     {
         var options = new DbContextOptionsBuilder<ChirpDbContext>()
