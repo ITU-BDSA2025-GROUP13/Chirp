@@ -104,7 +104,15 @@ namespace Chirp.Infrastructure.Repositories
                 cheep.Text = "[Deleted]";
             }
 
-            await dbContext.SaveChangesAsync();
+            int result = await dbContext.SaveChangesAsync();
+            if (result > 0)
+            {
+                Console.WriteLine($"User {user.Id} has been successfuly forgotten.");
+            } 
+            else 
+            {
+                throw new InvalidOperationException($"Failed to forget user {user.Id}.");
+            }
         }
         #endregion
     }
