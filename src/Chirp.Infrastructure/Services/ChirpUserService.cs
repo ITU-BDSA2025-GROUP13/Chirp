@@ -112,9 +112,9 @@ public class ChirpUserService(IChirpUserRepository chirpUserRepo, UserManager<Ch
                 var errors = string.Join(", ", removeResult.Errors.Select(e => e.Description));
                 throw new InvalidOperationException($"Failed to remove external login '{login.LoginProvider}' for user '{user.Id}': {errors}");
             }
-        }   
-        
-        await chirpUserRepo.ForgetUser(user);        
+        }
+
+        await chirpUserRepo.ForgetUser(user);
         await userManager.UpdateAsync(user);
     }
 }
