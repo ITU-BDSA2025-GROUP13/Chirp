@@ -66,4 +66,4 @@ data/chirp.db
 src/Chirp.Web/chirp.db
 
 # Typescript scriptlets
-src/Chirp.Web/wwwroot/js
+src/Chirp.Web/wwwroot/js/
