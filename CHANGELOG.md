@@ -1,5 +1,31 @@
 # Changelog
 
+## [5.5.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.4.0...v5.5.0) (2025-11-29)
+
+
+### Features
+
+* add auto focus to edit ([fe91dd1](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/fe91dd1061fa40b43fd124018165f88f3a16a20a))
+* add character limit to post and reply ([cbd6fff](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/cbd6fff40c2eee311b09557f865be3dc654cfd5b))
+* add charcount to post and reply ([329fce7](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/329fce7706259ea1166ddf0ca2f027aefcb89c41))
+* add enter handler to all forms ([b473398](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/b47339861fefc5a0dd268ac54d7a40207769bc52))
+* add forget me button for GDPR ([edfc6d9](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/edfc6d91eaadec59ff9829894bcd6c702fd4c557))
+* add scroll persistence for redirects on deletion, reply, etc. ([857f498](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/857f498275aa04682b156d70011f3d2297511900))
+* add scroll persistence to likes ([789498c](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/789498c3ee8eb719ae0b727b0d74e328cc2e3b36))
+* improved ENTER behaviour for post form ([0d1428f](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/0d1428f4b1314ece2722e1c7c319d513ee222100))
+* toggle dark/light mode ([c9c46c4](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/c9c46c45d32030420399823ef301d6145d7e0391))
+
+
+### Bug Fixes
+
+* add proper failure handling for forget me ([cb4ca6b](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/cb4ca6ba4fa2470981017cefccc13d3566783b40))
+* clean up queries in CheepRepo to fix bugs ([cd11de9](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/cd11de9f8d269e3e96116699e4bf564f70949cf0))
+* get rid of reply bugs on user timelines ([0c26034](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/0c26034bd0e72aedf92367bca94309c3c6d1c518))
+* make GetFollowedUsers not the user's own name ([5eed285](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/5eed285b46d6d4f1bd8c8ea9469a48a72cc30671))
+* make ico match the logo ([52bb379](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/52bb3792944d272547f368aa3c2355b6ceb018a3))
+* make pagination on user timeline look the same as on public timeline ([f96fb8e](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/f96fb8ee2664b37079ba0a62641bc743be5777f8))
+* make pagination start at 1, not 0 ([db139c1](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/db139c1002065d4576194f0133eee300523df1f1))
+
 ## [5.4.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.3.1...v5.4.0) (2025-11-25)
 
 
