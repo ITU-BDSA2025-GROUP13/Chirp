@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.5.1](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.5.0...v5.5.1) (2025-12-03)
+
+
+### Bug Fixes
+
+* check if github auth should be configured ([9de89b3](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/9de89b3762712795bcdb3e76d115b655039987fd))
+
 ## [5.5.0](https://github.com/ITU-BDSA2025-GROUP13/Chirp/compare/v5.4.0...v5.5.0) (2025-11-29)
 
 
