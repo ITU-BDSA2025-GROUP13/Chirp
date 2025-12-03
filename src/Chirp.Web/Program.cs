@@ -30,7 +30,7 @@ namespace Chirp.Web
             })
             .AddEntityFrameworkStores<ChirpDbContext>();
 
-            appBuilder.Services.AddAuthentication(options =>
+            var authBuilder = appBuilder.Services.AddAuthentication(options =>
             {
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
@@ -38,14 +38,20 @@ namespace Chirp.Web
             {
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
-            })
-            .AddGitHub(options =>
-            {
-                options.ClientId = appBuilder.Configuration["authentication:github:clientId"]!;
-                options.ClientSecret = appBuilder.Configuration["authentication:github:clientSecret"]!;
-                options.CallbackPath = "/signin-github";
-                options.Scope.Add("user:email");
             });
+            
+            // Avoids github auth if user is running project from .exe
+            string? clientID = appBuilder.Configuration["authentication:github:clientId"];
+            if (!string.IsNullOrEmpty(clientID))
+            {
+                authBuilder.AddGitHub(options =>
+                {
+                    options.ClientId = clientID;
+                    options.ClientSecret = appBuilder.Configuration["authentication:github:clientSecret"]!;
+                    options.CallbackPath = "/signin-github";
+                    options.Scope.Add("user:email");
+                });
+            }
 
             appBuilder.Services.AddSession();
             appBuilder.Services.AddRazorPages();
