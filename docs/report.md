@@ -47,6 +47,7 @@ Logging in changes the formatting of the pages, which the _page models_ are resp
 
 ## User activities
 
+
 ## Sequence of functionality/calls trough _Chirp!_
 
 # Process
@@ -120,10 +121,14 @@ The get the application running locally either clone this repository or alternat
 
 ### Running from latest release
 **On Windows:**
-1. Unzip folder and run the `.exe` file. 
+1. Unzip folder
+2. Navigate to `chirp-main-<OS>-<architecture>`
+3. Run the `Chirp.Web.exe` file. 
 
 **On Linux**
-<!-- TODO: Find out how linux runs the files -->
+1. Unzip folder
+2. Navigate to `chirp-main-<OS>-<architecture>`
+3. Run `./Chirp.Web`
 
 ### Running from repository
 1. From root folder:
