@@ -39,7 +39,7 @@ namespace Chirp.Web
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
             });
-            
+
             // Avoids github auth if user is running project from .exe
             string? clientID = appBuilder.Configuration["authentication:github:clientId"];
             if (!string.IsNullOrEmpty(clientID))
