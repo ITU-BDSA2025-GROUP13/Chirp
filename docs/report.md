@@ -53,10 +53,26 @@ Logging in changes the formatting of the pages, which the _page models_ are resp
 
 ## Build, test, release, and deployment
 ### Versioning
-Our project used "Calender Versioning" in the beginning, before we were introduced to semantic versioning.
-The semantic versioning was later automated for our weekly releases, using [Release Please](https://github.com/googleapis/release-please) from Google.
-Release Please continously looks at the commits pushed to the main branch, and updates a changelog on a separate branch.
-This changelog can then be published along with our actual release. This was done for convienece, as we can continue to develop the project without worring about creating our own changelog.
+Before the lecturers introduced us to semantic versioning and told us it was a requirement, we used CalVer[^calver].
+CalVer was initially chosen, as it uses the calendar date for versioning, and seemed to be a good way to coordinate our weekly releases. [^release-retag]
+
+Once we switched to semantic versioning we decided that it would make sense to automate this process.
+The tool we used to automate this was [Release Please](https://github.com/googleapis/release-please) from Google.
+Release Please continuously monitors the git history of a project through a GitHub action.
+The action identifies commits which use the [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) standard and generates a release log based on changes in its own branch.
+The action also opens a pull request, which when merged, merges the changelog into main and creates a new release with the changelog added as a description.
+This helped give us an, and potential users, an overview over what has changed between releases.
+
+In addition to this, Release Please also automatically computes the next version number based on the ```feat```, ```fix```, and ```feat!``` tags from conventional commit.
+This was nice, as we didn't have to consider what our next release number should be.
+
+One issue we faced with this was we ended up with a rather high major version (5.x.y).
+The reason for this was our failure to consider what was actually a breaking change.
+We followed the convention of tagging any breaking API change as a breaking change, which would make release please update the major version[^semver-lecture-notes].
+However, these breaking API changes were often only breaking for internal APIs, for many major releases, no user-facing APIs changed.
+We should not have considered these internal API changes as breaking, since, for the end user, these changes were not breaking.
+What we should have considered a breaking change should be the switch from a **CLI** to a **web page**, and potentially **the addition of identity**.
+This would mean that _Chirp!_ would be on **v3.x.y** or **v2.x.y**, depending on whether the addition of identity was considered breaking, not **v5.x.y**.
 
 ### Deployment
 Whenever we deploy our code to GitHub, a number of GitHub Actions scripts will be run. These can be found the .github/workflow directory.
@@ -109,4 +125,7 @@ In addition to this, a non-linear history can make the history of long-lived fea
 
 ## LLMs, ChatGPT, CoPilot, and others
 
+[^calver]: [CalVer](https://calver.org/)
+[^release-retag]: The initial release tag was deleted and tagged again using semver
+[^semver-lecture-notes]: [Lecture slides on Semantic Versioning](https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_03/Slides.md#semantic-versioning)
 [^release-please-linear]: [Release Please documentation about linear history](https://github.com/googleapis/release-please#linear-git-commit-history-use-squash-merge)
