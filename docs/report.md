@@ -116,8 +116,35 @@ In addition to this, a non-linear history can make the history of long-lived fea
 ### Trunk-based development
 
 ## How to make _Chirp!_ work locally
+The get the application running locally either clone this repository or alternatively download the [latest release](https://github.com/ITU-BDSA2025-GROUP13/Chirp/releases/tag/v5.5.0) for your OS. 
+
+### Running from latest release
+**On Windows:**
+1. Unzip folder and run the `.exe` file. 
+
+**On Linux**
+<!-- TODO: Find out how linux runs the files -->
+
+### Running from repository
+1. From root folder:
+
+   `dotnet run --project .\src\Chirp.Web\`
+
 
 ## How to run test suite locally
+All tests, including PlayWright, E2E, Integration and Unit tests is stored in the `test` directory. PlayWright needs to get downloaded and installed first. Following is the steps to build and run the test suite (all done from the root folder of the project):
+1. Build the project (needed for downloading PlayWright)
+
+   `dotnet build`
+
+
+3. Install PlayWright for tests
+
+   ```pwsh test/Chirp.E2E.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps```
+
+5. Run the project tests
+
+   `dotnet test`
 
 # Ethics
 
