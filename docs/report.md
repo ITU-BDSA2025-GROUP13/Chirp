@@ -15,7 +15,34 @@ numbersections: true
 ## Domain model
 
 ## Architecture — In the small
+Below is a onion architecture diagram to illustrate the overall architecture of the _Chirp_ application. 
+The diagram also illustrates dependencies, where the outer circles depend on the inner circles.
+<img width="1081" height="272" alt="OnionArchitecture" src="https://github.com/user-attachments/assets/30afb02e-f293-455d-b905-2d430731fcab" />
+_Dependencies are illustrated as red arrows._
 
+### Domain entities
+In yellow is the center of the architecture as _Chirp.Core_.
+This layer stores the most fundemental parts of the codebase. 
+In this project _Chirp.Core_ stores the _Cheep_ and _ChirpUser_ domain model.
+
+### Repository layer
+In red is the infrastructure layer of the codebase. 
+This layer is responsible for retrieving domain relevant information from the database. 
+
+### Service layer
+In orange is the service layer. 
+This layer is responsible for translating the domain models into _DTO_'s (Data Transfer Object) and connect requests to the ui. 
+This layer therefore acts as a binder between the infrastructure and the ui layer. 
+When a user request is received the service layer handles that requests, 
+retrieves information from the infrastructure layer, and translates the information received into DTO's.
+These DTO's are then used by the UI to display information and data to the user.
+
+### UI layer
+In blue is the UI layer.
+Here the UI is displayed to the user via `.cshmtl` pages. 
+Here _page models_ sent user requests to the service layer and decide the state which to display for the user.
+The state can change over the lifetime of the application, for example, when the user is logged in. 
+Logging in changes the formatting of the pages, which the _page models_ are responsible for handling. 
 ## Architecture of deployed application
 
 ## User activities
