@@ -136,7 +136,7 @@ To create a GitHub OAuth client follow [these instructions](https://github.com/i
 1. From the root folder of the project:
 
    `dotnet run --project src/Chirp.Web/`
-1. (Optional) Release artifacts do not contain GitHub OAuth ClientID or ClientSecret, however these can be read from the environment variables ```$authentication__github__clientSecret``` and ```authentication__github__clientId```[^chirp-port-local]
+1. (Optional) Release artifacts do not contain GitHub OAuth ClientID or ClientSecret, however these can be read from the environment variables ```$authentication__github__clientSecret``` and ```$authentication__github__clientId```[^chirp-port-local]
 
 ## How to run test suite locally
 All tests, including PlayWright, E2E, Integration and Unit tests is stored in the `test` directory. PlayWright needs to get downloaded and installed first. Following is the steps to build and run the test suite (all done from the root folder of the project):
