@@ -117,24 +117,26 @@ In addition to this, a non-linear history can make the history of long-lived fea
 ### Trunk-based development
 
 ## How to make _Chirp!_ work locally
-The get the application running locally either clone this repository or alternatively download the [latest release](https://github.com/ITU-BDSA2025-GROUP13/Chirp/releases/tag/v5.5.0) for your OS. 
+The get the application running locally either clone this repository or alternatively download the [latest release](https://github.com/ITU-BDSA2025-GROUP13/Chirp/releases/tag/v5.5.0) for your OS.
+While _Chirp!_ will run without a GitHub OAuth client, _Chirp!_ will have degraded functionality if you don't have one.
+To create a GitHub OAuth client follow [these instructions](https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_08/README_PROJECT.md#1b-oauth-via-github).
 
 ### Running from latest release
 **On Windows:**
 1. Unzip folder
-2. Navigate to `chirp-main-<OS>-<architecture>`
-3. Run the `Chirp.Web.exe` file. 
+1. Navigate to `chirp-main-<OS>-<architecture>`
+1. Run the `Chirp.Web.exe` file. 
 
-**On Linux**
+**On Linux & OS X**
 1. Unzip folder
-2. Navigate to `chirp-main-<OS>-<architecture>`
-3. Run `./Chirp.Web`
+1. Navigate to `chirp-main-<OS>-<architecture>`
+1. Run `./Chirp.Web`
 
 ### Running from repository
-1. From root folder:
+1. From the root folder of the project:
 
-   `dotnet run --project .\src\Chirp.Web\`
-
+   `dotnet run --project src/Chirp.Web/`
+1. (Optional) Release artifacts do not contain GitHub OAuth ClientID or ClientSecret, however these can be read from the environment variables ```$authentication__github__clientSecret``` and ```authentication__github__clientId```[^chirp-port-local]
 
 ## How to run test suite locally
 All tests, including PlayWright, E2E, Integration and Unit tests is stored in the `test` directory. PlayWright needs to get downloaded and installed first. Following is the steps to build and run the test suite (all done from the root folder of the project):
@@ -143,11 +145,11 @@ All tests, including PlayWright, E2E, Integration and Unit tests is stored in th
    `dotnet build`
 
 
-3. Install PlayWright for tests
+1. Install PlayWright for tests
 
    ```pwsh test/Chirp.E2E.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps```
 
-5. Run the project tests
+1. Run the project tests
 
    `dotnet test`
 
@@ -167,4 +169,5 @@ This allows for further contributions to the project through a fork, while prote
 [^release-retag]: The initial release tag was deleted and tagged again using semver
 [^semver-lecture-notes]: [Lecture slides on Semantic Versioning](https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_03/Slides.md#semantic-versioning)
 [^release-please-linear]: [Release Please documentation about linear history](https://github.com/googleapis/release-please#linear-git-commit-history-use-squash-merge)
-[^osi-apporved]: [OSI approved licenses](https://opensource.org/licenses)
+[^osi-approved]: [OSI approved licenses](https://opensource.org/licenses)
+[^chirp-port-local]: Release artifacts run on port :5000, not :5273
