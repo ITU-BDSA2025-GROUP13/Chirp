@@ -127,7 +127,7 @@ To create a GitHub OAuth client follow [these instructions](https://github.com/i
 1. Navigate to `chirp-main-<OS>-<architecture>`
 1. Run the `Chirp.Web.exe` file. 
 
-**On Linux & OS X**
+**On Linux & macOS**
 1. Unzip folder
 1. Navigate to `chirp-main-<OS>-<architecture>`
 1. Run `./Chirp.Web`
