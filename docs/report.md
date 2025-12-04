@@ -154,6 +154,12 @@ All tests, including PlayWright, E2E, Integration and Unit tests is stored in th
 # Ethics
 
 ## License
+We chose the [3-Clause BSD License](https://opensource.org/license/bsd-3-clause), which is a permissive, OSI approved license[^osi-approved], open source copyright license.
+This license is slightly more restrictive than the MIT License or The 2-clause BSD License.
+The license includes a non-endorsement stating that any derivative work may not use the name of the original work, or its authors as an endorsement of the derivative.
+
+We felt that this license was a good choice for an educational project, as it preserves the permissive nature of the MIT License or the 2-Clause BSD License.
+This allows for further contributions to the project through a fork, while protecting the original authors and project from both any implications of warranty or liability.
 
 ## LLMs, ChatGPT, CoPilot, and others
 
@@ -161,3 +167,4 @@ All tests, including PlayWright, E2E, Integration and Unit tests is stored in th
 [^release-retag]: The initial release tag was deleted and tagged again using semver
 [^semver-lecture-notes]: [Lecture slides on Semantic Versioning](https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_03/Slides.md#semantic-versioning)
 [^release-please-linear]: [Release Please documentation about linear history](https://github.com/googleapis/release-please#linear-git-commit-history-use-squash-merge)
+[^osi-apporved]: [OSI approved licenses](https://opensource.org/licenses)
