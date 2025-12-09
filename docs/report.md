@@ -17,7 +17,7 @@ numbersections: true
 ## Architecture — In the small
 Below is a onion architecture diagram to illustrate the overall architecture of the _Chirp_ application. 
 The diagram also illustrates dependencies, where the outer circles depend on the inner circles.
-<img width="1081" height="272" alt="OnionArchitecture" src="https://github.com/user-attachments/assets/30afb02e-f293-455d-b905-2d430731fcab" />
+
 _Dependencies are illustrated as red arrows._
 
 ### Domain entities
