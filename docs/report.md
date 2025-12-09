@@ -52,8 +52,6 @@ and then go into more details about some of the most important features of the a
 
 ### Activity diagram for unauthorized- and authorized users
 
-
-
 ### Follow User
 Below is an activity diagram illustrating what happens when a user tries to follow another user. 
 Following has the effect of adding the followed users cheeps to the users _My Timeline_. 
@@ -69,11 +67,37 @@ _user1_ cant access the _About Me_ for _user2_.
 ![Activity diagram of a user trying to delete their information](https://github.com/ITU-BDSA2025-GROUP13/Chirp/blob/384eeea077f20d2dfe4ee2889a95d1d529812cfd/docs/diagrams/images/Forget%20Me.png){ width=50% }
 
 When deleting user data, shown in the illustration after "User clicks forget me", an important design decision had to be made.
-Normally in a lot of systems, when the user deletes their data, they expect it to be deleted, that is, they dont expect their information to ever be visible again. 
-Most systems handle this by simply 
+Normally in a lot of systems when the user deletes their data, they expect it to be deleted.
+The effect of this can be optained by either soft deleting or hard deleting user data and information.
+Before GDPR a lot of software used to just mark data as "deleted" in databases and never query them again. 
+Now, because of GDPR, it is mandatory by law to always delete or anonymize user data when requested to do so, 
+or when its no longer neccessary to keep that data stored[^userdata_deletion].
+
+Hard deletes often creates a lot of problems behind the scenes, problems like syncing, irrecoverable data and database schema integrity compromise. 
+For the _Chirp_ application there was the issue of what to do with [replies](#Activity_Reply). 
+Since replies are linked with a _cheep_ parent-child relation, deleting a parent _cheep_ would result in all subsequent child _cheeps_ being deleted.
+This is why we opted in for a deletion style more reminiscent of Reddit. 
+In Reddit posts and replies made by the user arent deleted, but simple noted as _Deleted by user_.
+With this method users wont loose their replies, simply because the author of the main _cheep_ decided to delete their post. 
+An example of the visual effect of anomization of user data can be seen below.
+![Here a user who has replied decided to delete their post. With a hard removal of posts, the user _Oliver_ would have lost his reply in the thread.](https://github.com/ITU-BDSA2025-GROUP13/Chirp/blob/753500d78243fecda5fec20b5b2fe462fa829533/docs/images/DeletingUser.png)
 
 ### Login
-### Reply
+When a user tries to log-in they have the option of either a application-scoped account or using Github as an external log-in service.
+When a user logs in with Github, user data necessary for the application is automatically fetched. 
+Information like a users Github username is used as their _Chirp_ username.
+The user is therefore auto-redirected to the public timeline, when Github returns a valid authorization.
+Below is a diagram of a typical scenario of a user logging into the _Chirp_ application. 
+![Activity diagram of a user trying to login to the _Chirp_ application](https://github.com/ITU-BDSA2025-GROUP13/Chirp/blob/753500d78243fecda5fec20b5b2fe462fa829533/docs/diagrams/images/Login.png)
+
+### Reply {#Activity_Reply}
+Below is an illustration of how a user would reply to another users _Cheep_. 
+When designing replies it was chosen to use the same _Cheep_ entity as both a "root post" and the following replies to said post.
+This method was chosen because we wished to design a _thread_ style of replies, like Reddit. 
+Instead of only having one layer of replies, users could now reply to other peoples replies, and continue a _thread_ of replies.
+Using the same entity for this, made both the UI and logic simple and DRY, by simply using recursion.
+Below is a diagram of a typical scenario of a user replying to another user in the _Chirp_ application. 
+![Activity diagram of a user replying to another users _Cheep_](https://github.com/ITU-BDSA2025-GROUP13/Chirp/blob/753500d78243fecda5fec20b5b2fe462fa829533/docs/diagrams/images/Reply.png)
 
 ## Sequence of functionality/calls trough _Chirp!_
 
@@ -192,6 +216,7 @@ This allows for further contributions to the project through a fork, while prote
 
 ## LLMs, ChatGPT, CoPilot, and others
 
+[^userdata_deletion]: [KILDE](https://ante.dk/blog/hvornaar-skal-persondata-slettes-ifoelge-gdpr/?utm_source=chatgpt.com)
 [^calver]: [CalVer](https://calver.org/)
 [^release-retag]: The initial release tag was deleted and tagged again using semver
 [^semver-lecture-notes]: [Lecture slides on Semantic Versioning](https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_03/Slides.md#semantic-versioning)
