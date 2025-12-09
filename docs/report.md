@@ -46,7 +46,34 @@ Logging in changes the formatting of the pages, which the _page models_ are resp
 ## Architecture of deployed application
 
 ## User activities
+This segment will focus on some of the typical scenarios and user journeys throughout the _Chirp_ application. 
+First we will document what features are accessible to the user when unauthorized and authorized, 
+and then go into more details about some of the most important features of the application.
 
+### Activity diagram for unauthorized- and authorized users
+
+
+
+### Follow User
+Below is an activity diagram illustrating what happens when a user tries to follow another user. 
+Following has the effect of adding the followed users cheeps to the users _My Timeline_. 
+Following is therefore essential when two users wants to see what new cheeps the other posts 
+![Activity diagram of a user following another user](https://github.com/ITU-BDSA2025-GROUP13/Chirp/blob/384eeea077f20d2dfe4ee2889a95d1d529812cfd/docs/diagrams/images/Follow%20User.png){ width=50% }
+
+### _Forget Me!_ (Deleting user)
+The diagram below shows the actions performed when a user tries to delete their data.
+This feature is called _Forget Me!_ in the _Chirp_ application, and can be performed under the `/user/<username>/about` endpoint.
+It's worth noting that the _About Me_ site exists for every user, but the information
+on the site is only loaded for the user who is authenticated on the platform, meaning,
+_user1_ cant access the _About Me_ for _user2_. 
+![Activity diagram of a user trying to delete their information](https://github.com/ITU-BDSA2025-GROUP13/Chirp/blob/384eeea077f20d2dfe4ee2889a95d1d529812cfd/docs/diagrams/images/Forget%20Me.png){ width=50% }
+
+When deleting user data, shown in the illustration after "User clicks forget me", an important design decision had to be made.
+Normally in a lot of systems, when the user deletes their data, they expect it to be deleted, that is, they dont expect their information to ever be visible again. 
+Most systems handle this by simply 
+
+### Login
+### Reply
 
 ## Sequence of functionality/calls trough _Chirp!_
 
