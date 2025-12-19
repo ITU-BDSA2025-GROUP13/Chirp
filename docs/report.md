@@ -116,6 +116,14 @@ Below is a diagram of a typical scenario of a user replying to another user in t
 # Process
 Screenshot From 2025-12-19 13-14-31
 ## Build, test, release, and deployment
+For building, releasing and testing Github Actions was used. 
+
+### Building & Releasing
+The script `release.yml` was used for building and releasing the project. The script uses a matrix of `[linux-x64, linux-arm64, win-x64, win-arm64, osx-x64, osx-arm64]` to create release artifacts on each release. When releasing a new version [release please](https://github.com/googleapis/release-please) was used to generate commit logs. 
+
+### Testing
+The script `coverage.yml` was used for checking if testsuites existed for each package in the solution, after testing the script uses [reportgenerator](https://github.com/danielpalme/ReportGenerator) to generate a coverage report we could use to analyze the test coverage and quality of tests. This is discussed more in \ref{testPhilosophy}.
+
 ### Versioning
 Before the lecturers introduced us to semantic versioning and told us it was a requirement, we used CalVer[^calver].
 CalVer was initially chosen, as it uses the calendar date for versioning, and seemed to be a good way to coordinate our weekly releases. [^release-retag]
@@ -216,7 +224,7 @@ All tests, including PlayWright, E2E, Integration and Unit tests is stored in th
 
    `dotnet test`
 
-### Philosophy behind testing
+### Philosophy behind testing \label{testPhilosophy}
 For the project the group had a strict >=80% test coverage requirement for each feature. 
 This requirement was set to avoid rollbacks and hotfixes, and instead focus on implementing safe and complete features. 
 The requirement was set at 80, to keep the standard high, but also realisitic. 
