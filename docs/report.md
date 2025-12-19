@@ -17,8 +17,7 @@ numbersections: true
 ## Architecture — In the small
 Below is a onion architecture diagram to illustrate the overall architecture of the _Chirp_ application. 
 The diagram also illustrates dependencies, where the outer circles depend on the inner circles.
-
-_Dependencies are illustrated as red arrows._
+![Dependencies are illustrated as red arrows.](https://github.com/ITU-BDSA2025-GROUP13/Chirp/blob/0e2efec0c68314c795d312660277faf3d7a64d95/docs/diagrams/images/OnionArchitecture.png){ width=50% }
 
 ### Domain entities
 In yellow is the center of the architecture as _Chirp.Core_.
