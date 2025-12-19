@@ -186,6 +186,13 @@ In addition to this, a non-linear history can make the history of long-lived fea
 
 ## Team work
 ### Trunk-based development
+During the development of this project, we tried trunk-based development for the first time. Trunk-based development is a source-control strategy centered on frequent integration of small batches of work into the main branch (trunk), rather than long-lived feature branches, as is common in many other popular workflows, e.g., GitFlow.
+
+Throughout the development process, we didn’t completely avoid long-lived branches. Many times, it proved utterly impractical to adhere to the “merge every day” mantra, which was (admittedly) partly due to our inexperience with the workflow.
+
+Being able to merge every day depends on the assumption that the given task can be completed and reviewed within that timeframe. However, estimating the time needed to complete tasks wasn't always straightforward, especially for larger tasks that don’t naturally split into logically independent subtasks. An example of such a task is the large rewrite required to migrate from raw SQLite to EF Core. Merging at any point between starting and finishing this task would result in a broken main branch. Of course, this is an extreme example, and often it would also be due to interpersonal dynamics within the team. Waiting for code review, from team members with their own daily lives, schedules, and responsibilities, also sometimes resulted in longer branch lifespans. 
+
+So, in these cases, we opted to let the branches live a bit longer rather than merge unfinished or unreviewed code, as we value high-quality code over minimizing branch staleness.
 
 ## How to make _Chirp!_ work locally
 The get the application running locally either clone this repository or alternatively download the [latest release](https://github.com/ITU-BDSA2025-GROUP13/Chirp/releases/tag/v5.5.0) for your OS.
