@@ -42,7 +42,15 @@ Here the UI is displayed to the user via `.cshmtl` pages.
 Here _page models_ sent user requests to the service layer and decide the state which to display for the user.
 The state can change over the lifetime of the application, for example, when the user is logged in. 
 Logging in changes the formatting of the pages, which the _page models_ are responsible for handling. 
+
 ## Architecture of deployed application
+Our website is hosted on Azure via their App Service on their free F1 plan. This allows us to host our website online with SSL certification.
+Although this plan does come with some restrictions, such as a maximum of 1 hour of shared vCPU time every day, it still allows us to test our application in a live, production environment.
+
+### Diagram of deployed application
+![Diagram of deployed application architechture]()
+Since clients can login via OAuth (GitHub), our service would be dependent on the availability of GitHub as an auth provider for OAuth users to login.
+
 
 ## User activities
 This segment will focus on some of the typical scenarios and user journeys throughout the _Chirp_ application. 
