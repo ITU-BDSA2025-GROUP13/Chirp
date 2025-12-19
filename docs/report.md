@@ -51,6 +51,11 @@ First we will document what features are accessible to the user when unauthorize
 and then go into more details about some of the most important features of the application.
 
 ### Activity diagram for unauthorized- and authorized users
+Below is an activity diagram illustrating what actions the user can take when they are both authorized and unauthorized.
+![Activity diagram for unathorized- and authorized users](https://github.com/ITU-BDSA2025-GROUP13/Chirp/blob/77580ab9423b98d793567f2326f422c84f4c40b3/docs/diagrams/images/UserActivities.png)
+
+
+
 
 ### Follow User
 Below is an activity diagram illustrating what happens when a user tries to follow another user. 
