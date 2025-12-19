@@ -209,6 +209,15 @@ All tests, including PlayWright, E2E, Integration and Unit tests is stored in th
 
    `dotnet test`
 
+### Philosophy behind testing
+For the project the group had a strict >=80% test coverage requirement for each feature. 
+This requirement was set to avoid rollbacks and hotfixes, and instead focus on implementing safe and complete features. 
+The requirement was set at 80, to keep the standard high, but also realisitic. 
+
+To enforce the requirement a GitHub Action script was used, which ran the testsuites on every pull request to main. 
+The script used [reportgenerator](https://github.com/danielpalme/ReportGenerator) to also generate a report in which we could better review what parts of the codebase was missing tests.
+
+
 # Ethics
 
 ## License
