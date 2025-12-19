@@ -10,6 +10,12 @@ author:
 numbersections: true
 ---
 
+---
+header-includes:
+- \usepackage{float}
+- \floatplacement{figure}{H}
+---
+
 # Design and Architecture of _Chirp!_
 
 ## Domain model
@@ -17,7 +23,7 @@ numbersections: true
 ## Architecture — In the small
 Below is a onion architecture diagram to illustrate the overall architecture of the _Chirp_ application. 
 The diagram also illustrates dependencies, where the outer circles depend on the inner circles.
-![Dependencies are illustrated as red arrows.](diagrams/images/OnionArchitecture.png){ width=50% }
+![Dependencies are illustrated as red arrows.](diagrams/images/OnionArchitecture.png)
 
 ### Domain entities
 In yellow is the center of the architecture as _Chirp.Core_.
@@ -59,7 +65,8 @@ and then go into more details about some of the most important features of the a
 
 ### Activity diagram for unauthorized- and authorized users
 Below is an activity diagram illustrating what actions the user can take when they are both authorized and unauthorized.
-![Activity diagram for unathorized- and authorized users](diagrams/images/UserActivities.png)
+
+![Activity diagram for unathorized- and authorized users](diagrams/images/UserActivities.png){ width=90% } 
 
 
 
@@ -68,7 +75,8 @@ Below is an activity diagram illustrating what actions the user can take when th
 Below is an activity diagram illustrating what happens when a user tries to follow another user. 
 Following has the effect of adding the followed users cheeps to the users _My Timeline_. 
 Following is therefore essential when two users wants to see what new cheeps the other posts 
-![Activity diagram of a user following another user](diagrams/images/FollowUser.png){ width=50% }
+
+![Activity diagram of a user following another user](diagrams/images/FollowUser.png){ width=75% }
 
 ### _Forget Me!_ (Deleting user)
 The diagram below shows the actions performed when a user tries to delete their data.
@@ -76,6 +84,7 @@ This feature is called _Forget Me!_ in the _Chirp_ application, and can be perfo
 It's worth noting that the _About Me_ site exists for every user, but the information
 on the site is only loaded for the user who is authenticated on the platform, meaning,
 _user1_ cant access the _About Me_ for _user2_. 
+
 ![Activity diagram of a user trying to delete their information](diagrams/images/ForgetMe.png){ width=50% }
 
 When deleting user data, shown in the illustration after "User clicks forget me", an important design decision had to be made.
@@ -92,6 +101,7 @@ This is why we opted in for a deletion style more reminiscent of Reddit.
 In Reddit posts and replies made by the user arent deleted, but simple noted as _Deleted by user_.
 With this method users wont loose their replies, simply because the author of the main _cheep_ decided to delete their post. 
 An example of the visual effect of anomization of user data can be seen below.
+
 ![Here a user who has replied decided to delete their post. With a hard removal of posts, the user _Oliver_ would have lost his reply in the thread.](images/DeletingUser.png)
 
 ### Login
@@ -100,7 +110,8 @@ When a user logs in with Github, user data necessary for the application is auto
 Information like a users Github username is used as their _Chirp_ username.
 The user is therefore auto-redirected to the public timeline, when Github returns a valid authorization.
 Below is a diagram of a typical scenario of a user logging into the _Chirp_ application. 
-![Activity diagram of a user trying to login to the _Chirp_ application](diagrams/images/Login.png)
+
+![Activity diagram of a user trying to login to the _Chirp_ application](diagrams/images/Login.png){ width=100% }
 
 ### Reply {#Activity_Reply}
 Below is an illustration of how a user would reply to another users _Cheep_. 
@@ -109,7 +120,8 @@ This method was chosen because we wished to design a _thread_ style of replies, 
 Instead of only having one layer of replies, users could now reply to other peoples replies, and continue a _thread_ of replies.
 Using the same entity for this, made both the UI and logic simple and DRY, by simply using recursion.
 Below is a diagram of a typical scenario of a user replying to another user in the _Chirp_ application. 
-![Activity diagram of a user replying to another users _Cheep_](diagrams/images/Reply.png)
+
+![Activity diagram of a user replying to another users Cheep](diagrams/images/Reply.png){ width=35% }
 
 ## Sequence of functionality/calls trough _Chirp!_
 
