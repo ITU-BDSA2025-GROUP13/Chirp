@@ -48,7 +48,7 @@ Our website is hosted on Azure via their App Service on their free F1 plan. This
 Although this plan does come with some restrictions, such as a maximum of 1 hour of shared vCPU time every day, it still allows us to test our application in a live, production environment.
 
 ### Diagram of deployed application
-![Diagram of deployed application architechture]()
+![Diagram of deployed application architechture](https://github.com/ITU-BDSA2025-GROUP13/Chirp/blob/796a1a5b5f0a900cec4ad2f3c36397791a9fe9a7/docs/diagrams/images/DeployedArchitechture.png)
 Since clients can login via OAuth (GitHub), our service would be dependent on the availability of GitHub as an auth provider for OAuth users to login.
 
 
@@ -114,7 +114,7 @@ Below is a diagram of a typical scenario of a user replying to another user in t
 ## Sequence of functionality/calls trough _Chirp!_
 
 # Process
-
+Screenshot From 2025-12-19 13-14-31
 ## Build, test, release, and deployment
 ### Versioning
 Before the lecturers introduced us to semantic versioning and told us it was a requirement, we used CalVer[^calver].
