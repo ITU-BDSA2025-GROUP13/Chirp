@@ -124,6 +124,9 @@ Below is a diagram of a typical scenario of a user replying to another user in t
 ![Activity diagram of a user replying to another users Cheep](diagrams/images/Reply.png){ width=35% }
 
 ## Sequence of functionality/calls trough _Chirp!_
+Below is a UML sequence diagram illustrating the sequence of calls in the Chirp application when it receives an HTTP `GET /` request from a client, corresponding to a request for the public timeline. The diagram is intentionally kept at an architectural level of abstraction in order to remain readable while still conveying the essential technical flow. It therefore focuses on the collaboration between the main system components (`Chirp.Web`, `Chirp.Infrastructure`, and the database), rather than on internal implementation details of individual services, repositories, or framework mechanisms. The intention is to depict how a request is handled end-to-end through the application’s layered architecture, from the initial HTTP request to data retrieval and final page rendering.
+
+![Sequence diagram depicting the sequence of calls through the _Chirp_ application when it recieves an HTTP GET request](diagrams/images/SequenceDiagram.png){ width=100% }
 
 # Process
 Screenshot From 2025-12-19 13-14-31
