@@ -21,13 +21,13 @@ header-includes:
 ## Domain model
 
 ## Architecture — In the small
-Below is a onion architecture diagram to illustrate the overall architecture of the _Chirp_ application. 
+Below is an onion architecture diagram to illustrate the overall architecture of the _Chirp_ application. 
 The diagram also illustrates dependencies, where the outer circles depend on the inner circles.
 ![Dependencies are illustrated as red arrows.](diagrams/images/OnionArchitecture.png)
 
 ### Domain entities
 In yellow is the center of the architecture as _Chirp.Core_.
-This layer stores the most fundemental parts of the codebase. 
+This layer stores the most fundamental parts of the codebase. 
 In this project _Chirp.Core_ stores the _Cheep_ and _ChirpUser_ domain model.
 
 ### Repository layer
@@ -36,15 +36,15 @@ This layer is responsible for retrieving domain relevant information from the da
 
 ### Service layer
 In orange is the service layer. 
-This layer is responsible for translating the domain models into _DTO_'s (Data Transfer Object) and connect requests to the ui. 
-This layer therefore acts as a binder between the infrastructure and the ui layer. 
+This layer is responsible for translating the domain models into _DTOs_ (Data Transfer Object) and connect requests to the UI. 
+This layer therefore acts as a binder between the infrastructure and the UI layer. 
 When a user request is received the service layer handles that requests, 
-retrieves information from the infrastructure layer, and translates the information received into DTO's.
-These DTO's are then used by the UI to display information and data to the user.
+retrieves information from the infrastructure layer, and translates the information received into _DTOs_.
+These _DTOs_ are then used by the UI to display information and data to the user.
 
 ### UI layer
 In blue is the UI layer.
-Here the UI is displayed to the user via `.cshmtl` pages. 
+Here the UI is displayed to the user via `.cshtml` pages. 
 Here _page models_ sent user requests to the service layer and decide the state which to display for the user.
 The state can change over the lifetime of the application, for example, when the user is logged in. 
 Logging in changes the formatting of the pages, which the _page models_ are responsible for handling. 
@@ -54,64 +54,64 @@ Our website is hosted on Azure via their App Service on their free F1 plan. This
 Although this plan does come with some restrictions, such as a maximum of 1 hour of shared vCPU time every day, it still allows us to test our application in a live, production environment.
 
 ### Diagram of deployed application
-![Diagram of deployed application architechture](diagrams/images/DeployedArchitechture.png)
+![Diagram of deployed application architecture](diagrams/images/DeployedArchitechture.png)
 Since clients can login via OAuth (GitHub), our service would be dependent on the availability of GitHub as an auth provider for OAuth users to login.
 
 
 ## User activities
-This segment will focus on some of the typical scenarios and user journeys throughout the _Chirp_ application. 
-First we will document what features are accessible to the user when unauthorized and authorized, 
+This segment will focus on some of the typical scenarios and user journeys throughout the _Chirp!_ application. 
+First we will document what features are accessible to the user when unauthorised and authorised, 
 and then go into more details about some of the most important features of the application.
 
-### Activity diagram for unauthorized- and authorized users
-Below is an activity diagram illustrating what actions the user can take when they are both authorized and unauthorized.
+### Activity diagram for unauthorised- and authorised users
+Below is an activity diagram illustrating what actions the user can take when they are both authorised and unauthorised.
 
-![Activity diagram for unathorized- and authorized users](diagrams/images/UserActivities.png){ width=90% } 
+![Activity diagram for unauthorised- and authorised users](diagrams/images/UserActivities.png){ width=90% } 
 
 
 
 
 ### Follow User
 Below is an activity diagram illustrating what happens when a user tries to follow another user. 
-Following has the effect of adding the followed users cheeps to the users _My Timeline_. 
-Following is therefore essential when two users wants to see what new cheeps the other posts 
+Following has the effect of adding the followed user's _Cheeps_ to one's _My Timeline_. 
+Following is therefore essential when two users wants to see what new _Cheeps_ the other posts 
 
 ![Activity diagram of a user following another user](diagrams/images/FollowUser.png){ width=75% }
 
 ### _Forget Me!_ (Deleting user)
 The diagram below shows the actions performed when a user tries to delete their data.
-This feature is called _Forget Me!_ in the _Chirp_ application, and can be performed under the `/user/<username>/about` endpoint.
-It's worth noting that the _About Me_ site exists for every user, but the information
+This feature is called _Forget Me!_ in the _Chirp!_ application, and can be performed under the `/user/<username>/about` endpoint.
+It is worth noting that the _About Me_ site exists for every user, but the information
 on the site is only loaded for the user who is authenticated on the platform, meaning,
-_user1_ cant access the _About Me_ for _user2_. 
+_user1_ cannot access the _About Me_ for _user2_. 
 
 ![Activity diagram of a user trying to delete their information](diagrams/images/ForgetMe.png){ width=50% }
 
 When deleting user data, shown in the illustration after "User clicks forget me", an important design decision had to be made.
 Normally in a lot of systems when the user deletes their data, they expect it to be deleted.
-The effect of this can be optained by either soft deleting or hard deleting user data and information.
+The effect of this can be obtained by either soft deleting or hard deleting user data and information.
 Before GDPR a lot of software used to just mark data as "deleted" in databases and never query them again. 
-Now, because of GDPR, it is mandatory by law to always delete or anonymize user data when requested to do so, 
-or when its no longer neccessary to keep that data stored[^userdata_deletion].
+Now, because of GDPR, it is mandatory by law to always delete or anonymise user data when requested to do so, 
+or when its no longer necessary to keep that data stored[^userdata_deletion].
 
-Hard deletes often creates a lot of problems behind the scenes, problems like syncing, irrecoverable data and database schema integrity compromise. 
-For the _Chirp_ application there was the issue of what to do with [replies](#Activity_Reply). 
-Since replies are linked with a _cheep_ parent-child relation, deleting a parent _cheep_ would result in all subsequent child _cheeps_ being deleted.
-This is why we opted in for a deletion style more reminiscent of Reddit. 
-In Reddit posts and replies made by the user arent deleted, but simple noted as _Deleted by user_.
-With this method users wont loose their replies, simply because the author of the main _cheep_ decided to delete their post. 
-An example of the visual effect of anomization of user data can be seen below.
+Hard deletes often create a lot of problems behind the scenes, problems like syncing, irreversible data loss and compromising database schema integrity. 
+For the _Chirp!_ application there was the issue of what to do with [replies](#Activity_Reply). 
+Since replies are linked with a _Cheep_ parent-child relation, deleting a parent _Cheep_ would result in all subsequent child _Cheeps_ being deleted.
+This is why we opted for a deletion style more reminiscent of Reddit. 
+In Reddit posts and replies made by the user are not deleted, but simple noted as _Deleted by user_.
+With this method users wont lose their replies, simply because the author of the main _Cheep_ decided to delete their post. 
+An example of the visual effect of anonymisation of user data can be seen below.
 
 ![Here a user who has replied decided to delete their post. With a hard removal of posts, the user _Oliver_ would have lost his reply in the thread.](images/DeletingUser.png)
 
 ### Login
-When a user tries to log-in they have the option of either a application-scoped account or using Github as an external log-in service.
-When a user logs in with Github, user data necessary for the application is automatically fetched. 
-Information like a users Github username is used as their _Chirp_ username.
-The user is therefore auto-redirected to the public timeline, when Github returns a valid authorization.
-Below is a diagram of a typical scenario of a user logging into the _Chirp_ application. 
+When a user tries to log in they have the option of either a application-scoped account or using GitHub as an external login service.
+When a user logs in with GitHub, user data necessary for the application is automatically fetched. 
+Information like a users GitHub username is used as their _Chirp!_ username.
+The user is therefore auto-redirected to the public timeline, when GitHub returns a valid authorisation.
+Below is a diagram of a typical scenario of a user logging into the _Chirp!_ application. 
 
-![Activity diagram of a user trying to login to the _Chirp_ application](diagrams/images/Login.png){ width=100% }
+![Activity diagram of a user trying to login to the _Chirp!_ application](diagrams/images/Login.png){ width=100% }
 
 ### Reply {#Activity_Reply}
 Below is an illustration of how a user would reply to another users _Cheep_. 
@@ -121,23 +121,23 @@ Instead of only having one layer of replies, users could now reply to other peop
 Using the same entity for this, made both the UI and logic simple and DRY, by simply using recursion.
 Below is a diagram of a typical scenario of a user replying to another user in the _Chirp_ application. 
 
-![Activity diagram of a user replying to another users Cheep](diagrams/images/Reply.png){ width=35% }
+![Activity diagram of a user replying to another users _Cheep_](diagrams/images/Reply.png){ width=35% }
 
 ## Sequence of functionality/calls trough _Chirp!_
-Below is a UML sequence diagram illustrating the sequence of calls in the Chirp application when it receives an HTTP `GET /` request from a client, corresponding to a request for the public timeline. The diagram is intentionally kept at an architectural level of abstraction in order to remain readable while still conveying the essential technical flow. It therefore focuses on the collaboration between the main system components (`Chirp.Web`, `Chirp.Infrastructure`, and the database), rather than on internal implementation details of individual services, repositories, or framework mechanisms. The intention is to depict how a request is handled end-to-end through the application’s layered architecture, from the initial HTTP request to data retrieval and final page rendering.
+Below is a UML sequence diagram illustrating the sequence of calls in the _Chirp!_ application when it receives an HTTP `GET /` request from a client, corresponding to a request for the public timeline. The diagram is intentionally kept at an architectural level of abstraction in order to remain readable while still conveying the essential technical flow. It therefore focuses on the collaboration between the main system components (`Chirp.Web`, `Chirp.Infrastructure`, and the database), rather than on internal implementation details of individual services, repositories, or framework mechanisms. The intention is to depict how a request is handled end-to-end through the application’s layered architecture, from the initial HTTP request to data retrieval and final page rendering.
 
-![Sequence diagram depicting the sequence of calls through the _Chirp_ application when it recieves an HTTP GET request](diagrams/images/SequenceDiagram.png){ width=100% }
+![Sequence diagram depicting the sequence of calls through the _Chirp!_ application when it receives an HTTP GET request](diagrams/images/SequenceDiagram.png){ width=100% }
 
 # Process
 Screenshot From 2025-12-19 13-14-31
 ## Build, test, release, and deployment
-For building, releasing and testing Github Actions was used. 
+For building, releasing and testing GitHub Actions was used. 
 
 ### Building & Releasing
 The script `release.yml` was used for building and releasing the project. The script uses a matrix of `[linux-x64, linux-arm64, win-x64, win-arm64, osx-x64, osx-arm64]` to create release artifacts on each release. When releasing a new version [release please](https://github.com/googleapis/release-please) was used to generate commit logs. 
 
 ### Testing
-The script `coverage.yml` was used for checking if testsuites existed for each package in the solution, after testing the script uses [reportgenerator](https://github.com/danielpalme/ReportGenerator) to generate a coverage report we could use to analyze the test coverage and quality of tests. This is discussed more in \ref{testPhilosophy}.
+The script `coverage.yml` was used for checking if test suites existed for each package in the solution, after testing the script uses [reportgenerator](https://github.com/danielpalme/ReportGenerator) to generate a coverage report we could use to analyze the test coverage and quality of tests. This is discussed more in \ref{testPhilosophy}.
 
 ### Versioning
 Before the lecturers introduced us to semantic versioning and told us it was a requirement, we used CalVer[^calver].
@@ -151,7 +151,7 @@ The action also opens a pull request, which when merged, merges the changelog in
 This helped give us an, and potential users, an overview over what has changed between releases.
 
 In addition to this, Release Please also automatically computes the next version number based on the ```feat```, ```fix```, and ```feat!``` tags from conventional commit.
-This was nice, as we didn't have to consider what our next release number should be.
+This was nice, as we did not have to consider what our next release number should be.
 
 One issue we faced with this was we ended up with a rather high major version (5.x.y).
 The reason for this was our failure to consider what was actually a breaking change.
@@ -165,7 +165,7 @@ This would mean that _Chirp!_ would be on **v3.x.y** or **v2.x.y**, depending on
 Whenever we deploy our code to GitHub, a number of GitHub Actions scripts will be run. These can be found the .github/workflow directory.
 - coverage.yml: Runs a code coverage test and fails upon not reaching the set threshold
 - format.yml: Runs dotnet format, which maintains a certain code standard in our code. These formatting commits have been attributed to our group member natthias
-- main_bdsagroup13chirprazor.yml: Builds and deploys our code to our Azure Webapp instance, using our GitHub Secrets to access login information. This file was auto-generated by Azure and afterwards customized for our needs by a group member.
+- main_bdsagroup13chirprazor.yml: Builds and deploys our code to our Azure Webapp instance, using our GitHub Secrets to access login information. This file was auto-generated by Azure and afterwards customised for our needs by a group member.
 - release.yml: Builds and publishes our project to our GitHub repository, with builds for different operating systems.
 
 ### Linear git history
@@ -194,7 +194,7 @@ When a commit is ready to be merged with the main branch, you ```git rebase orig
 This might introduce merge conflicts, which you resolve as normal.
 Once the conflicts have been resolved, and the PR has been approved, it can be merged with ```git merge --ff-only```.
 
-Having a linear git history is one way to manage a project which comes with it's set of benefits.
+Having a linear git history is one way to manage a project which comes with its set of benefits.
 However, having a non-linear history has its own set of benefits.
 Chiefly, some metadata is lost when a branch is rebased, since the commit the branch was initially based on has changed.
 In addition to this, a non-linear history can make the history of long-lived feature branches more clear, however, since we used trunk-based development this was not a concern for us.
@@ -205,13 +205,13 @@ During the development of this project, we tried trunk-based development for the
 
 Throughout the development process, we didn’t completely avoid long-lived branches. Many times, it proved utterly impractical to adhere to the “merge every day” mantra, which was (admittedly) partly due to our inexperience with the workflow.
 
-Being able to merge every day depends on the assumption that the given task can be completed and reviewed within that timeframe. However, estimating the time needed to complete tasks wasn't always straightforward, especially for larger tasks that don’t naturally split into logically independent subtasks. An example of such a task is the large rewrite required to migrate from raw SQLite to EF Core. Merging at any point between starting and finishing this task would result in a broken main branch. Of course, this is an extreme example, and often it would also be due to interpersonal dynamics within the team. Waiting for code review, from team members with their own daily lives, schedules, and responsibilities, also sometimes resulted in longer branch lifespans. 
+Being able to merge every day depends on the assumption that the given task can be completed and reviewed within that timeframe. However, estimating the time needed to complete tasks was not always straightforward, especially for larger tasks that don’t naturally split into logically independent subtasks. An example of such a task is the large rewrite required to migrate from raw SQLite to EF Core. Merging at any point between starting and finishing this task would result in a broken main branch. Of course, this is an extreme example, and often it would also be due to interpersonal dynamics within the team. Waiting for code review, from team members with their own daily lives, schedules, and responsibilities, also sometimes resulted in longer branch lifespans. 
 
 So, in these cases, we opted to let the branches live a bit longer rather than merge unfinished or unreviewed code, as we value high-quality code over minimizing branch staleness.
 
 ## How to make _Chirp!_ work locally
 The get the application running locally either clone this repository or alternatively download the [latest release](https://github.com/ITU-BDSA2025-GROUP13/Chirp/releases/tag/v5.5.0) for your OS.
-While _Chirp!_ will run without a GitHub OAuth client, _Chirp!_ will have degraded functionality if you don't have one.
+While _Chirp!_ will run without a GitHub OAuth client, _Chirp!_ will have degraded functionality if you do not have one.
 To create a GitHub OAuth client follow [these instructions](https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_08/README_PROJECT.md#1b-oauth-via-github).
 
 ### Running from latest release
@@ -232,13 +232,13 @@ To create a GitHub OAuth client follow [these instructions](https://github.com/i
 1. (Optional) Release artifacts do not contain GitHub OAuth ClientID or ClientSecret, however these can be read from the environment variables ```$authentication__github__clientSecret``` and ```$authentication__github__clientId```[^chirp-port-local]
 
 ## How to run test suite locally
-All tests, including PlayWright, E2E, Integration and Unit tests is stored in the `test` directory. PlayWright needs to get downloaded and installed first. Following is the steps to build and run the test suite (all done from the root folder of the project):
-1. Build the project (needed for downloading PlayWright)
+All tests, including Playwright, E2E, Integration and Unit tests is stored in the `test` directory. Playwright needs to get downloaded and installed first. Following is the steps to build and run the test suite (all done from the root folder of the project):
+1. Build the project (needed for downloading Playwright)
 
    `dotnet build`
 
 
-1. Install PlayWright for tests
+1. Install Playwright for tests
 
    ```pwsh test/Chirp.E2E.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps```
 
@@ -249,9 +249,9 @@ All tests, including PlayWright, E2E, Integration and Unit tests is stored in th
 ### Philosophy behind testing \label{testPhilosophy}
 For the project the group had a strict >=80% test coverage requirement for each feature. 
 This requirement was set to avoid rollbacks and hotfixes, and instead focus on implementing safe and complete features. 
-The requirement was set at 80, to keep the standard high, but also realisitic. 
+The requirement was set at 80, to keep the standard high, but also realistic. 
 
-To enforce the requirement a GitHub Action script was used, which ran the testsuites on every pull request to main. 
+To enforce the requirement a GitHub Action script was used, which ran the test suites on every pull request to main. 
 The script used [reportgenerator](https://github.com/danielpalme/ReportGenerator) to also generate a report in which we could better review what parts of the codebase was missing tests.
 
 
@@ -278,9 +278,9 @@ We did not consider this as co-authorship, since the actual code from an LLM was
 Whenever we did co-author an LLM, the commit was annotated with a `Co-authored-by: ChatGPT <chatgpt@openai.com>` footer in the git commit.
 This was primarily as a last-ditch effort, when something proved too difficult to implement ourselves.
 Here, in order to finish a feature, code generated by an LLM was used, either verbatim, or as inspiration.
-This had some success, however, often the code was not quite right, or simply didn't work, which can be seen in
+This had some success, however, often the code was not quite right, or simply did not work, which can be seen in
 [#d2a073e](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/d2a073e1b1b22661ef77443b8743a16f81169be4), [#899ca30](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/899ca304d89c7574a789b97d656ba86e1622cc49), and [#270892b](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/270892b2ba79b96ab14c91c1fa4aa3ca2b563090)
-where 3 LLM generated workflows were reverted as they didn't work correctly.
+where 3 LLM generated workflows were reverted as they did not work correctly.
 
 Another issue we faced with LLMs was that when researching topics, it would often get confused and start spiraling.
 This was likely because the context window of the conversation became too large, which caused the LLM to hallucinate.
