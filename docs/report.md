@@ -154,18 +154,18 @@ The tool we used to automate this was [Release Please](https://github.com/google
 Release Please continuously monitors the git history of a project through a GitHub action.
 The action identifies commits which use the [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) standard and generates a release log based on changes in its own branch.
 The action also opens a pull request, which when merged, merges the changelog into main and creates a new release with the changelog added as a description.
-This helped give us an, and potential users, an overview over what has changed between releases.
+This helped give us, and potential users, an overview over what has changed between releases.
 
 In addition to this, Release Please also automatically computes the next version number based on the ```feat```, ```fix```, and ```feat!``` tags from conventional commit.
 This was nice, as we did not have to consider what our next release number should be.
 
-One issue we faced with this was we ended up with a rather high major version (5.x.y).
+One issue we faced with this was we ended up with a rather high major version (5.5.1).
 The reason for this was our failure to consider what was actually a breaking change.
-We followed the convention of tagging any breaking API change as a breaking change, which would make release please update the major version[^semver-lecture-notes].
+We followed the convention of tagging any breaking API change as a breaking change, which would make Release Please update the major version[^semver-lecture-notes].
 However, these breaking API changes were often only breaking for internal APIs, for many major releases, no user-facing APIs changed.
 We should not have considered these internal API changes as breaking, since, for the end user, these changes were not breaking.
 What we should have considered a breaking change should be the switch from a **CLI** to a **web page**, and potentially **the addition of identity**.
-This would mean that _Chirp!_ would be on **v3.x.y** or **v2.x.y**, depending on whether the addition of identity was considered breaking, not **v5.x.y**.
+This would mean that _Chirp!_ would be on **v3.x.y** or **v2.x.y**, depending on whether the addition of identity was considered breaking, not **v5.5.1**.
 
 ### Deployment
 Whenever we deploy our code to GitHub, a number of GitHub Actions scripts will be run. These can be found the .github/workflow directory.
