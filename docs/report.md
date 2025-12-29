@@ -35,7 +35,7 @@ In red is the infrastructure layer of the codebase.
 This layer is responsible for retrieving domain relevant information from the database. 
 
 ### Service layer
-In orange is the service layer. 
+In green is the service layer. 
 This layer is responsible for translating the domain models into _DTOs_ (Data Transfer Object) and connect requests to the UI. 
 This layer therefore acts as a binder between the infrastructure and the UI layer. 
 When a user request is received the service layer handles that requests, 
