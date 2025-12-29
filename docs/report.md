@@ -28,10 +28,6 @@ encompassing the text, timestamp, and a association with its author. The model f
 
 ![Domain model for Chirp users and Cheeps ](diagrams/images/DomainModel.jpg){ width=75% }
 
-## System Architecture Overview
-This model shows the general flow of the System and its Architecture
-![Domain model for Chirp users and Cheeps ](diagrams/images/SystemArchitecture.jpg){ width=75% }
-
 ## Architecture — In the small
 Below is an onion architecture diagram to illustrate the overall architecture of the _Chirp!_ application. 
 The diagram also illustrates dependencies, where the outer circles depend on the inner circles.
@@ -61,6 +57,10 @@ Here the UI is displayed to the user via `.cshtml` pages.
 Here _page models_ sent user requests to the service layer and decide the state which to display for the user.
 The state can change over the lifetime of the application, for example, when the user is logged in. 
 Logging in changes the formatting of the pages, which the _page models_ are responsible for handling. 
+
+## System Architecture Overview
+This model shows the general flow of the System and its Architecture
+![Domain model for Chirp users and Cheeps ](diagrams/images/SystemArchitecture.jpg){ width=75% }
 
 ## Architecture of deployed application
 Our website is hosted on Azure via their App Service on their free F1 plan. This allows us to host our website online with SSL certification.
