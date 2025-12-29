@@ -35,7 +35,7 @@ The diagram also illustrates dependencies, where the outer circles depend on the
 ### Domain Entities
 In yellow is the center of the architecture as _Chirp.Core_.
 This layer stores the most fundamental parts of the codebase. 
-In this project _Chirp.Core_ stores the _Cheep_ and _ChirpUser_ domain model.
+In this project _Chirp.Core_ stores the _Cheep_ and _ChirpUser_ domain entities.
 
 ### Repository Layer
 In red is the infrastructure layer of the codebase. 
