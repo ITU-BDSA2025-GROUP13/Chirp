@@ -24,7 +24,7 @@ such as the ability to maintain lists of followers and followed users.
 The _Cheep_ is the main form of communication and content on our platform,
 encompassing the text, timestamp, and an association with its author. The model further improves user interaction through a Likes system (implemented as a many-to-many relationship) and a nested reply structure, where _Cheeps_ can reference a parent _Cheep_ to form conversation trees. 
 
-![Domain model for Chirp users and Cheeps ](diagrams/images/DomainModel.jpg){ width=75% }
+![Domain model for Chirp users and Cheeps ](diagrams/images/DomainModel.jpg)
 
 ## Architecture — In the small
 Below is an onion architecture diagram to illustrate the overall architecture of the _Chirp!_ application. 
@@ -58,7 +58,7 @@ Logging in changes the formatting of the pages, which the _page models_ are resp
 
 ## System Architecture Overview
 This model below shows the general flow of the System and its Architecture.
-![Domain model for Chirp users and Cheeps](diagrams/images/SystemArchitecture.jpg){ width=75% }
+![Domain model for Chirp users and Cheeps](diagrams/images/SystemArchitecture.jpg)
 
 ## Architecture of Deployed Application
 Our website is hosted on Azure via their App Service using the free F1 plan which comes with some restrictions, e.g., a maximum of 1 hour of shared vCPU time per day.
