@@ -35,9 +35,9 @@ The diagram also illustrates dependencies, where the outer circles depend on the
 ![Dependencies are illustrated as red arrows.](diagrams/images/OnionArchitecture.png)
 
 ### Domain Entities
-_Chirp.Core_ is the center of the architecture, in the yellow part of the diagram.
+`Chirp.Core` is the center of the architecture, in the yellow part of the diagram.
 This layer stores the most fundamental parts of the codebase. 
-In this project _Chirp.Core_ stores the `Cheep` and `ChirpUser` domain entities.
+In this project `Chirp.Core` stores the `Cheep` and `ChirpUser` domain entities.
 
 ### Repository Layer
 The repository layer of the code based is in the red part of the diagram.
