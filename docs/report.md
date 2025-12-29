@@ -19,7 +19,7 @@ header-includes:
 # Design and Architecture of _Chirp!_
 ## Domain model
 The domain model of the Chirp! application is centered around two primary entities,
-the ChirpUser and the _Cheep_. The ChirpUser serves as the domain's representation of a user, it extends the standard ASP.NET Core IdentityUser to leverage built-in security while adding custom features,
+the _ChirpUser_ and the _Cheep_. The ChirpUser serves as the domain's representation of a user, it extends the standard ASP.NET Core `IdentityUser` to leverage built-in security while adding custom features,
 such as the ability to maintain lists of followers and followed users.
 The _Cheep_ is the main form of communication and content on our platform,
 encompassing the text, timestamp, and an association with its author. The model further improves user interaction through a Likes system (implemented as a many-to-many relationship) and a nested reply structure, where _Cheeps_ can reference a parent _Cheep_ to form conversation trees. 
