@@ -237,7 +237,7 @@ Being able to merge every day depends on the assumption that the given task can 
 In short, we opted to let the branches live a bit longer rather than merge unfinished or unreviewed code, as we value high-quality code over minimizing branch staleness. However, we did avoid intentionally long-lived branches like the `develop` and `staging` branches found in other source-control strategies, and branches were generally merged quite quickly.
 
 ## How to Make _Chirp!_ Work Locally
-The get the application running locally either clone this repository or alternatively download the [latest release](https://github.com/ITU-BDSA2025-GROUP13/Chirp/releases/tag/v5.5.0) for your OS.
+The get the application running locally either clone this repository or alternatively the latest release can be found [here](https://github.com/ITU-BDSA2025-GROUP13/Chirp/releases/).
 While _Chirp!_ will run without a GitHub OAuth client, _Chirp!_ will have degraded functionality if you do not have one.
 To create a GitHub OAuth client follow [these instructions](https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_08/README_PROJECT.md#1b-oauth-via-github).
 
