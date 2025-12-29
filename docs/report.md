@@ -206,6 +206,27 @@ Chiefly, some metadata is lost when a branch is rebased, since the commit the br
 In addition to this, a non-linear history can make the history of long-lived feature branches more clear, however, since we used trunk-based development this was not a concern for us.
 
 ## Teamwork
+![Final state of kanban board](images/kanban.png)
+The KanBan board of our project immediately before finishing the project had 4 outstanding issues open.
+The one issue, which was in progress, was a meta issue for writing the report.
+
+The other 3 issues which were still in the todo section were extra features and maintenance tasks which we discussed adding in order to improve the maintainability of the project.
+We didn't handle these additional todos, as the scope of the project did not require that these changes were present.
+However, if we were to continue working on the project, these would be high on our list of priorities, as they would greatly improve the maintainability of the project.
+
+The groups work flow is as follows:
+1. We received the weeks tasks, and discussed them
+1. We created issues and user stories for them
+  - These issues also included acceptance criteria and test criteria
+1. The issues were assigned to the person willing to work on them
+  - If we hadn't finished a task from last week, these were prioritized above new tasks
+1. A pull request for an implementation of the task is created, and the issue is automatically move to the "Review" tab of the KanBan board
+1. The PR is reviewed
+  - If it is approved, it was merged to main, and the associated issue was closed
+  - If further iterations were required, the associated issue was moved back to the "In Progress" tab of the KanBan board
+
+![Flowchart of a task from when it is released till it is merged to main](diagrams/images/flowchat.png){ width=80% }
+
 ### Trunk-based Development
 During the development of this project, we tried trunk-based development for the first time. Trunk-based development is a source-control strategy centered on frequent integration of small batches of work into the main branch (trunk), rather than long-lived feature branches, as is common in many other popular workflows, e.g., GitFlow.
 
