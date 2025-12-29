@@ -29,7 +29,7 @@ encompassing the text, timestamp, and a association with its author. The model f
 ![Domain model for Chirp users and Cheeps ](diagrams/images/DomainModel.jpg){ width=75% }
 
 ## System Architecture Overview
-This modle shows the general flow of the System and its Architecture
+This model shows the general flow of the System and its Architecture
 ![Domain model for Chirp users and Cheeps ](diagrams/images/SystemArchitecture.jpg){ width=75% }
 
 ## Architecture — In the small
