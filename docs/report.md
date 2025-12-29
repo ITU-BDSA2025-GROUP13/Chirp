@@ -21,8 +21,8 @@ header-includes:
 The domain model of the Chirp! application is centered around two primary entities,
 the ChirpUser and the Cheep. The ChirpUser serves as the domain's representation of a user, it extends the standard ASP.NET Core IdentityUser to leverage built-in security while adding custom features,
 such as the ability to maintain lists of followers and followed users.
-The Cheep is the main form of comunication and content on our platform,
-encompassing the text, timestamp, and a association with its author. The model further improves user interaction through a Likes system (implemented as a many-to-many relationship) and a nested reply structure, where Cheeps can reference a ParentCheep to form conversation trees. 
+The Cheep is the main form of communication and content on our platform,
+encompassing the text, timestamp, and an association with its author. The model further improves user interaction through a Likes system (implemented as a many-to-many relationship) and a nested reply structure, where Cheeps can reference a ParentCheep to form conversation trees. 
 
 ![Domain model for Chirp users and Cheeps ](diagrams/images/DomainModel.jpg){ width=75% }
 
@@ -32,16 +32,16 @@ The diagram also illustrates dependencies, where the outer circles depend on the
 
 ![Dependencies are illustrated as red arrows.](diagrams/images/OnionArchitecture.png)
 
-### Domain entities
+### Domain Entities
 In yellow is the center of the architecture as _Chirp.Core_.
 This layer stores the most fundamental parts of the codebase. 
 In this project _Chirp.Core_ stores the _Cheep_ and _ChirpUser_ domain model.
 
-### Repository layer
+### Repository Layer
 In red is the infrastructure layer of the codebase. 
 This layer is responsible for retrieving domain relevant information from the database. 
 
-### Service layer
+### Service Layer
 In green is the service layer. 
 This layer is responsible for translating the domain models into _DTOs_ (Data Transfer Object) and connect requests to the UI. 
 This layer therefore acts as a binder between the infrastructure and the UI layer. 
@@ -49,7 +49,7 @@ When a user request is received the service layer handles that requests,
 retrieves information from the infrastructure layer, and translates the information received into _DTOs_.
 These _DTOs_ are then used by the UI to display information and data to the user.
 
-### UI layer
+### UI Layer
 In blue is the UI layer.
 Here the UI is displayed to the user via `.cshtml` pages. 
 Here _page models_ sent user requests to the service layer and decide the state which to display for the user.
@@ -60,20 +60,20 @@ Logging in changes the formatting of the pages, which the _page models_ are resp
 This model shows the general flow of the System and its Architecture
 ![Domain model for Chirp users and Cheeps ](diagrams/images/SystemArchitecture.jpg){ width=75% }
 
-## Architecture of deployed application
+## Architecture of Deployed Application
 Our website is hosted on Azure via their App Service on their free F1 plan. This allows us to host our website online with SSL certification.
 Although this plan does come with some restrictions, such as a maximum of 1 hour of shared vCPU time every day, it still allows us to test our application in a live, production environment.
 
-### Diagram of deployed application
+### Diagram of Deployed Application
 ![Diagram of deployed application architecture](diagrams/images/DeployedArchitechture.png)
 Since clients can login via OAuth (GitHub), our service would be dependent on the availability of GitHub as an auth provider for OAuth users to login.
 
-## User activities
+## User Activities
 This segment will focus on some of the typical scenarios and user journeys throughout the _Chirp!_ application. 
 First we will document what features are accessible to the user when unauthorised and authorised, 
 and then go into more details about some of the most important features of the application.
 
-### Activity diagram for unauthorised- and authorised users
+### Activity Diagram for Unauthorised- and Authorised Users
 Below is an activity diagram illustrating what actions the user can take when they are both authorised and unauthorised.
 
 ![Activity diagram for unauthorised- and authorised users](diagrams/images/UserActivities.png){ width=90% } 
@@ -81,7 +81,7 @@ Below is an activity diagram illustrating what actions the user can take when th
 ### Follow User
 Below is an activity diagram illustrating what happens when a user tries to follow another user. 
 Following has the effect of adding the followed user's _Cheeps_ to one's _My Timeline_. 
-Following is therefore essential when two users wants to see what new _Cheeps_ the other posts 
+Following is therefore essential when two users want to see what new _Cheeps_ the other posts 
 
 ![Activity diagram of a user following another user](diagrams/images/FollowUser.png){ width=75% }
 
@@ -130,13 +130,13 @@ Below is a diagram of a typical scenario of a user replying to another user in t
 
 ![Activity diagram of a user replying to another users _Cheep_](diagrams/images/Reply.png){ width=35% }
 
-## Sequence of functionality/calls trough _Chirp!_
-Below is a UML sequence diagram illustrating the sequence of calls in the _Chirp!_ application when it receives an HTTP `GET /` request from a client, corresponding to a request for the _Public Timeline_. More specifically, the diagram focuses on the calls relevant to retrieving and displaying the _Public Timeline_ _Cheeps_. The diagram is intentionally kept at an architectural level of abstraction. It therefore emphasises the collaboration between the main system components (`Chirp.Web`, `Chirp.Infrastructure`, and the database), rather than the internal implementation details. As a result, certain methods (e.g. `Public.OnGet()`) have been deliberately omitted. This abstraction is chosen to keep the diagram readable while still conveying the essential technical flow through the application’s layered architecture. The intention is to depict how a user’s incomming request is handled end-to-end, from the incoming HTTP request to data retrieval and the final rendering of the _Public Timeline_ with the relevant _Cheeps_.
+## Sequence of Functionality/Calls through _Chirp!_
+Below is a UML sequence diagram illustrating the sequence of calls in the _Chirp!_ application when it receives an HTTP `GET /` request from a client, corresponding to a request for the _Public Timeline_. More specifically, the diagram focuses on the calls relevant to retrieving and displaying the _Public Timeline_ _Cheeps_. The diagram is intentionally kept at an architectural level of abstraction. It therefore emphasises the collaboration between the main system components (`Chirp.Web`, `Chirp.Infrastructure`, and the database), rather than the internal implementation details. As a result, certain methods (e.g. `Public.OnGet()`) have been deliberately omitted. This abstraction is chosen to keep the diagram readable while still conveying the essential technical flow through the application’s layered architecture. The intention is to depict how a user’s incoming request is handled end-to-end, from the incoming HTTP request to data retrieval and the final rendering of the _Public Timeline_ with the relevant _Cheeps_.
 
 ![Sequence diagram depicting the sequence of calls through the _Chirp!_ application when it receives an HTTP GET request](diagrams/images/SequenceDiagram.png){ width=100% }
 
 # Process
-## Build, test, release, and deployment
+## Build, Test, Release, and Deployment
 For building, releasing and testing GitHub Actions was used. 
 
 ### Building & Releasing
@@ -174,7 +174,7 @@ Whenever we deploy our code to GitHub, a number of GitHub Actions scripts will b
 - main_bdsagroup13chirprazor.yml: Builds and deploys our code to our Azure Webapp instance, using our GitHub Secrets to access login information. This file was auto-generated by Azure and afterwards customised for our needs by a group member.
 - release.yml: Builds and publishes our project to our GitHub repository, with builds for different operating systems.
 
-### Linear git history
+### Linear Git History
 Initially, we did not enforce a linear git history as a requirement for our project, but it was a soft requirement to attempt to keep the history linear.
 However, after [#87381](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/873815545bb6ee80dd3c203ff9a895471815e3a6), we decided to enforce a linear history on the project through the git repo settings.
 
@@ -205,8 +205,8 @@ However, having a non-linear history has its own set of benefits.
 Chiefly, some metadata is lost when a branch is rebased, since the commit the branch was initially based on has changed.
 In addition to this, a non-linear history can make the history of long-lived feature branches more clear, however, since we used trunk-based development this was not a concern for us.
 
-## Team work
-### Trunk-based development
+## Teamwork
+### Trunk-based Development
 During the development of this project, we tried trunk-based development for the first time. Trunk-based development is a source-control strategy centered on frequent integration of small batches of work into the main branch (trunk), rather than long-lived feature branches, as is common in many other popular workflows, e.g., GitFlow.
 
 Throughout the development process, we didn’t completely avoid long-lived branches. Many times, it proved utterly impractical to adhere to the “merge every day” mantra, which was (admittedly) partly due to our inexperience with the workflow.
@@ -215,12 +215,12 @@ Being able to merge every day depends on the assumption that the given task can 
 
 So, in these cases, we opted to let the branches live a bit longer rather than merge unfinished or unreviewed code, as we value high-quality code over minimizing branch staleness.
 
-## How to make _Chirp!_ work locally
+## How to Make _Chirp!_ Work Locally
 The get the application running locally either clone this repository or alternatively download the [latest release](https://github.com/ITU-BDSA2025-GROUP13/Chirp/releases/tag/v5.5.0) for your OS.
 While _Chirp!_ will run without a GitHub OAuth client, _Chirp!_ will have degraded functionality if you do not have one.
 To create a GitHub OAuth client follow [these instructions](https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_08/README_PROJECT.md#1b-oauth-via-github).
 
-### Running from latest release
+### Running from Latest Release
 **On Windows:**
 1. Unzip folder
 1. Navigate to `chirp-main-<OS>-<architecture>`
@@ -231,13 +231,13 @@ To create a GitHub OAuth client follow [these instructions](https://github.com/i
 1. Navigate to `chirp-main-<OS>-<architecture>`
 1. Run `./Chirp.Web`
 
-### Running from repository
+### Running from Repository
 1. From the root folder of the project:
 
    `dotnet run --project src/Chirp.Web/`
 1. (Optional) Release artifacts do not contain GitHub OAuth ClientID or ClientSecret, however these can be read from the environment variables ```$authentication__github__clientSecret``` and ```$authentication__github__clientId```[^chirp-port-local]
 
-## How to run test suite locally
+## How to Run Test Suite Locally
 All tests, including Playwright, E2E, Integration and Unit tests is stored in the `test` directory. Playwright needs to get downloaded and installed first. Following is the steps to build and run the test suite (all done from the root folder of the project):
 1. Build the project (needed for downloading Playwright)
 
@@ -251,7 +251,7 @@ All tests, including Playwright, E2E, Integration and Unit tests is stored in th
 
    `dotnet test`
 
-### Philosophy behind testing \label{testPhilosophy}
+### Philosophy Behind Testing \label{testPhilosophy}
 For the project the group had a strict >=80% test coverage requirement for each feature. 
 This requirement was set to avoid rollbacks and hotfixes, and instead focus on implementing safe and complete features. 
 The requirement was set at 80, to keep the standard high, but also realistic. 
@@ -268,7 +268,7 @@ The license includes a non-endorsement stating that any derivative work may not 
 We felt that this license was a good choice for an educational project, as it preserves the permissive nature of the MIT License or the 2-Clause BSD License.
 This allows for further contributions to the project through a fork, while protecting the original authors and project from both any implications of warranty or liability.
 
-## LLMs, ChatGPT, CoPilot, and others
+## LLMs, ChatGPT, CoPilot, and Others
 LLMs were primarily used for research of topics prior to implementing a feature.
 Prior to adding a feature, we would conduct research and find all of the necessary libraries required.
 Our group found the documentation, especially from Microsoft themselves, to be lacking.
