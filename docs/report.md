@@ -61,8 +61,8 @@ This model below shows the general flow of the System and its Architecture.
 ![Domain model for Chirp users and Cheeps](diagrams/images/SystemArchitecture.jpg){ width=75% }
 
 ## Architecture of Deployed Application
-Our website is hosted on Azure via their App Service on their free F1 plan. This allows us to host our website online with SSL certification.
-Although this plan does come with some restrictions, such as a maximum of 1 hour of shared vCPU time every day, it still allows us to test our application in a live, production environment.
+Our website is hosted on Azure via their App Service using the free F1 plan which comes with some restrictions, e.g., a maximum of 1 hour of shared vCPU time per day.
+This allows us to run our application in a live, production environment and to host our website online with SSL certification.
 
 ### Diagram of Deployed Application
 ![Diagram of deployed application architecture](diagrams/images/DeployedArchitechture.png)
