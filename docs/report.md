@@ -302,7 +302,7 @@ where 3 LLM generated workflows were reverted as they did not work correctly.
 Another issue we faced with LLMs was that when researching topics, it would often get confused and start spiraling.
 This was likely because the context window of the conversation became too large, which caused the LLM to hallucinate.
 
-[^userdata_deletion]: [KILDE](https://ante.dk/blog/hvornaar-skal-persondata-slettes-ifoelge-gdpr/?utm_source=chatgpt.com)
+[^userdata_deletion]: [Ante](https://ante.dk/blog/hvornaar-skal-persondata-slettes-ifoelge-gdpr/)
 [^calver]: [CalVer](https://calver.org/)
 [^release-retag]: The initial release tag was deleted and tagged again using semver
 [^semver-lecture-notes]: [Lecture slides on Semantic Versioning](https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_03/Slides.md#semantic-versioning)
