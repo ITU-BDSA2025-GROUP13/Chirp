@@ -142,7 +142,6 @@ Below is a UML sequence diagram illustrating the sequence of calls in the _Chirp
 ![Sequence diagram depicting the sequence of calls through the _Chirp!_ application when it receives an HTTP GET request](diagrams/images/SequenceDiagram.png){ width=100% }
 
 # Process
-Screenshot From 2025-12-19 13-14-31
 ## Build, test, release, and deployment
 For building, releasing and testing GitHub Actions was used. 
 
