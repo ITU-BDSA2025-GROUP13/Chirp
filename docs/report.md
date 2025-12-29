@@ -18,6 +18,10 @@ header-includes:
 - \floatplacement{figure}{H}
 ---
 
+\tableofcontents
+
+\break
+
 # Design and Architecture of _Chirp!_
 ## Domain model
 The domain Model of the _Chirp!_ application is centered around two primary entities,
