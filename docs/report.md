@@ -20,13 +20,13 @@ header-includes:
 
 # Design and Architecture of _Chirp!_
 ## Domain model
-The domain model of the Chirp! application is centered around two primary entities,
-the _ChirpUser_ and the _Cheep_. The ChirpUser serves as the domain's representation of a user, it extends the standard ASP.NET Core `IdentityUser` to leverage built-in security while adding custom features,
+The domain Model of the Chirp! application is centered around two primary entities,
+the _ChirpUser_ and the _Cheep_. The _ChirpUser_ serves as the domain's representation of a user, it extends the standard ASP.NET Core `IdentityUser` to leverage built-in security while adding custom features,
 such as the ability to maintain lists of followers and followed users.
 The _Cheep_ is the main form of communication and content on our platform,
-encompassing the text, timestamp, and an association with its author. The model further improves user interaction through a Likes system (implemented as a many-to-many relationship) and a nested reply structure, where _Cheeps_ can reference a parent _Cheep_ to form conversation trees. 
+encompassing the text, timestamp, and an association with its author. The model further improves user interaction through a _Like_ system (implemented as a many-to-many relationship) and a nested reply structure, where _Cheeps_ can reference a parent _Cheep_ to form conversation trees. 
 
-![Domain model for Chirp users and Cheeps ](diagrams/images/DomainModel.jpg){ width=100% }
+![Domain model for ChirpUsers and Cheeps ](diagrams/images/DomainModel.jpg){ width=100% }
 
 ## Architecture — In the small
 Below is an onion architecture diagram to illustrate the overall architecture of the _Chirp!_ application. 
@@ -35,59 +35,54 @@ The diagram also illustrates dependencies, where the outer circles depend on the
 ![Dependencies are illustrated as red arrows.](diagrams/images/OnionArchitecture.png)
 
 ### Domain Entities
-_Chirp.Core_ is the center of the architecture, in yellow part of the diagram.
+_Chirp.Core_ is the center of the architecture, in the yellow part of the diagram.
 This layer stores the most fundamental parts of the codebase. 
 In this project _Chirp.Core_ stores the _Cheep_ and _ChirpUser_ domain entities.
 
 ### Repository Layer
-The infrastructure layer of the code based is in the red part of the diagram.
+The repository layer of the code based is in the red part of the diagram.
 This layer is responsible for retrieving domain relevant information from the database. 
 
 ### Service Layer
 The service layer is in the green part of the diagram.
 This layer is responsible for translating the domain models into DTOs (Data Transfer Object) and connecting requests to the UI. 
-This layer therefore acts as a binder between the infrastructure and the UI layer. 
+This layer therefore acts as a binder between the repository and the UI layer. 
 When a user request is received the service layer handles that requests, 
 retrieves information from the infrastructure layer, and translates the information received into DTOs.
-These DTOs are then used by the UI to display information and data to the user.
+These DTOs are then used by the UI layer to display information and data to the user.
 
 ### UI Layer
 The UI layer is in the blue part of the diagram.
 Here the UI is displayed to the user via `.cshtml` pages. 
-Here _page models_ sent user requests to the service layer and decide the state which to display for the user.
-The state can change over the lifetime of the application, for example, when the user is logged in. 
-Logging in changes the formatting of the pages, which the _page models_ are responsible for handling. 
+Here _page models_ send user requests to the service layer and decide the state which to display for the user.
+The state can change over the lifetime of the application, for example, when the user logs in, which changes the formatting of the page. 
 
 ## System Architecture Overview
-This model below shows the general flow of the System and its Architecture.
+The model below shows the general flow of the System and its Architecture.
 ![Domain model for Chirp users and Cheeps](diagrams/images/SystemArchitecture.jpg){ width=100% }
 
 ## Architecture of Deployed Application
-Our website is hosted on Azure via their App Service using the free F1 plan which comes with some restrictions, e.g., a maximum of 1 hour of shared vCPU time per day.
+Our website is hosted on Azure via their _App Service_, using the free F1 plan which comes with some restrictions, e.g., a maximum of 1 hour of shared vCPU time per day.
 This allows us to run our application in a live, production environment and to host our website online with SSL certification.
 
 ### Diagram of Deployed Application
 ![Diagram of deployed application architecture](diagrams/images/DeployedArchitechture.png)
-Since clients can login via OAuth (GitHub), our service would be dependent on the availability of GitHub as an auth provider for OAuth users to login.
+Since clients can login via OAuth (GitHub), our service would be dependent on the availability of GitHub as an OAuth provider.
 
 ## User Activities
-This segment will focus on some of the typical scenarios and user journeys throughout the _Chirp!_ application. 
-First we will document what features are accessible to the user when they are either authorised or unauthorised, 
-and then go into more details about some of the most important features of the application.
-
 ### Activity Diagram for Unauthorised- and Authorised Users
-Below is an activity diagram illustrating what actions the user can take when they are either authorised or unauthorised.
+Below is an activity diagram illustrating what actions the user can take when they are either authenticated or unauthenticated.
 
-![Activity diagram for unauthorised- and authorised users](diagrams/images/UserActivities.png){ width=90% } 
+![Activity diagram for unauthenticated- and authenticated users](diagrams/images/UserActivities.png){ width=90% } 
 
 ### Follow User
 Below is an activity diagram illustrating what happens when a user tries to follow another user. 
-Following has the effect of adding the followed user's _Cheeps_ to one's _My Timeline_. 
+Following has the effect of adding the followed user's _Cheeps_ to one's own _My Timeline_. 
 Following is therefore essential for when a user wants to see what new _Cheeps_ the other user has posted. 
 
 ![Activity diagram of a user following another user](diagrams/images/FollowUser.png){ width=75% }
 
-### _Forget Me!_ (Deleting user)
+### Delete User
 The diagram below shows the actions performed when a user tries to delete their data.
 This feature is called _Forget Me!_ in the _Chirp!_ application, and can be performed under the `/user/<username>/about` endpoint.
 It is worth noting that the _About Me_ site exists for every user, but the information
@@ -107,7 +102,7 @@ Hard deletes often create a lot of problems behind the scenes, problems like syn
 For the _Chirp!_ application there was the issue of what to do with [replies](#Activity_Reply). 
 Since replies are linked with a child-parent relation, deleting a parent _Cheep_ would result in all subsequent child _Cheeps_ being deleted.
 This is why we opted for a deletion style similar to Reddit. 
-On Reddit, posts and replies are not removed and deleted, but simple noted as _[Deleted by user]_.
+On Reddit, posts and replies are not removed and deleted, but instead noted as _[Deleted by user]_.
 With this method users will not lose their replies, simply because the author of the main _Cheep_ decided to delete their post. 
 An example of the visual effect of anonymisation of user data can be seen below.
 
@@ -115,69 +110,75 @@ An example of the visual effect of anonymisation of user data can be seen below.
 
 ### Login
 When a user tries to log in they have the option of either creating an account directly on the website, or using GitHub as an external login service.
-When a user logs in with GitHub, user data necessary for the application is automatically fetched. 
-Information like a users GitHub username is used as their _Chirp!_ username.
-The user is then auto-redirected to the public timeline, after GitHub returns a valid authorisation.
+When a user logs in with GitHub, the application automatically fetches the user data necessary for account creation.
+The user is then auto-redirected to the public timeline, after GitHub returns a valid authentication.
 Below is a diagram of a typical scenario of a user logging into the _Chirp!_ application.
 
 ![Activity diagram of a user trying to login to the _Chirp!_ application](diagrams/images/Login.png){ width=100% }
 
 ### Reply {#Activity_Reply}
-Below is an illustration of how a user would reply to another users _Cheep_. 
 When designing replies it was chosen to use the same _Cheep_ model as both a "root post" and the following replies to said post.
 This method was chosen because we wished to design a _thread_ style of replies, similar to Reddit. 
 Instead of only having one layer of replies, users could now reply to other peoples' replies, and continue a _thread_ of replies.
-Using the same entity for this, the code for the UI could be made more simple using recursion.
-Below is a diagram of a typical scenario of a user replying to another user in the _Chirp_ application. 
+Below is a diagram of a typical scenario of a user replying to another user in the _Chirp!_ application. 
 
 ![Activity diagram of a user replying to another users _Cheep_](diagrams/images/Reply.png){ width=35% }
 
 ## Sequence of Functionality/Calls through _Chirp!_
-Below is a UML sequence diagram illustrating the sequence of calls in the _Chirp!_ application when it receives an HTTP `GET /` request from a client, corresponding to a request for the _Public Timeline_. More specifically, the diagram focuses on the calls relevant to retrieving and displaying the _Public Timeline_ _Cheeps_. The diagram is intentionally kept at an architectural level of abstraction. It therefore emphasises the collaboration between the main system components (`Chirp.Web`, `Chirp.Infrastructure`, and the database), rather than the internal implementation details. As a result, certain methods (e.g. `Public.OnGet()`) have been deliberately omitted. This abstraction is chosen to keep the diagram readable while still conveying the essential technical flow through the application’s layered architecture. The intention is to depict how a user’s incoming request is handled end-to-end, from the incoming HTTP request to data retrieval and the final rendering of the _Public Timeline_ with the relevant _Cheeps_.
+Below is a UML sequence diagram illustrating the sequence of calls in the _Chirp!_ application when it receives an HTTP `GET /` request from a client. 
+Such a request corresponds to a request for the _Public Timeline_. 
+More specifically, the diagram focuses on the calls relevant to retrieving and displaying the _Public Timeline_ _Cheeps_. 
+The diagram is intentionally kept at an architectural level of abstraction. 
+The intention is to depict how a user’s incoming request is handled end-to-end, from the incoming HTTP request to data retrieval and the final rendering of the _Public Timeline_ with the relevant _Cheeps_.
+It therefore emphasises the collaboration between the main system components (`Chirp.Web`, `Chirp.Infrastructure`, and the database), rather than the internal implementation details. 
+As a result, certain methods (e.g. `Public.OnGet()`) have been deliberately omitted. 
+This abstraction is chosen to keep the diagram readable while still conveying the essential technical flow through the application’s layered architecture. 
 
 ![Sequence diagram depicting the sequence of calls through the _Chirp!_ application when it receives an HTTP GET request](diagrams/images/SequenceDiagram.png){ width=100% }
 
 # Process
 ## Build, Test, Release, and Deployment
-For building, releasing and testing GitHub Actions was used. 
-
 ### Building & Releasing
-The script `release.yml` was used for building and releasing the project. The script uses a matrix of `[linux-x64, linux-arm64, win-x64, win-arm64, osx-x64, osx-arm64]` to create release artifacts on each release. When releasing a new version [release please](https://github.com/googleapis/release-please) was used to generate commit logs. 
+The script `release.yml` was used for building and releasing the project. 
+The script uses a matrix of `[linux-x64, linux-arm64, win-x64, win-arm64, osx-x64, osx-arm64]` to create release artifacts on each release. 
+When releasing a new version [release please](https://github.com/googleapis/release-please) was used to generate commit changelogs. 
 
 ### Testing
-The script `coverage.yml` was used for checking if test suites existed for each package in the solution, after testing the script uses [reportgenerator](https://github.com/danielpalme/ReportGenerator) to generate a coverage report we could use to analyze the test coverage and quality of tests. This is discussed more in \ref{testPhilosophy}.
+The script `coverage.yml` was used for checking if test suites existed for each package in the solution, after testing the script uses [reportgenerator](https://github.com/danielpalme/ReportGenerator) to generate a coverage report which could be used to analyze the test coverage and quality of tests. 
 
 ### Versioning
 Before the lecturers introduced us to semantic versioning and told us it was a requirement, we used CalVer[^calver].
-CalVer was initially chosen, as it uses the calendar date for versioning, and seemed to be a good way to coordinate our weekly releases. [^release-retag]
+CalVer was initially chosen, as it uses the calendar date for versioning, and seemed to be a good way to coordinate our weekly releases.[^release-retag]
 
 Once we switched to semantic versioning we decided that it would make sense to automate this process.
 The tool we used to automate this was [Release Please](https://github.com/googleapis/release-please) from Google.
-Release Please continuously monitors the git history of a project through a GitHub action.
-The action identifies commits which use the [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) standard and generates a release log based on changes in its own branch.
+_Release Please_ continuously monitors the git history of a project through a GitHub action.
+The action identifies commits which use the [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) standard and generates a changelog based on changes in its own branch.
 The action also opens a pull request, which when merged, merges the changelog into main and creates a new release with the changelog added as a description.
 This helped give us, and potential users, an overview over what has changed between releases.
 
-In addition to this, Release Please also automatically computes the next version number based on the ```feat```, ```fix```, and ```feat!``` tags from conventional commit.
-This was nice, as we did not have to consider what our next release number should be.
+In addition to this, _Release Please_ also automatically computes the next version number based on the ```feat```, ```fix```, and ```feat!``` tags from conventional commit.
+This was a good way to automate versioning, since we did not have to consider what our next release number should be.
 
-One issue we faced with this was we ended up with a rather high major version (5.5.1).
+One issue we faced with this was, that we ended up with a rather high major version (_v5.5.1_).
 The reason for this was our failure to consider what was actually a breaking change.
 We followed the convention of tagging any breaking API change as a breaking change, which would make Release Please update the major version[^semver-lecture-notes].
 However, these breaking API changes were often only breaking for internal APIs, for many major releases, no user-facing APIs changed.
-We should not have considered these internal API changes as breaking, since, for the end user, these changes were not breaking.
-What we should have considered a breaking change should be the switch from a **CLI** to a **web page**, and potentially **the addition of identity**.
-This would mean that _Chirp!_ would be on **v3.x.y** or **v2.x.y**, depending on whether the addition of identity was considered breaking, not **v5.5.1**.
+We should not have considered these internal API changes as breaking, since for the end user, these changes were not breaking.
+What we should have considered a breaking change should be the switch from a CLI to a web page, and potentially the addition of identity.
+This would mean that _Chirp!_ would be on _v3.x.y_ or _v2.x.y_, depending on whether the addition of identity was considered breaking, not _v5.5.1_.
 
 ### Deployment
-Whenever we deploy our code to GitHub, a number of GitHub Actions scripts will be run. These can be found the .github/workflow directory.
-- coverage.yml: Runs a code coverage test and fails upon not reaching the set threshold
-- format.yml: Runs dotnet format, this maintains a certain code standard in our repository. These formatting commits have been attributed to our group member mnni@itu.dk 
-- main_bdsagroup13chirprazor.yml: Builds and deploys our code to our Azure Webapp instance, using our GitHub Secrets to access login information. This file was auto-generated by Azure and afterwards customised for our needs by a group member.
-- release.yml: Builds and publishes our project to our GitHub repository, with builds for different operating systems.
+Whenever we deploy code to GitHub, a number of GitHub Actions scripts were run. 
+These can be found in the `.github/workflow directory`.
+
+- `coverage.yml`: Runs a code coverage test and fails upon not reaching the coverage threshold
+- `format.yml`: Runs `.NET` format, this maintains `.NET`'s official styleguide. These formatting commits have been attributed to our group member mnni@itu.dk 
+- `main_bdsagroup13chirprazor.yml`: Builds and deploys our code to our Azure Webapp instance, using our GitHub Secrets to access login information. This file was auto-generated by Azure and afterwards customised for our needs.
+- `release.yml`: Builds and publishes our project to the GitHub repository, with builds for different operating systems.
 
 ### Linear Git History
-Initially, we did not enforce a linear git history as a requirement for our project, but it was a soft requirement to attempt to keep the history linear.
+Initially, we did not enforce a linear git history as a requirement for our project, but it was a self-imposed requirement to attempt to keep the history linear.
 However, after [#87381](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/873815545bb6ee80dd3c203ff9a895471815e3a6), we decided to enforce a linear history on the project through the git repo settings.
 
 There are many reasons for enforcing a linear history.
@@ -189,67 +190,73 @@ Since a linear history is just a line, it is much easier for ```git bisect``` to
 On the other hand, when the commit graph is a large interleaving of commits and merge commits, it can be difficult to perform a binary search.
 This does not mean it is impossible to perform a binary search on a non-linear history, but the cognitive load on the developer is increased.
 
-It also allows for easier code review.
-Since each commit cleanly applies atop the previous, there is no extra noise generated by merge commits.
-It is simply a set of patches to apply to the main branch.
-
 Finally, one of the primary reason we used a linear git history was for external tooling.
-We used an action called release-please for automated changelog generation.
+As discussed earlier, we used an action called release-please for automated changelog generation.
 This tool recommended a linear history to ease parsing of the commit graph[^release-please-linear].
 
 The workflow for a linear git history is rather simple.
-When a commit is ready to be merged with the main branch, you ```git rebase origin/main```, changes the base of the branch to be the current *HEAD* of the main branch.
+When a commit is ready to be merged with the main branch, you run ```git rebase origin/main``` which changes the base of the branch to be the current `HEAD` of the main branch.
 This might introduce merge conflicts, which you resolve as normal.
 Once the conflicts have been resolved, and the PR has been approved, it can be merged with ```git merge --ff-only```.
 
 Having a linear git history is one way to manage a project which comes with its set of benefits.
 However, having a non-linear history has its own set of benefits.
-Chiefly, some metadata is lost when a branch is rebased, since the commit the branch was initially based on has changed.
-In addition to this, a non-linear history can make the history of long-lived feature branches more clear, however, since we used trunk-based development this was not a concern for us.
+Chiefly, some metadata is lost when a branch is rebased, since the commit that the branch was initially based on has changed.
+In addition to this, a non-linear history can make the history of long-lived feature branches more clear. 
+However, since we used trunk-based development this was not a concern for us.
 
 ## Teamwork
 ![Final state of kanban board](images/kanban.png)
-The Kanban board of our project immediately before finishing the project had 4 outstanding issues open.
-The one issue, which was in progress, was a meta issue for writing the report.
 
-The other 3 issues which were still in the todo section were extra features and maintenance tasks which we discussed adding in order to improve the maintainability of the project.
+The Kanban board of our project immediately before finishing the project had 4 issues open.
+The one issue, which was in the _In Progress_ tab, was a meta issue for writing the report.
+
+The other 3 issues which were still in the _Todo_ section were extra features and maintenance tasks which we discussed adding in order to improve the maintainability of the project.
 We didn't handle these additional todos, as the scope of the project did not require that these changes were present.
 However, if we were to continue working on the project, these would be high on our list of priorities, as they would greatly improve the maintainability of the project.
 
-The groups work flow is as follows:
-1. We received the weeks tasks, and discussed them
+The groups workflow, when we received the tasks for the week was as follows:
+
+1. We received the weeks tasks, and discuss them
 1. We created issues and user stories for them
     - These issues also included acceptance criteria and test criteria
 1. The issues were assigned to the person willing to work on them
     - If we hadn't finished a task from last week, these were prioritized above new tasks
-1. A pull request for an implementation of the task is created, and the issue is automatically move to the "Review" tab of the KanBan board
+1. A pull request for an implementation of the task is created, and the issue is automatically moved to the "Review" tab of the Kanban board
 1. The PR is reviewed
     - If it is approved, it was merged to main, and the associated issue was closed
-    - If further iterations were required, the associated issue was moved back to the "In Progress" tab of the KanBan board
+    - If further iterations were required, the associated issue was moved back to the _In Progress_ tab of the Kanban board
 
 ![Flowchart of a task from when it is released till it is merged to main](diagrams/images/flowchat.png){ width=80% }
 
 ### Trunk-based Development
-During the development of this project, we were encouraged to use trunk-based development. Trunk-based development is a source-control strategy centered on frequent integration of small batches of work into the main branch (trunk), rather than long-lived feature branches, as is common in many other popular workflows, e.g., GitFlow.
-
-Throughout the development process, we didn’t completely avoid long-lived branches. Many times, it proved impractical to adhere to the “merge every day” mantra, which was (admittedly) partly due to our inexperience with the workflow.
-
-Being able to merge every day depends on the assumption that the given task can be completed and reviewed within that timeframe. However, estimating the time needed to complete tasks was not always straightforward, especially for larger tasks that don’t naturally split into logically independent subtasks. An example of such a task is the large rewrite required to migrate from raw SQLite to EF Core. Merging at any point between starting and finishing this task would result in a broken main branch. Of course, this is an extreme example, and often it would also be due to interpersonal dynamics within the team. Waiting for code review, from team members with their own daily lives, schedules, and responsibilities, also sometimes resulted in longer branch lifespans. 
-
-In short, we opted to let the branches live a bit longer rather than merge unfinished or unreviewed code, as we value high-quality code over minimizing branch staleness. However, we did avoid intentionally long-lived branches like the `develop` and `staging` branches found in other source-control strategies, and branches were generally merged quite quickly.
+During the development of this project, we were encouraged to use trunk-based development. 
+Trunk-based development is a source-control strategy centered on frequent integration of small batches of work into the main branch (trunk), rather than long-lived feature branches, as is common in many other popular workflows, e.g., GitFlow.
+Throughout the development process, we didn’t completely avoid long-lived branches. 
+Many times, it proved impractical to adhere to the “merge every day” mantra, which was (admittedly) partly due to our inexperience with the workflow.
+Being able to merge every day depends on the assumption that the given task can be completed and reviewed within that timeframe. 
+However, estimating the time needed to complete tasks was not always straightforward, especially for larger tasks that didn't naturally split into logically independent subtasks. 
+An example of such a task is the large rewrite required to migrate from raw SQLite to EF Core. 
+Merging at any point between starting and finishing this task would result in a broken main branch. 
+Of course, this is an extreme example, and often it would also be due to interpersonal dynamics within the team. 
+Such as, waiting for code review, from team members with their own daily lives, schedules, and responsibilities. 
+In short, we opted to let the branches live a bit longer rather than merge unfinished or unreviewed code, as we valued high-quality code over minimizing branch staleness. 
+However, we did avoid intentionally long-lived branches like the `develop` and `staging` branches found in other source-control strategies, and branches were generally merged quite quickly.
 
 ## How to Make _Chirp!_ Work Locally
-The get the application running locally either clone this repository or alternatively the latest release can be found [here](https://github.com/ITU-BDSA2025-GROUP13/Chirp/releases/).
-While _Chirp!_ will run without a GitHub OAuth client, _Chirp!_ will have degraded functionality if you do not have one.
-To create a GitHub OAuth client follow [these instructions](https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_08/README_PROJECT.md#1b-oauth-via-github).
+The get the application running locally either clone this repository or download the latest release [here](https://github.com/ITU-BDSA2025-GROUP13/Chirp/releases/).
+While _Chirp!_ will run without a GitHub OAuth client, the application will have degraded functionality if you do not have one.
+To create a GitHub OAuth client follow [these instructions](https://github.com/itu-bdsa/lecture_notes/blob/main/sessions/session_08/README_PROJECT.md#1b-oauth-via-github)[^chirp-port-local].
 
 ### Running from Latest Release
 **On Windows:**
+
 1. Unzip folder
 1. Navigate to `chirp-main-<OS>-<architecture>`
 1. Run the `Chirp.Web.exe` file. 
 
 **On Linux & macOS**
+
 1. Unzip folder
 1. Navigate to `chirp-main-<OS>-<architecture>`
 1. Run `./Chirp.Web`
@@ -259,12 +266,17 @@ To create a GitHub OAuth client follow [these instructions](https://github.com/i
 
    `dotnet run --project src/Chirp.Web/`
 
-1. (Optional) Release artifacts do not contain GitHub OAuth ClientID or ClientSecret, however these can be read from the environment variables ```$authentication__github__clientSecret``` and ```$authentication__github__clientId```[^chirp-port-local]
-  Do note, that releases between 5.3.0 and 5.5.0 inclusive do not work without secrets in the environment, as GitHub OAuth was not optional.
-  This was fixed in 5.5.1.
+### Github OAuth (Optional)
+Neither release artifacts nor the github repository contain GitHub OAuth ClientID or ClientSecret. 
+These however these can be read from the environment variables ```$authentication__github__clientSecret``` and ```$authentication__github__clientId```
+Do note, that releases between 5.3.0 and 5.5.0 inclusive do not work without secrets in the environment, as GitHub OAuth was not optional.
+This was fixed in 5.5.1.
 
 ## How to Run Test Suite Locally
-All tests, including Playwright, E2E, Integration and Unit tests is stored in the `test` directory. Playwright needs to get downloaded and installed first. Following is the steps to build and run the test suite (all done from the root folder of the project):
+All tests, including Playwright, E2E, Integration and Unit tests are stored in the `test` directory. 
+Playwright needs to be downloaded and installed first. 
+Following is the steps to build and run the test suite (all done from the root folder of the project):
+
 1. Build the project (needed for downloading Playwright)
 
    `dotnet build`
@@ -279,9 +291,9 @@ All tests, including Playwright, E2E, Integration and Unit tests is stored in th
 
 # Ethics
 ## License
-We chose the [3-Clause BSD License](https://opensource.org/license/bsd-3-clause), which is a permissive, OSI approved license[^osi-approved], open source copyright license.
-This license is slightly more restrictive than the MIT License or The 2-clause BSD License.
-The license includes a non-endorsement stating that any derivative work may not use the name of the original work, or its authors as an endorsement of the derivative.
+We chose the [3-Clause BSD License](https://opensource.org/license/bsd-3-clause), which is a permissive, OSI approved[^osi-approved], open source copyright license.
+This license is slightly more restrictive than the MIT License or the 2-Clause BSD License.
+The license includes a non-endorsement clause stating that any derivative work may not use the name of the original work, or its authors as an endorsement of the derivative.
 
 We felt that this license was a good choice for an educational project, as it preserves the permissive nature of the MIT License or the 2-Clause BSD License.
 This allows for further contributions to the project through a fork, while protecting the original authors and project from both any implications of warranty or liability.
@@ -296,8 +308,8 @@ An LLM might assist in the theoretical structure of how this feature would be im
 This has often proven to work well, as LLMs are good at reading large amounts of documentation, extracting the important parts, and relaying them to the reader.
 We did not consider this as co-authorship, since the actual code from an LLM was not used.
 
-Whenever we did co-author an LLM, the commit was annotated with a `Co-authored-by: ChatGPT <chatgpt@openai.com>` footer in the git commit.
-This was done when code generated by an LLM was used, either verbatim, or as inspiration.
+Whenever we did co-author an LLM, authorship was was attributed to the LLM eg. with a `Co-authored-by: ChatGPT <chatgpt@openai.com>` footer in the git commit.
+This was done when code generated by an LLM was used verbatim. 
 This had some success, however, often the code was not quite right, or simply did not work, which can be seen in
 [#d2a073e](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/d2a073e1b1b22661ef77443b8743a16f81169be4), [#899ca30](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/899ca304d89c7574a789b97d656ba86e1622cc49), and [#270892b](https://github.com/ITU-BDSA2025-GROUP13/Chirp/commit/270892b2ba79b96ab14c91c1fa4aa3ca2b563090)
 where 3 LLM generated workflows were reverted as they did not work correctly.
