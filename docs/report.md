@@ -70,18 +70,18 @@ Since clients can login via OAuth (GitHub), our service would be dependent on th
 
 ## User Activities
 This segment will focus on some of the typical scenarios and user journeys throughout the _Chirp!_ application. 
-First we will document what features are accessible to the user when unauthorised and authorised, 
+First we will document what features are accessible to the user when they are either authorised or unauthorised, 
 and then go into more details about some of the most important features of the application.
 
 ### Activity Diagram for Unauthorised- and Authorised Users
-Below is an activity diagram illustrating what actions the user can take when they are both authorised and unauthorised.
+Below is an activity diagram illustrating what actions the user can take when they are either authorised or unauthorised.
 
 ![Activity diagram for unauthorised- and authorised users](diagrams/images/UserActivities.png){ width=90% } 
 
 ### Follow User
 Below is an activity diagram illustrating what happens when a user tries to follow another user. 
 Following has the effect of adding the followed user's _Cheeps_ to one's _My Timeline_. 
-Following is therefore essential when two users want to see what new _Cheeps_ the other posts 
+Following is therefore essential for when a user wants to see what new _Cheeps_ the other user has posted. 
 
 ![Activity diagram of a user following another user](diagrams/images/FollowUser.png){ width=75% }
 
@@ -97,33 +97,33 @@ _user1_ cannot access the _About Me_ for _user2_.
 When deleting user data, shown in the illustration after "User clicks forget me", an important design decision had to be made.
 When the user deletes their data, they expect it to be deleted. 
 Normally in systems this effect can be obtained by either soft deleting or hard deleting user data and information. 
-Before GDPR a lot of software used to just mark data as "deleted" in databases and never query them again. 
+Before GDPR, a lot of software used to just mark data as "deleted" in databases and never query them again. 
 Now, because of GDPR, it is mandatory by law to always delete or anonymise user data when requested to do so, 
 or when it is no longer necessary to keep that data stored[^userdata_deletion].
 
 Hard deletes often create a lot of problems behind the scenes, problems like syncing, irreversible data loss and compromising database schema integrity. 
 For the _Chirp!_ application there was the issue of what to do with [replies](#Activity_Reply). 
-Since replies are linked with a _Cheep_ parent-child relation, deleting a parent _Cheep_ would result in all subsequent child _Cheeps_ being deleted.
-This is why we opted for a deletion style more reminiscent of Reddit. 
-In Reddit posts and replies made by the user are not deleted, but simple noted as _Deleted by user_.
+Since replies are linked with a child-parent relation, deleting a parent _Cheep_ would result in all subsequent child _Cheeps_ being deleted.
+This is why we opted for a deletion style similar to Reddit. 
+On Reddit, posts and replies are not removed and deleted, but simple noted as _[Deleted by user]_.
 With this method users will not lose their replies, simply because the author of the main _Cheep_ decided to delete their post. 
 An example of the visual effect of anonymisation of user data can be seen below.
 
 ![Here a user who has replied decided to delete their post. With a hard removal of posts, the user _Oliver_ would have lost his reply in the thread.](images/DeletingUser.png)
 
 ### Login
-When a user tries to log in they have the option of either a application-scoped account or using GitHub as an external login service.
+When a user tries to log in they have the option of either creating an account directly on the website, or using GitHub as an external login service.
 When a user logs in with GitHub, user data necessary for the application is automatically fetched. 
 Information like a users GitHub username is used as their _Chirp!_ username.
-The user is therefore auto-redirected to the public timeline, when GitHub returns a valid authorisation.
-Below is a diagram of a typical scenario of a user logging into the _Chirp!_ application. 
+The user is then auto-redirected to the public timeline, after GitHub returns a valid authorisation.
+Below is a diagram of a typical scenario of a user logging into the _Chirp!_ application.
 
 ![Activity diagram of a user trying to login to the _Chirp!_ application](diagrams/images/Login.png){ width=100% }
 
 ### Reply {#Activity_Reply}
 Below is an illustration of how a user would reply to another users _Cheep_. 
-When designing replies it was chosen to use the same _Cheep_ entity as both a "root post" and the following replies to said post.
-This method was chosen because we wished to design a _thread_ style of replies, like Reddit. 
+When designing replies it was chosen to use the same _Cheep_ model as both a "root post" and the following replies to said post.
+This method was chosen because we wished to design a _thread_ style of replies, similar to Reddit. 
 Instead of only having one layer of replies, users could now reply to other peoples' replies, and continue a _thread_ of replies.
 Using the same entity for this, the code for the UI could be made more simple using recursion.
 Below is a diagram of a typical scenario of a user replying to another user in the _Chirp_ application. 
