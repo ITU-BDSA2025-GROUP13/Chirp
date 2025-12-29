@@ -43,7 +43,7 @@ This layer is responsible for retrieving domain relevant information from the da
 
 ### Service Layer
 In green is the service layer. 
-This layer is responsible for translating the domain models into DTOs (Data Transfer Object) and connect requests to the UI. 
+This layer is responsible for translating the domain models into DTOs (Data Transfer Object) and connecting requests to the UI. 
 This layer therefore acts as a binder between the infrastructure and the UI layer. 
 When a user request is received the service layer handles that requests, 
 retrieves information from the infrastructure layer, and translates the information received into DTOs.
@@ -58,7 +58,7 @@ Logging in changes the formatting of the pages, which the _page models_ are resp
 
 ## System Architecture Overview
 This model shows the general flow of the System and its Architecture
-![Domain model for Chirp users and Cheeps ](diagrams/images/SystemArchitecture.jpg){ width=75% }
+![Domain model for Chirp users and Cheeps](diagrams/images/SystemArchitecture.jpg){ width=75% }
 
 ## Architecture of Deployed Application
 Our website is hosted on Azure via their App Service on their free F1 plan. This allows us to host our website online with SSL certification.
@@ -235,7 +235,7 @@ To create a GitHub OAuth client follow [these instructions](https://github.com/i
 1. From the root folder of the project:
 
    `dotnet run --project src/Chirp.Web/`
-   
+
 1. (Optional) Release artifacts do not contain GitHub OAuth ClientID or ClientSecret, however these can be read from the environment variables ```$authentication__github__clientSecret``` and ```$authentication__github__clientId```[^chirp-port-local]
 
 ## How to Run Test Suite Locally
