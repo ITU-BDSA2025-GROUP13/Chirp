@@ -207,7 +207,7 @@ In addition to this, a non-linear history can make the history of long-lived fea
 
 ## Teamwork
 ![Final state of kanban board](images/kanban.png)
-The KanBan board of our project immediately before finishing the project had 4 outstanding issues open.
+The Kanban board of our project immediately before finishing the project had 4 outstanding issues open.
 The one issue, which was in progress, was a meta issue for writing the report.
 
 The other 3 issues which were still in the todo section were extra features and maintenance tasks which we discussed adding in order to improve the maintainability of the project.
