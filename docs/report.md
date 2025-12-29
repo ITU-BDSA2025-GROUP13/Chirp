@@ -33,16 +33,16 @@ The diagram also illustrates dependencies, where the outer circles depend on the
 ![Dependencies are illustrated as red arrows.](diagrams/images/OnionArchitecture.png)
 
 ### Domain Entities
-In yellow is the center of the architecture as _Chirp.Core_.
+_Chirp.Core_ is the center of the architecture, in yellow part of the diagram.
 This layer stores the most fundamental parts of the codebase. 
 In this project _Chirp.Core_ stores the _Cheep_ and _ChirpUser_ domain entities.
 
 ### Repository Layer
-In red is the infrastructure layer of the codebase. 
+The infrastructure layer of the code based is in the red part of the diagram.
 This layer is responsible for retrieving domain relevant information from the database. 
 
 ### Service Layer
-In green is the service layer. 
+The service layer is in the green part of the diagram.
 This layer is responsible for translating the domain models into DTOs (Data Transfer Object) and connecting requests to the UI. 
 This layer therefore acts as a binder between the infrastructure and the UI layer. 
 When a user request is received the service layer handles that requests, 
@@ -50,7 +50,7 @@ retrieves information from the infrastructure layer, and translates the informat
 These DTOs are then used by the UI to display information and data to the user.
 
 ### UI Layer
-In blue is the UI layer.
+The UI layer is in the blue part of the diagram.
 Here the UI is displayed to the user via `.cshtml` pages. 
 Here _page models_ sent user requests to the service layer and decide the state which to display for the user.
 The state can change over the lifetime of the application, for example, when the user is logged in. 
