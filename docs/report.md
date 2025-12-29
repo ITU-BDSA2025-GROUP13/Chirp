@@ -99,14 +99,14 @@ Normally in a lot of systems when the user deletes their data, they expect it to
 The effect of this can be obtained by either soft deleting or hard deleting user data and information.
 Before GDPR a lot of software used to just mark data as "deleted" in databases and never query them again. 
 Now, because of GDPR, it is mandatory by law to always delete or anonymise user data when requested to do so, 
-or when its no longer necessary to keep that data stored[^userdata_deletion].
+or when it is no longer necessary to keep that data stored[^userdata_deletion].
 
 Hard deletes often create a lot of problems behind the scenes, problems like syncing, irreversible data loss and compromising database schema integrity. 
 For the _Chirp!_ application there was the issue of what to do with [replies](#Activity_Reply). 
 Since replies are linked with a _Cheep_ parent-child relation, deleting a parent _Cheep_ would result in all subsequent child _Cheeps_ being deleted.
 This is why we opted for a deletion style more reminiscent of Reddit. 
 In Reddit posts and replies made by the user are not deleted, but simple noted as _Deleted by user_.
-With this method users wont lose their replies, simply because the author of the main _Cheep_ decided to delete their post. 
+With this method users will not lose their replies, simply because the author of the main _Cheep_ decided to delete their post. 
 An example of the visual effect of anonymisation of user data can be seen below.
 
 ![Here a user who has replied decided to delete their post. With a hard removal of posts, the user _Oliver_ would have lost his reply in the thread.](images/DeletingUser.png)
@@ -124,7 +124,7 @@ Below is a diagram of a typical scenario of a user logging into the _Chirp!_ app
 Below is an illustration of how a user would reply to another users _Cheep_. 
 When designing replies it was chosen to use the same _Cheep_ entity as both a "root post" and the following replies to said post.
 This method was chosen because we wished to design a _thread_ style of replies, like Reddit. 
-Instead of only having one layer of replies, users could now reply to other peoples replies, and continue a _thread_ of replies.
+Instead of only having one layer of replies, users could now reply to other peoples' replies, and continue a _thread_ of replies.
 Using the same entity for this, made both the UI and logic simple and DRY, by simply using recursion.
 Below is a diagram of a typical scenario of a user replying to another user in the _Chirp_ application. 
 
@@ -255,7 +255,7 @@ All tests, including Playwright, E2E, Integration and Unit tests is stored in th
 ### Philosophy Behind Testing \label{testPhilosophy}
 For the project the group had a strict >=80% test coverage requirement for each feature. 
 This requirement was set to avoid rollbacks and hotfixes, and instead focus on implementing safe and complete features. 
-The requirement was set at 80, to keep the standard high, but also realistic. 
+The requirement was set at 80%, to keep the standard high, but also realistic. 
 
 To enforce the requirement a GitHub Action script was used, which ran the test suites on every pull request to main. 
 The script used [reportgenerator](https://github.com/danielpalme/ReportGenerator) to also generate a report in which we could better review what parts of the codebase was missing tests.
