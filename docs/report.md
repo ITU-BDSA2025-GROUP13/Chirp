@@ -11,7 +11,7 @@ numbersections: true
 ---
 
 ---
-linkcolor: blue
+linkcolor: black
 urlcolor: blue
 header-includes:
 - \usepackage{float}
