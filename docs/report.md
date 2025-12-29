@@ -43,11 +43,11 @@ This layer is responsible for retrieving domain relevant information from the da
 
 ### Service Layer
 In green is the service layer. 
-This layer is responsible for translating the domain models into _DTOs_ (Data Transfer Object) and connect requests to the UI. 
+This layer is responsible for translating the domain models into DTOs (Data Transfer Object) and connect requests to the UI. 
 This layer therefore acts as a binder between the infrastructure and the UI layer. 
 When a user request is received the service layer handles that requests, 
-retrieves information from the infrastructure layer, and translates the information received into _DTOs_.
-These _DTOs_ are then used by the UI to display information and data to the user.
+retrieves information from the infrastructure layer, and translates the information received into DTOs.
+These DTOs are then used by the UI to display information and data to the user.
 
 ### UI Layer
 In blue is the UI layer.
