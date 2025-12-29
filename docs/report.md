@@ -95,8 +95,8 @@ _user1_ cannot access the _About Me_ for _user2_.
 ![Activity diagram of a user trying to delete their information](diagrams/images/ForgetMe.png){ width=50% }
 
 When deleting user data, shown in the illustration after "User clicks forget me", an important design decision had to be made.
-Normally in a lot of systems when the user deletes their data, they expect it to be deleted.
-The effect of this can be obtained by either soft deleting or hard deleting user data and information.
+When the user deletes their data, they expect it to be deleted. 
+Normally in systems this effect can be obtained by either soft deleting or hard deleting user data and information. 
 Before GDPR a lot of software used to just mark data as "deleted" in databases and never query them again. 
 Now, because of GDPR, it is mandatory by law to always delete or anonymise user data when requested to do so, 
 or when it is no longer necessary to keep that data stored[^userdata_deletion].
@@ -125,7 +125,7 @@ Below is an illustration of how a user would reply to another users _Cheep_.
 When designing replies it was chosen to use the same _Cheep_ entity as both a "root post" and the following replies to said post.
 This method was chosen because we wished to design a _thread_ style of replies, like Reddit. 
 Instead of only having one layer of replies, users could now reply to other peoples' replies, and continue a _thread_ of replies.
-Using the same entity for this, made both the UI and logic simple and DRY, by simply using recursion.
+Using the same entity for this, the code for the UI could be made more simple using recursion.
 Below is a diagram of a typical scenario of a user replying to another user in the _Chirp_ application. 
 
 ![Activity diagram of a user replying to another users _Cheep_](diagrams/images/Reply.png){ width=35% }
