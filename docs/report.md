@@ -57,7 +57,7 @@ The state can change over the lifetime of the application, for example, when the
 Logging in changes the formatting of the pages, which the _page models_ are responsible for handling. 
 
 ## System Architecture Overview
-This model shows the general flow of the System and its Architecture
+This model below shows the general flow of the System and its Architecture.
 ![Domain model for Chirp users and Cheeps](diagrams/images/SystemArchitecture.jpg){ width=75% }
 
 ## Architecture of Deployed Application
