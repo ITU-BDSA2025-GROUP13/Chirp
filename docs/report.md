@@ -11,6 +11,8 @@ numbersections: true
 ---
 
 ---
+linkcolor: blue
+urlcolor: blue
 header-includes:
 - \usepackage{float}
 - \floatplacement{figure}{H}
