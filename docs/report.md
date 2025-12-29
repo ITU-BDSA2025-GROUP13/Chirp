@@ -20,8 +20,7 @@ header-includes:
 
 \tableofcontents
 
-\break
-
+\newpage
 # Design and Architecture of _Chirp!_
 ## Domain model
 The domain Model of the _Chirp!_ application is centered around two primary entities,
@@ -38,6 +37,7 @@ The diagram also illustrates dependencies, where the outer circles depend on the
 
 ![Dependencies are illustrated as red arrows.](diagrams/images/OnionArchitecture.png)
 
+\newpage
 ### Domain Entities
 `Chirp.Core` is the center of the architecture, in the yellow part of the diagram.
 This layer stores the most fundamental parts of the codebase. 
@@ -63,22 +63,25 @@ The state can change over the lifetime of the application, for example, when the
 
 ## System Architecture Overview
 The model below shows the general flow of the System and its Architecture.
-![Domain model for _Chirp!_ users and Cheeps](diagrams/images/SystemArchitecture.jpg){ width=100% }
+![Domain model for _Chirp!_ users and Cheeps](diagrams/images/SystemArchitecture.jpg){ width=130% .center}
 
+\newpage
 ## Architecture of Deployed Application
 Our website is hosted on Azure via their _App Service_, using the free F1 plan which comes with some restrictions, e.g., a maximum of 1 hour of shared vCPU time per day.
 This allows us to run our application in a live, production environment and to host our website online with SSL certification.
 
 ### Diagram of Deployed Application
-![Diagram of deployed application architecture](diagrams/images/DeployedArchitechture.png)
+![Diagram of deployed application architecture](diagrams/images/DeployedArchitechture.png){ width=130% .center}
 Since clients can login via OAuth (GitHub), our service would be dependent on the availability of GitHub as an OAuth provider.
 
+\newpage
 ## User Activities
 ### Activity Diagram for Unauthorised- and Authorised Users
 Below is an activity diagram illustrating what actions the user can take when they are either authenticated or unauthenticated.
 
 ![Activity diagram for unauthenticated- and authenticated users](diagrams/images/UserActivities.png){ width=90% } 
 
+\newpage
 ### Follow User
 Below is an activity diagram illustrating what happens when a user tries to follow another user. 
 Following has the effect of adding the followed user's `Cheeps` to one's own _My Timeline_. 
@@ -86,6 +89,7 @@ Following is therefore essential for when a user wants to see what new `Cheeps` 
 
 ![Activity diagram of a user following another user](diagrams/images/FollowUser.png){ width=75% }
 
+\newpage
 ### Delete User
 The diagram below shows the actions performed when a user tries to delete their data.
 This feature is called _Forget Me!_ in the _Chirp!_ application, and can be performed under the `/user/<username>/about` endpoint.
@@ -93,8 +97,9 @@ It is worth noting that the _About Me_ site exists for every user, but the infor
 on the site is only loaded for the user who is authenticated on the platform, meaning,
 _user1_ cannot access the _About Me_ for _user2_. 
 
-![Activity diagram of a user trying to delete their information](diagrams/images/ForgetMe.png){ width=50% }
+![Activity diagram of a user trying to delete their information](diagrams/images/ForgetMe.png){ width=40% }
 
+\newpage
 When deleting user data, shown in the illustration after "User clicks forget me", an important design decision had to be made.
 When the user deletes their data, they expect it to be deleted. 
 Normally in systems this effect can be obtained by either soft deleting or hard deleting user data and information. 
@@ -112,14 +117,16 @@ An example of the visual effect of anonymisation of user data can be seen below.
 
 ![Here a user who has replied decided to delete their post. With a hard removal of posts, the user _Oliver_ would have lost his reply in the thread.](images/DeletingUser.png)
 
+\newpage
 ### Login
 When a user tries to log in they have the option of either creating an account directly on the website, or using GitHub as an external login service.
 When a user logs in with GitHub, the application automatically fetches the user data necessary for account creation.
 The user is then auto-redirected to the public timeline, after GitHub returns a valid authentication.
 Below is a diagram of a typical scenario of a user logging into the _Chirp!_ application.
 
-![Activity diagram of a user trying to login to the _Chirp!_ application](diagrams/images/Login.png){ width=100% }
+![Activity diagram of a user trying to login to the _Chirp!_ application](diagrams/images/Login.png){ width=90% }
 
+\newpage
 ### Reply {#Activity_Reply}
 When designing replies it was chosen to use the same `Cheep` model as both a "root post" and the following replies to said post.
 This method was chosen because we wished to design a _thread_ style of replies, similar to Reddit. 
@@ -128,6 +135,7 @@ Below is a diagram of a typical scenario of a user replying to another user in t
 
 ![Activity diagram of a user replying to another users `Cheep`](diagrams/images/Reply.png){ width=35% }
 
+\newpage
 ## Sequence of Functionality/Calls through _Chirp!_
 Below is a UML sequence diagram illustrating the sequence of calls in the _Chirp!_ application when it receives an HTTP `GET /` request from a client. 
 Such a request corresponds to a request for the _Public Timeline_. 
@@ -219,6 +227,7 @@ The other 3 issues which were still in the _Todo_ section were extra features an
 We didn't handle these additional todos, as the scope of the project did not require that these changes were present.
 However, if we were to continue working on the project, these would be high on our list of priorities, as they would greatly improve the maintainability of the project.
 
+\newpage
 The groups workflow, when we received the tasks for the week was as follows:
 
 1. We received the weeks tasks, and discuss them
@@ -233,6 +242,7 @@ The groups workflow, when we received the tasks for the week was as follows:
 
 ![Flowchart of a task from when it is released till it is merged to main](diagrams/images/flowchat.png){ width=80% }
 
+\newpage
 ### Trunk-based Development
 During the development of this project, we were encouraged to use trunk-based development. 
 Trunk-based development is a source-control strategy centered on frequent integration of small batches of work into the main branch (trunk), rather than long-lived feature branches, as is common in many other popular workflows, e.g., GitFlow.
@@ -293,6 +303,7 @@ Following is the steps to build and run the test suite (all done from the root f
 
    `dotnet test`
 
+\newpage
 # Ethics
 ## License
 We chose the [3-Clause BSD License](https://opensource.org/license/bsd-3-clause), which is a permissive, OSI approved[^osi-approved], open source copyright license.
