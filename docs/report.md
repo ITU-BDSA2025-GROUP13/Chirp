@@ -20,7 +20,7 @@ header-includes:
 
 # Design and Architecture of _Chirp!_
 ## Domain model
-The domain Model of the Chirp! application is centered around two primary entities,
+The domain Model of the _Chirp!_ application is centered around two primary entities,
 the _ChirpUser_ and the _Cheep_. The _ChirpUser_ serves as the domain's representation of a user, it extends the standard ASP.NET Core `IdentityUser` to leverage built-in security while adding custom features,
 such as the ability to maintain lists of followers and followed users.
 The _Cheep_ is the main form of communication and content on our platform,
@@ -59,7 +59,7 @@ The state can change over the lifetime of the application, for example, when the
 
 ## System Architecture Overview
 The model below shows the general flow of the System and its Architecture.
-![Domain model for Chirp users and Cheeps](diagrams/images/SystemArchitecture.jpg){ width=100% }
+![Domain model for _Chirp!_ users and Cheeps](diagrams/images/SystemArchitecture.jpg){ width=100% }
 
 ## Architecture of Deployed Application
 Our website is hosted on Azure via their _App Service_, using the free F1 plan which comes with some restrictions, e.g., a maximum of 1 hour of shared vCPU time per day.
