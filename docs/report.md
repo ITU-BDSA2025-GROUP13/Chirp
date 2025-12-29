@@ -17,9 +17,7 @@ header-includes:
 ---
 
 # Design and Architecture of _Chirp!_
-
 ## Domain model
-
 The domain model of the Chirp! application is centered around two primary entities,
 the ChirpUser and the Cheep. The ChirpUser serves as the domain's representation of a user, it extends the standard ASP.NET Core IdentityUser to leverage built-in security while adding custom features,
 such as the ability to maintain lists of followers and followed users.
@@ -70,7 +68,6 @@ Although this plan does come with some restrictions, such as a maximum of 1 hour
 ![Diagram of deployed application architecture](diagrams/images/DeployedArchitechture.png)
 Since clients can login via OAuth (GitHub), our service would be dependent on the availability of GitHub as an auth provider for OAuth users to login.
 
-
 ## User activities
 This segment will focus on some of the typical scenarios and user journeys throughout the _Chirp!_ application. 
 First we will document what features are accessible to the user when unauthorised and authorised, 
@@ -80,9 +77,6 @@ and then go into more details about some of the most important features of the a
 Below is an activity diagram illustrating what actions the user can take when they are both authorised and unauthorised.
 
 ![Activity diagram for unauthorised- and authorised users](diagrams/images/UserActivities.png){ width=90% } 
-
-
-
 
 ### Follow User
 Below is an activity diagram illustrating what happens when a user tries to follow another user. 
@@ -249,7 +243,6 @@ All tests, including Playwright, E2E, Integration and Unit tests is stored in th
 
    `dotnet build`
 
-
 1. Install Playwright for tests
 
    ```pwsh test/Chirp.E2E.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps```
@@ -266,9 +259,7 @@ The requirement was set at 80, to keep the standard high, but also realistic.
 To enforce the requirement a GitHub Action script was used, which ran the test suites on every pull request to main. 
 The script used [reportgenerator](https://github.com/danielpalme/ReportGenerator) to also generate a report in which we could better review what parts of the codebase was missing tests.
 
-
 # Ethics
-
 ## License
 We chose the [3-Clause BSD License](https://opensource.org/license/bsd-3-clause), which is a permissive, OSI approved license[^osi-approved], open source copyright license.
 This license is slightly more restrictive than the MIT License or The 2-clause BSD License.
