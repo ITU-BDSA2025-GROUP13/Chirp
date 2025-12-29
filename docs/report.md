@@ -21,10 +21,10 @@ header-includes:
 # Design and Architecture of _Chirp!_
 ## Domain model
 The domain Model of the _Chirp!_ application is centered around two primary entities,
-the _ChirpUser_ and the _Cheep_. The _ChirpUser_ serves as the domain's representation of a user, it extends the standard ASP.NET Core `IdentityUser` to leverage built-in security while adding custom features,
+the `ChirpUser` and the `Cheep`. The `ChirpUser` serves as the domain's representation of a user, it extends the standard ASP.NET Core `IdentityUser` to leverage built-in security while adding custom features,
 such as the ability to maintain lists of followers and followed users.
-The _Cheep_ is the main form of communication and content on our platform,
-encompassing the text, timestamp, and an association with its author. The model further improves user interaction through a _Like_ system (implemented as a many-to-many relationship) and a nested reply structure, where _Cheeps_ can reference a parent _Cheep_ to form conversation trees. 
+The `Cheep` is the main form of communication and content on our platform,
+encompassing the text, timestamp, and an association with its author. The model further improves user interaction through a _Like_ system (implemented as a many-to-many relationship) and a nested reply structure, where `Cheeps` can reference a parent `Cheep` to form conversation trees. 
 
 ![Domain model for ChirpUsers and Cheeps ](diagrams/images/DomainModel.jpg){ width=100% }
 
@@ -37,7 +37,7 @@ The diagram also illustrates dependencies, where the outer circles depend on the
 ### Domain Entities
 _Chirp.Core_ is the center of the architecture, in the yellow part of the diagram.
 This layer stores the most fundamental parts of the codebase. 
-In this project _Chirp.Core_ stores the _Cheep_ and _ChirpUser_ domain entities.
+In this project _Chirp.Core_ stores the `Cheep` and `ChirpUser` domain entities.
 
 ### Repository Layer
 The repository layer of the code based is in the red part of the diagram.
@@ -77,8 +77,8 @@ Below is an activity diagram illustrating what actions the user can take when th
 
 ### Follow User
 Below is an activity diagram illustrating what happens when a user tries to follow another user. 
-Following has the effect of adding the followed user's _Cheeps_ to one's own _My Timeline_. 
-Following is therefore essential for when a user wants to see what new _Cheeps_ the other user has posted. 
+Following has the effect of adding the followed user's `Cheeps` to one's own _My Timeline_. 
+Following is therefore essential for when a user wants to see what new `Cheeps` the other user has posted. 
 
 ![Activity diagram of a user following another user](diagrams/images/FollowUser.png){ width=75% }
 
@@ -100,10 +100,10 @@ or when it is no longer necessary to keep that data stored[^userdata_deletion].
 
 Hard deletes often create a lot of problems behind the scenes, problems like syncing, irreversible data loss and compromising database schema integrity. 
 For the _Chirp!_ application there was the issue of what to do with [replies](#Activity_Reply). 
-Since replies are linked with a child-parent relation, deleting a parent _Cheep_ would result in all subsequent child _Cheeps_ being deleted.
+Since replies are linked with a child-parent relation, deleting a parent `Cheep` would result in all subsequent child `Cheeps` being deleted.
 This is why we opted for a deletion style similar to Reddit. 
 On Reddit, posts and replies are not removed and deleted, but instead noted as _[Deleted by user]_.
-With this method users will not lose their replies, simply because the author of the main _Cheep_ decided to delete their post. 
+With this method users will not lose their replies, simply because the author of the main `Cheep` decided to delete their post. 
 An example of the visual effect of anonymisation of user data can be seen below.
 
 ![Here a user who has replied decided to delete their post. With a hard removal of posts, the user _Oliver_ would have lost his reply in the thread.](images/DeletingUser.png)
@@ -117,19 +117,19 @@ Below is a diagram of a typical scenario of a user logging into the _Chirp!_ app
 ![Activity diagram of a user trying to login to the _Chirp!_ application](diagrams/images/Login.png){ width=100% }
 
 ### Reply {#Activity_Reply}
-When designing replies it was chosen to use the same _Cheep_ model as both a "root post" and the following replies to said post.
+When designing replies it was chosen to use the same `Cheep` model as both a "root post" and the following replies to said post.
 This method was chosen because we wished to design a _thread_ style of replies, similar to Reddit. 
 Instead of only having one layer of replies, users could now reply to other peoples' replies, and continue a _thread_ of replies.
 Below is a diagram of a typical scenario of a user replying to another user in the _Chirp!_ application. 
 
-![Activity diagram of a user replying to another users _Cheep_](diagrams/images/Reply.png){ width=35% }
+![Activity diagram of a user replying to another users `Cheep`](diagrams/images/Reply.png){ width=35% }
 
 ## Sequence of Functionality/Calls through _Chirp!_
 Below is a UML sequence diagram illustrating the sequence of calls in the _Chirp!_ application when it receives an HTTP `GET /` request from a client. 
 Such a request corresponds to a request for the _Public Timeline_. 
-More specifically, the diagram focuses on the calls relevant to retrieving and displaying the _Public Timeline_ _Cheeps_. 
+More specifically, the diagram focuses on the calls relevant to retrieving and displaying the _Public Timeline_ `Cheeps`. 
 The diagram is intentionally kept at an architectural level of abstraction. 
-The intention is to depict how a user’s incoming request is handled end-to-end, from the incoming HTTP request to data retrieval and the final rendering of the _Public Timeline_ with the relevant _Cheeps_.
+The intention is to depict how a user’s incoming request is handled end-to-end, from the incoming HTTP request to data retrieval and the final rendering of the _Public Timeline_ with the relevant `Cheeps`.
 It therefore emphasises the collaboration between the main system components (`Chirp.Web`, `Chirp.Infrastructure`, and the database), rather than the internal implementation details. 
 As a result, certain methods (e.g. `Public.OnGet()`) have been deliberately omitted. 
 This abstraction is chosen to keep the diagram readable while still conveying the essential technical flow through the application’s layered architecture. 
