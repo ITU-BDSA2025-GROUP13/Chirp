@@ -228,13 +228,13 @@ The groups work flow is as follows:
 ![Flowchart of a task from when it is released till it is merged to main](diagrams/images/flowchat.png){ width=80% }
 
 ### Trunk-based Development
-During the development of this project, we tried trunk-based development for the first time. Trunk-based development is a source-control strategy centered on frequent integration of small batches of work into the main branch (trunk), rather than long-lived feature branches, as is common in many other popular workflows, e.g., GitFlow.
+During the development of this project, we were encouraged to use trunk-based development. Trunk-based development is a source-control strategy centered on frequent integration of small batches of work into the main branch (trunk), rather than long-lived feature branches, as is common in many other popular workflows, e.g., GitFlow.
 
-Throughout the development process, we didn’t completely avoid long-lived branches. Many times, it proved utterly impractical to adhere to the “merge every day” mantra, which was (admittedly) partly due to our inexperience with the workflow.
+Throughout the development process, we didn’t completely avoid long-lived branches. Many times, it proved impractical to adhere to the “merge every day” mantra, which was (admittedly) partly due to our inexperience with the workflow.
 
 Being able to merge every day depends on the assumption that the given task can be completed and reviewed within that timeframe. However, estimating the time needed to complete tasks was not always straightforward, especially for larger tasks that don’t naturally split into logically independent subtasks. An example of such a task is the large rewrite required to migrate from raw SQLite to EF Core. Merging at any point between starting and finishing this task would result in a broken main branch. Of course, this is an extreme example, and often it would also be due to interpersonal dynamics within the team. Waiting for code review, from team members with their own daily lives, schedules, and responsibilities, also sometimes resulted in longer branch lifespans. 
 
-So, in these cases, we opted to let the branches live a bit longer rather than merge unfinished or unreviewed code, as we value high-quality code over minimizing branch staleness.
+In short, we opted to let the branches live a bit longer rather than merge unfinished or unreviewed code, as we value high-quality code over minimizing branch staleness. However, we did avoid intentionally long-lived branches like the `develop` and `staging` branches found in other source-control strategies, and branches were generally merged quite quickly.
 
 ## How to Make _Chirp!_ Work Locally
 The get the application running locally either clone this repository or alternatively download the [latest release](https://github.com/ITU-BDSA2025-GROUP13/Chirp/releases/tag/v5.5.0) for your OS.
