@@ -23,6 +23,7 @@ header-includes:
 ## Architecture — In the small
 Below is an onion architecture diagram to illustrate the overall architecture of the _Chirp!_ application. 
 The diagram also illustrates dependencies, where the outer circles depend on the inner circles.
+
 ![Dependencies are illustrated as red arrows.](diagrams/images/OnionArchitecture.png)
 
 ### Domain entities
