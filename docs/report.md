@@ -217,13 +217,13 @@ However, if we were to continue working on the project, these would be high on o
 The groups work flow is as follows:
 1. We received the weeks tasks, and discussed them
 1. We created issues and user stories for them
-  - These issues also included acceptance criteria and test criteria
+    - These issues also included acceptance criteria and test criteria
 1. The issues were assigned to the person willing to work on them
-  - If we hadn't finished a task from last week, these were prioritized above new tasks
+    - If we hadn't finished a task from last week, these were prioritized above new tasks
 1. A pull request for an implementation of the task is created, and the issue is automatically move to the "Review" tab of the KanBan board
 1. The PR is reviewed
-  - If it is approved, it was merged to main, and the associated issue was closed
-  - If further iterations were required, the associated issue was moved back to the "In Progress" tab of the KanBan board
+    - If it is approved, it was merged to main, and the associated issue was closed
+    - If further iterations were required, the associated issue was moved back to the "In Progress" tab of the KanBan board
 
 ![Flowchart of a task from when it is released till it is merged to main](diagrams/images/flowchat.png){ width=80% }
 
