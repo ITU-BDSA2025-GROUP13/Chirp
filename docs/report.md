@@ -18,6 +18,8 @@ header-includes:
 - \floatplacement{figure}{H}
 ---
 
+\newpage
+
 \tableofcontents
 
 \newpage
